@@ -11,6 +11,22 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return const Scaffold(
+      backgroundColor: Colors.amber,
+      body: Stack(
+        children: [
+          Positioned(
+              left: 20,
+              top: 20,
+              right: 20,
+              bottom: 20,
+              child: SizedBox(
+                width: 500,
+                height: 600,
+                child: ColoredBox(color: Colors.black),
+              ))
+        ],
+      ),
+    );
   }
 }
