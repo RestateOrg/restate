@@ -1,8 +1,9 @@
 // ignore: file_names
 import 'package:flutter/material.dart';
+import 'package:restate/screens/chooseUserType.dart';
 
 class SignIn extends StatefulWidget {
-  const SignIn({super.key});
+  const SignIn({Key? key}) : super(key: key);
 
   @override
   State<SignIn> createState() => _SignInState();
@@ -35,6 +36,36 @@ class _SignInState extends State<SignIn> {
               height: 400,
               child: Image.asset(
                 'assets/images/mainBack.png',
+              ),
+            ),
+          ),
+          const Positioned(
+            bottom: 90,
+            left: 50,
+            child: Text(
+              "Don't have an account?",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 20,
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 82,
+            left: 255,
+            child: TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ChooseUser()),
+                );
+              },
+              child: const Text(
+                'Sign Up',
+                style: TextStyle(
+                  color: Colors.blue,
+                  fontSize: 20,
+                ),
               ),
             ),
           ),
