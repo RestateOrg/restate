@@ -13,28 +13,17 @@ class _GetStartedState extends State<GetStarted> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.amber,
-      body: Center(
-        child: Column(
-          children: [
-            const SizedBox(
-              width: 100,
-              height: 100,
-            ),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(70.0),
-              child: Image.asset(
-                'assets/images/mainBack.png',
-                width: 250,
-                height: 280,
+      body: Stack(
+        // Use Stack for layering widgets
+        children: [
+          Container(
+              // Your background content goes here
               ),
-            ),
-            const SizedBox(
-              width: 50,
-              height: 60,
-            ),
-            SizedBox(
-              width: 500,
-              height: 450,
+          Positioned(
+            bottom: 20,
+            child: SizedBox(
+              width: 420,
+              height: 430,
               child: ColorFiltered(
                 colorFilter: ColorFilter.mode(
                   Colors.amber.withOpacity(0.5),
@@ -42,33 +31,44 @@ class _GetStartedState extends State<GetStarted> {
                 ),
                 child: Image.asset(
                   'assets/images/backMat.png',
-                  fit: BoxFit.cover,
+                  fit: BoxFit.fill,
                 ),
               ),
             ),
-            /* Positioned(
-              top: 15,
-              child: ElevatedButton(
-                onPressed: () {
-                  // Navigate to the next page on button press
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const SignIn()),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.black,
+          ),
+          Positioned(
+              top: 140,
+              left: 55,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(60),
+                child: Image.asset(
+                  'assets/images/mainBack.png',
+                  width: 300,
+                  height: 280,
                 ),
-                child: const Text(
-                  'Get Started',
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
+              )),
+          Positioned(
+            bottom: 170,
+            left: 87,
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SignIn()),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                  primary: Colors.black, minimumSize: Size(250, 70)),
+              child: const Text(
+                'Get Started',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
                 ),
               ),
-            ),*/
-          ],
-        ),
+            ),
+          ),
+        ],
       ),
     );
   }
