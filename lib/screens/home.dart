@@ -58,7 +58,8 @@ class _GetStartedState extends State<GetStarted> {
                 );
               },
               style: ElevatedButton.styleFrom(
-                  primary: Colors.black, minimumSize: Size(250, 70)),
+                  backgroundColor: Colors.black,
+                  minimumSize: const Size(250, 70)),
               child: const Text(
                 'Get Started',
                 style: TextStyle(
