@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:restate/screens/builderRegistration.dart';
 import 'package:restate/screens/machinaryRegistration.dart';
 import 'package:restate/screens/materialsRegistation.dart';
+import 'package:restate/screens/signIn.dart';
 
 class ChooseUser extends StatefulWidget {
   const ChooseUser({super.key});
@@ -177,6 +178,38 @@ class _ChooseUserState extends State<ChooseUser> {
               style: TextStyle(
                 fontSize: 35,
                 color: Colors.white,
+              ),
+            ),
+          ),
+          const Positioned(
+            bottom: 250,
+            left: 90,
+            child: Text(
+              "Already have an account",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 15,
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 236,
+            right: 90,
+            child: TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SignIn(),
+                  ),
+                );
+              },
+              child: const Text(
+                'Login',
+                style: TextStyle(
+                  color: Colors.blue,
+                  fontSize: 15,
+                ),
               ),
             ),
           ),
