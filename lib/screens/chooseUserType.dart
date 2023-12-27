@@ -27,8 +27,21 @@ class _ChooseUserState extends State<ChooseUser> {
               ),
             ),
           ),
-          /*Positioned(
-            child: child)*/
+          Positioned(
+            left: 50,
+            top: 370,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: Colors.amber,
+                borderRadius: BorderRadius.circular(200),
+              ),
+              child: Image.asset(
+                'assets/images/Builder.png',
+                width: 90,
+                height: 90,
+              ),
+            ),
+          ),
         ],
       ),
     );
