@@ -153,8 +153,8 @@ class _LoginViewState extends State<LoginView> {
                           );
                         },
                         child: RichText(
-                          text: TextSpan(
-                            text: "Don't have an account?",
+                          text: const TextSpan(
+                            text: "Don't have an account? ",
                             style: TextStyle(
                               fontSize: 18.0,
                               color: Colors.white,

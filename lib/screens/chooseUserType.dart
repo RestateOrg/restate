@@ -206,35 +206,33 @@ class _ChooseUserState extends State<ChooseUser> {
               ),
             ),
           ),
-          const Positioned(
-            bottom: 280,
-            left: 90,
-            child: Text(
-              "Already have an account",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 15,
-              ),
-            ),
-          ),
           Positioned(
-            bottom: 266,
-            right: 94,
-            child: TextButton(
-              onPressed: () {
+            bottom: 280,
+            left: 78,
+            child: GestureDetector(
+              onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => const LoginView(),
-                  ),
+                  MaterialPageRoute(builder: (context) => const LoginView()),
                 );
               },
-              child: const Text(
-                'Log in',
-                style: TextStyle(
-                  color: Colors.blue,
-                  fontSize: 15,
-                  decoration: TextDecoration.underline,
+              child: RichText(
+                text: const TextSpan(
+                  text: "Already have an account? ",
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    color: Colors.white,
+                  ),
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: 'Log in',
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),

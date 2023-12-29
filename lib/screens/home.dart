@@ -37,8 +37,8 @@ class _GetStartedState extends State<GetStarted> {
             ),
           ),
           Positioned(
-              top: 140,
-              left: 55,
+              top: 220,
+              left: 60,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(60),
                 child: Image.asset(
@@ -48,7 +48,7 @@ class _GetStartedState extends State<GetStarted> {
                 ),
               )),
           Positioned(
-            bottom: 170,
+            bottom: 180,
             left: 87,
             child: ElevatedButton(
               onPressed: () {
@@ -64,7 +64,8 @@ class _GetStartedState extends State<GetStarted> {
                 'Get Started',
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 20,
+                  fontFamily: 'Roboto',
+                  fontSize: 22,
                 ),
               ),
             ),
