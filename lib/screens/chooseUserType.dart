@@ -4,6 +4,7 @@ import 'package:restate/screens/builderRegistration.dart';
 import 'package:restate/screens/machinaryRegistration.dart';
 import 'package:restate/screens/materialsRegistation.dart';
 import 'package:restate/screens/signIn.dart';
+import 'hexcolor.dart';
 
 class ChooseUser extends StatefulWidget {
   const ChooseUser({super.key});
@@ -11,6 +12,18 @@ class ChooseUser extends StatefulWidget {
   @override
   // ignore: library_private_types_in_public_api
   _ChooseUserState createState() => _ChooseUserState();
+}
+
+class HexColor extends Color {
+  HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
+
+  static int _getColorFromHex(String hexColor) {
+    hexColor = hexColor.toUpperCase().replaceAll("#", "");
+    if (hexColor.length == 6) {
+      hexColor = "FF" + hexColor;
+    }
+    return int.parse(hexColor, radix: 16);
+  }
 }
 
 class _ChooseUserState extends State<ChooseUser> {
@@ -22,12 +35,12 @@ class _ChooseUserState extends State<ChooseUser> {
         children: [
           Positioned(
             left: 20,
-            top: 50,
+            top: 40,
             right: 20,
-            bottom: 50,
+            bottom: 20,
             child: DecoratedBox(
               decoration: BoxDecoration(
-                color: Colors.black,
+                color: HexColor('#2A2828'),
                 borderRadius: BorderRadius.circular(20),
               ),
             ),
@@ -36,29 +49,34 @@ class _ChooseUserState extends State<ChooseUser> {
             left: 50,
             top: 370,
             child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const BuilderRegistration(),
-                  ),
-                );
-              },
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: Colors.amber,
-                  borderRadius: BorderRadius.circular(200),
-                ),
-                child: Image.asset(
-                  'assets/images/Builder.png',
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const BuilderRegistration(),
+                    ),
+                  );
+                },
+                child: Container(
                   width: 90,
                   height: 90,
-                ),
-              ),
-            ),
+                  decoration: BoxDecoration(
+                    color: Colors.amber,
+                    borderRadius: BorderRadius.circular(90), // Make it a circle
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(
+                        15), // Center the image within the box
+                    child: Image.asset(
+                      'assets/images/Builder.png',
+                      width: 60,
+                      height: 60,
+                    ),
+                  ),
+                )),
           ),
           Positioned(
-            left: 55,
+            left: 53,
             top: 460, // Adjusted the top position of the TextButton
             child: TextButton(
               onPressed: () {
@@ -82,26 +100,31 @@ class _ChooseUserState extends State<ChooseUser> {
             left: 160,
             top: 370,
             child: GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const MachinaryRegistration(),
-                  ),
-                );
-              },
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  color: Colors.amber,
-                  borderRadius: BorderRadius.circular(200),
-                ),
-                child: Image.asset(
-                  'assets/images/Machine.png',
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const MachinaryRegistration(),
+                    ),
+                  );
+                },
+                child: Container(
                   width: 90,
                   height: 90,
-                ),
-              ),
-            ),
+                  decoration: BoxDecoration(
+                    color: Colors.amber,
+                    borderRadius: BorderRadius.circular(90), // Make it a circle
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(
+                        15), // Center the image within the box
+                    child: Image.asset(
+                      'assets/images/Machine.png',
+                      width: 60,
+                      height: 60,
+                    ),
+                  ),
+                )),
           ),
           Positioned(
             left: 160,
@@ -171,18 +194,20 @@ class _ChooseUserState extends State<ChooseUser> {
             ),
           ),
           const Positioned(
-            top: 200,
-            left: 50,
+            top: 270,
+            left: 55,
             child: Text(
-              'Select the User Type',
+              'Select User Type',
               style: TextStyle(
-                fontSize: 35,
+                fontSize: 39,
+                fontFamily: 'Roboto',
+                fontWeight: FontWeight.bold,
                 color: Colors.white,
               ),
             ),
           ),
           const Positioned(
-            bottom: 250,
+            bottom: 280,
             left: 90,
             child: Text(
               "Already have an account",
@@ -193,8 +218,8 @@ class _ChooseUserState extends State<ChooseUser> {
             ),
           ),
           Positioned(
-            bottom: 236,
-            right: 90,
+            bottom: 266,
+            right: 94,
             child: TextButton(
               onPressed: () {
                 Navigator.push(
@@ -205,10 +230,11 @@ class _ChooseUserState extends State<ChooseUser> {
                 );
               },
               child: const Text(
-                'Login',
+                'Log in',
                 style: TextStyle(
                   color: Colors.blue,
                   fontSize: 15,
+                  decoration: TextDecoration.underline,
                 ),
               ),
             ),
