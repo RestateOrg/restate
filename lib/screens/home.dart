@@ -54,7 +54,7 @@ class _GetStartedState extends State<GetStarted> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const SignIn()),
+                  MaterialPageRoute(builder: (context) => const LoginView()),
                 );
               },
               style: ElevatedButton.styleFrom(

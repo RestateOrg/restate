@@ -225,7 +225,7 @@ class _ChooseUserState extends State<ChooseUser> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const SignIn(),
+                    builder: (context) => const LoginView(),
                   ),
                 );
               },
