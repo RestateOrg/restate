@@ -1,4 +1,3 @@
-// ignore: file_names
 import 'package:flutter/material.dart';
 import 'package:restate/screens/builderRegistration.dart';
 import 'package:restate/screens/machinaryRegistration.dart';
@@ -7,10 +6,9 @@ import 'package:restate/screens/signIn.dart';
 import 'hexcolor.dart';
 
 class ChooseUser extends StatefulWidget {
-  const ChooseUser({super.key});
+  const ChooseUser({Key? key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _ChooseUserState createState() => _ChooseUserState();
 }
 
@@ -29,6 +27,9 @@ class HexColor extends Color {
 class _ChooseUserState extends State<ChooseUser> {
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+
     return Scaffold(
       backgroundColor: Colors.amber,
       body: Stack(
@@ -41,43 +42,43 @@ class _ChooseUserState extends State<ChooseUser> {
             child: DecoratedBox(
               decoration: BoxDecoration(
                 color: HexColor('#2A2828'),
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(height * 0.025),
               ),
             ),
           ),
           Positioned(
-            left: 50,
-            top: 370,
+            left: width * 0.10,
+            top: height * 0.45,
             child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const BuilderRegistration(),
-                    ),
-                  );
-                },
-                child: Container(
-                  width: 90,
-                  height: 90,
-                  decoration: BoxDecoration(
-                    color: Colors.amber,
-                    borderRadius: BorderRadius.circular(90), // Make it a circle
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const BuilderRegistration(),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(
-                        15), // Center the image within the box
-                    child: Image.asset(
-                      'assets/images/Builder.png',
-                      width: 60,
-                      height: 60,
-                    ),
+                );
+              },
+              child: Container(
+                width: width * 0.25,
+                height: width * 0.25,
+                decoration: BoxDecoration(
+                  color: Colors.amber,
+                  borderRadius: BorderRadius.circular(width * 0.25),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(width * 0.04),
+                  child: Image.asset(
+                    'assets/images/Builder.png',
+                    width: width * 0.16,
+                    height: width * 0.16,
                   ),
-                )),
+                ),
+              ),
+            ),
           ),
           Positioned(
-            left: 53,
-            top: 460, // Adjusted the top position of the TextButton
+            left: width * 0.13,
+            top: height * 0.56,
             child: TextButton(
               onPressed: () {
                 Navigator.push(
@@ -87,69 +88,19 @@ class _ChooseUserState extends State<ChooseUser> {
                   ),
                 );
               },
-              child: const Text(
+              child: Text(
                 'Builder',
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 20,
+                  fontSize: width * 0.04,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
           ),
           Positioned(
-            left: 160,
-            top: 370,
-            child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const MachinaryRegistration(),
-                    ),
-                  );
-                },
-                child: Container(
-                  width: 90,
-                  height: 90,
-                  decoration: BoxDecoration(
-                    color: Colors.amber,
-                    borderRadius: BorderRadius.circular(90), // Make it a circle
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(
-                        15), // Center the image within the box
-                    child: Image.asset(
-                      'assets/images/Machine.png',
-                      width: 60,
-                      height: 60,
-                    ),
-                  ),
-                )),
-          ),
-          Positioned(
-            left: 160,
-            top: 460, // Adjusted the top position of the TextButton
-            child: TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const BuilderRegistration(),
-                  ),
-                );
-              },
-              child: const Text(
-                'Owners',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            right: 50,
-            top: 370,
+            left: width * 0.39,
+            top: height * 0.45,
             child: GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -159,22 +110,77 @@ class _ChooseUserState extends State<ChooseUser> {
                   ),
                 );
               },
-              child: DecoratedBox(
+              child: Container(
+                width: width * 0.25,
+                height: width * 0.25,
                 decoration: BoxDecoration(
                   color: Colors.amber,
-                  borderRadius: BorderRadius.circular(200),
+                  borderRadius: BorderRadius.circular(width * 0.25),
                 ),
-                child: Image.asset(
-                  'assets/images/Materials.png',
-                  width: 90,
-                  height: 90,
+                child: Padding(
+                  padding: EdgeInsets.all(width * 0.04),
+                  child: Image.asset(
+                    'assets/images/Machine.png',
+                    width: width * 0.16,
+                    height: width * 0.16,
+                  ),
                 ),
               ),
             ),
           ),
           Positioned(
-            right: 40,
-            top: 460, // Adjusted the top position of the TextButton
+            left: width * 0.42,
+            top: height * 0.56,
+            child: TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MachinaryRegistration(),
+                  ),
+                );
+              },
+              child: Text(
+                'Owners',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: width * 0.04,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            right: width * 0.08,
+            top: height * 0.45,
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const MaterialRegistration(),
+                  ),
+                );
+              },
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: Colors.amber,
+                  borderRadius: BorderRadius.circular(width * 0.5),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(width * 0.04),
+                  child: Image.asset(
+                    'assets/images/Materials.png',
+                    width: width * 0.16,
+                    height: width * 0.16,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            right: width * 0.08,
+            top: height * 0.56,
             child: TextButton(
               onPressed: () {
                 Navigator.push(
@@ -184,22 +190,23 @@ class _ChooseUserState extends State<ChooseUser> {
                   ),
                 );
               },
-              child: const Text(
+              child: Text(
                 'Materials',
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 20,
+                  fontSize: width * 0.04,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
           ),
-          const Positioned(
-            top: 270,
-            left: 55,
+          Positioned(
+            top: height * 0.34,
+            left: width * 0.17,
             child: Text(
               'Select User Type',
               style: TextStyle(
-                fontSize: 39,
+                fontSize: width * 0.09,
                 fontFamily: 'Roboto',
                 fontWeight: FontWeight.bold,
                 color: Colors.white,
@@ -207,8 +214,8 @@ class _ChooseUserState extends State<ChooseUser> {
             ),
           ),
           Positioned(
-            bottom: 280,
-            left: 78,
+            bottom: height * 0.32,
+            left: width * 0.22,
             child: GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -217,17 +224,18 @@ class _ChooseUserState extends State<ChooseUser> {
                 );
               },
               child: RichText(
-                text: const TextSpan(
-                  text: "Already have an account?",
+                text: TextSpan(
+                  text: "Already have an account? ",
                   style: TextStyle(
-                    fontSize: 18.0,
+                    fontSize: width * 0.04,
+                    fontFamily: 'Roboto',
                     color: Colors.white,
                   ),
                   children: <TextSpan>[
                     TextSpan(
                       text: 'Log in',
                       style: TextStyle(
-                        fontSize: 18.0,
+                        fontSize: width * 0.04,
                         color: Colors.blue,
                         decoration: TextDecoration.underline,
                       ),
