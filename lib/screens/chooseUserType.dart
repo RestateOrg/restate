@@ -218,7 +218,7 @@ class _ChooseUserState extends State<ChooseUser> {
               },
               child: RichText(
                 text: const TextSpan(
-                  text: "Already have an account? ",
+                  text: "Already have an account?",
                   style: TextStyle(
                     fontSize: 18.0,
                     color: Colors.white,
