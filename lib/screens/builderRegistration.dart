@@ -34,7 +34,7 @@ class _BuilderRegistrationState extends State<BuilderRegistration> {
                 child: Text(
                   "Builder Sign Up",
                   style: TextStyle(
-                    fontSize: 30,
+                    fontSize: width * 0.0835,
                     fontWeight: FontWeight.w900,
                     fontFamily: 'Roboto',
                   ),
