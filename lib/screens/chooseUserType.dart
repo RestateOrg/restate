@@ -3,25 +3,13 @@ import 'package:restate/screens/builderRegistration.dart';
 import 'package:restate/screens/machinaryRegistration.dart';
 import 'package:restate/screens/materialsRegistation.dart';
 import 'package:restate/screens/signIn.dart';
-import 'hexcolor.dart';
+import 'package:restate/screens/hexcolor.dart';
 
 class ChooseUser extends StatefulWidget {
   const ChooseUser({Key? key});
 
   @override
   _ChooseUserState createState() => _ChooseUserState();
-}
-
-class HexColor extends Color {
-  HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
-
-  static int _getColorFromHex(String hexColor) {
-    hexColor = hexColor.toUpperCase().replaceAll("#", "");
-    if (hexColor.length == 6) {
-      hexColor = "FF" + hexColor;
-    }
-    return int.parse(hexColor, radix: 16);
-  }
 }
 
 class _ChooseUserState extends State<ChooseUser> {
@@ -48,7 +36,7 @@ class _ChooseUserState extends State<ChooseUser> {
           ),
           Positioned(
             left: width * 0.10,
-            top: height * 0.45,
+            top: width * 0.92,
             child: GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -77,8 +65,8 @@ class _ChooseUserState extends State<ChooseUser> {
             ),
           ),
           Positioned(
-            left: width * 0.13,
-            top: height * 0.56,
+            left: width * 0.135,
+            top: width * 1.146,
             child: TextButton(
               onPressed: () {
                 Navigator.push(
@@ -100,7 +88,7 @@ class _ChooseUserState extends State<ChooseUser> {
           ),
           Positioned(
             left: width * 0.39,
-            top: height * 0.45,
+            top: width * 0.92,
             child: GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -130,7 +118,7 @@ class _ChooseUserState extends State<ChooseUser> {
           ),
           Positioned(
             left: width * 0.42,
-            top: height * 0.56,
+            top: width * 1.146,
             child: TextButton(
               onPressed: () {
                 Navigator.push(
@@ -152,7 +140,7 @@ class _ChooseUserState extends State<ChooseUser> {
           ),
           Positioned(
             right: width * 0.08,
-            top: height * 0.45,
+            top: width * 0.92,
             child: GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -180,7 +168,7 @@ class _ChooseUserState extends State<ChooseUser> {
           ),
           Positioned(
             right: width * 0.08,
-            top: height * 0.56,
+            top: width * 1.146,
             child: TextButton(
               onPressed: () {
                 Navigator.push(
@@ -201,7 +189,7 @@ class _ChooseUserState extends State<ChooseUser> {
             ),
           ),
           Positioned(
-            top: height * 0.34,
+            top: width * 0.696,
             left: width * 0.17,
             child: Text(
               'Select User Type',
@@ -214,7 +202,7 @@ class _ChooseUserState extends State<ChooseUser> {
             ),
           ),
           Positioned(
-            bottom: height * 0.32,
+            bottom: width * 0.656,
             left: width * 0.22,
             child: GestureDetector(
               onTap: () {

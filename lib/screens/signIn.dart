@@ -128,8 +128,7 @@ class _LoginViewState extends State<LoginView> {
                         },
                         style: TextButton.styleFrom(
                           foregroundColor: Colors.black,
-                          backgroundColor: Colors
-                              .amber, // Set the background color of the button to amber
+                          backgroundColor: Colors.amber,
                           padding: const EdgeInsets.symmetric(
                               horizontal: 40.0, vertical: 15.0),
                           shape: RoundedRectangleBorder(

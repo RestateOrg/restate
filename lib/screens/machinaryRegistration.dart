@@ -11,6 +11,7 @@ class MachinaryRegistration extends StatefulWidget {
 class _MachinaryRegistrationState extends State<MachinaryRegistration> {
   @override
   Widget build(BuildContext context) {
+    // ignore: unused_local_variable
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
