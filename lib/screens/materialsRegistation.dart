@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:restate/screens/hexcolor.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:restate/screens/signIn.dart';
 
 class MaterialRegistration extends StatefulWidget {
   const MaterialRegistration({Key? key}) : super(key: key);
@@ -10,6 +13,74 @@ class MaterialRegistration extends StatefulWidget {
 
 class _MaterialRegistrationState extends State<MaterialRegistration> {
   bool isChecked = false;
+  String selectedGender = 'Male';
+  TextEditingController fullNameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController contactNumberController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
+  TextEditingController cityController = TextEditingController();
+  TextEditingController stateController = TextEditingController();
+  TextEditingController countryController = TextEditingController();
+  TextEditingController zipCodeController = TextEditingController();
+  TextEditingController companyRegistrationNumberController =
+      TextEditingController();
+  TextEditingController aadhaarNumberController = TextEditingController();
+  void _showDocumentIdPopup(String documentId) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Account Created'),
+          content: Text('The Account Was Created Successfully'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LoginView()),
+                ); // Close the dialog
+              },
+              child: Text('Continue'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _storeUserData() async {
+    try {
+      // Access Firestore instance
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+      // Create a new document reference
+      DocumentReference documentReference =
+          await firestore.collection('materials').add({
+        'fullName': fullNameController.text,
+        'email': emailController.text,
+        'contactNumber': contactNumberController.text,
+        'password': passwordController.text,
+        'address': addressController.text,
+        'city': cityController.text,
+        'state': stateController.text,
+        'country': countryController.text,
+        'zipCode': zipCodeController.text,
+        'companyRegistrationNumber': companyRegistrationNumberController.text,
+        'aadhaarNumber': aadhaarNumberController.text,
+        'gender': selectedGender,
+        'acceptedTerms': isChecked,
+      });
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: emailController.text, password: passwordController.text);
+      String documentId = documentReference.id;
+      _showDocumentIdPopup(documentId);
+    } catch (e) {
+      print('Error storing data: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -32,7 +103,7 @@ class _MaterialRegistrationState extends State<MaterialRegistration> {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "Materials Sign Up",
+                  "Materials Owner Sign Up",
                   style: TextStyle(
                     fontSize: width * 0.0835,
                     fontWeight: FontWeight.w900,
@@ -67,15 +138,13 @@ class _MaterialRegistrationState extends State<MaterialRegistration> {
                 child: Container(
                   width: width * 0.8,
                   child: TextField(
+                    controller: fullNameController,
                     decoration: InputDecoration(
                       hintText: 'Enter Your Full Name',
                       fillColor: Colors.white,
                       filled: true,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(23.0),
-                        borderSide: BorderSide(
-                          color: Colors.white,
-                        ),
                       ),
                       contentPadding: const EdgeInsets.all(12.0),
                     ),
@@ -109,15 +178,13 @@ class _MaterialRegistrationState extends State<MaterialRegistration> {
                 child: Container(
                   width: width * 0.8,
                   child: TextField(
+                    controller: emailController,
                     decoration: InputDecoration(
                       hintText: 'Enter Your Email Id',
                       fillColor: Colors.white,
                       filled: true,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(23.0),
-                        borderSide: BorderSide(
-                          color: Colors.white,
-                        ),
                       ),
                       contentPadding: const EdgeInsets.all(12.0),
                     ),
@@ -151,15 +218,13 @@ class _MaterialRegistrationState extends State<MaterialRegistration> {
                 child: Container(
                   width: width * 0.8,
                   child: TextField(
+                    controller: contactNumberController,
                     decoration: InputDecoration(
                       hintText: 'Enter Your Mobile Number',
                       fillColor: Colors.white,
                       filled: true,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(23.0),
-                        borderSide: BorderSide(
-                          color: Colors.white,
-                        ),
                       ),
                       contentPadding: const EdgeInsets.all(12.0),
                     ),
@@ -193,15 +258,14 @@ class _MaterialRegistrationState extends State<MaterialRegistration> {
                 child: Container(
                   width: width * 0.8,
                   child: TextField(
+                    controller: passwordController,
+                    obscureText: true,
                     decoration: InputDecoration(
                       hintText: 'Enter Your Password',
                       fillColor: Colors.white,
                       filled: true,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(23.0),
-                        borderSide: BorderSide(
-                          color: Colors.white,
-                        ),
                       ),
                       contentPadding: const EdgeInsets.all(12.0),
                     ),
@@ -235,15 +299,14 @@ class _MaterialRegistrationState extends State<MaterialRegistration> {
                 child: Container(
                   width: width * 0.8,
                   child: TextField(
+                    controller: confirmPasswordController,
+                    obscureText: true,
                     decoration: InputDecoration(
                       hintText: 'Confirm Your Password',
                       fillColor: Colors.white,
                       filled: true,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(23.0),
-                        borderSide: BorderSide(
-                          color: Colors.white,
-                        ),
                       ),
                       contentPadding: const EdgeInsets.all(12.0),
                     ),
@@ -259,7 +322,7 @@ class _MaterialRegistrationState extends State<MaterialRegistration> {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "Address Line 1",
+                  "Address",
                   style: TextStyle(
                     fontSize: width * 0.039,
                     fontWeight: FontWeight.w900,
@@ -277,15 +340,13 @@ class _MaterialRegistrationState extends State<MaterialRegistration> {
                 child: Container(
                   width: width * 0.8,
                   child: TextField(
+                    controller: addressController,
                     decoration: InputDecoration(
                       hintText: 'Enter Your Address',
                       fillColor: Colors.white,
                       filled: true,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(23.0),
-                        borderSide: BorderSide(
-                          color: Colors.white,
-                        ),
                       ),
                       contentPadding: const EdgeInsets.all(12.0),
                     ),
@@ -301,7 +362,7 @@ class _MaterialRegistrationState extends State<MaterialRegistration> {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "Address Line 2",
+                  "city",
                   style: TextStyle(
                     fontSize: width * 0.039,
                     fontWeight: FontWeight.w900,
@@ -316,18 +377,96 @@ class _MaterialRegistrationState extends State<MaterialRegistration> {
               ),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Container(
+                child: SizedBox(
                   width: width * 0.8,
                   child: TextField(
+                    controller: cityController,
                     decoration: InputDecoration(
-                      hintText: 'Enter Your Address',
+                      hintText: 'Enter Your City',
                       fillColor: Colors.white,
                       filled: true,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(23.0),
-                        borderSide: BorderSide(
-                          color: Colors.white,
-                        ),
+                      ),
+                      contentPadding: const EdgeInsets.all(12.0),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                left: width * 0.08,
+                top: width * 0.024,
+              ),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "State",
+                  style: TextStyle(
+                    fontSize: width * 0.039,
+                    fontWeight: FontWeight.w900,
+                    fontFamily: 'Roboto',
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                left: width * 0.04,
+              ),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: SizedBox(
+                  width: width * 0.8,
+                  child: TextField(
+                    controller: stateController,
+                    decoration: InputDecoration(
+                      hintText: 'Enter Your State',
+                      fillColor: Colors.white,
+                      filled: true,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(23.0),
+                      ),
+                      contentPadding: const EdgeInsets.all(12.0),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                left: width * 0.08,
+                top: width * 0.024,
+              ),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Country",
+                  style: TextStyle(
+                    fontSize: width * 0.039,
+                    fontWeight: FontWeight.w900,
+                    fontFamily: 'Roboto',
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                left: width * 0.04,
+              ),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: SizedBox(
+                  width: width * 0.8,
+                  child: TextField(
+                    controller: countryController,
+                    decoration: InputDecoration(
+                      hintText: 'Enter Your country',
+                      fillColor: Colors.white,
+                      filled: true,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(23.0),
                       ),
                       contentPadding: const EdgeInsets.all(12.0),
                     ),
@@ -358,18 +497,16 @@ class _MaterialRegistrationState extends State<MaterialRegistration> {
               ),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Container(
+                child: SizedBox(
                   width: width * 0.8,
                   child: TextField(
+                    controller: zipCodeController,
                     decoration: InputDecoration(
                       hintText: 'Enter Your Zip Code',
                       fillColor: Colors.white,
                       filled: true,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(23.0),
-                        borderSide: BorderSide(
-                          color: Colors.white,
-                        ),
                       ),
                       contentPadding: const EdgeInsets.all(12.0),
                     ),
@@ -386,7 +523,7 @@ class _MaterialRegistrationState extends State<MaterialRegistration> {
                 alignment: Alignment.centerLeft,
                 child: RichText(
                   text: TextSpan(
-                    text: "Company / Shop Registration Number  ",
+                    text: "Company Registration Number",
                     style: TextStyle(
                       fontSize: width * 0.039,
                       fontFamily: 'Roboto',
@@ -412,18 +549,16 @@ class _MaterialRegistrationState extends State<MaterialRegistration> {
               ),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Container(
+                child: SizedBox(
                   width: width * 0.8,
                   child: TextField(
+                    controller: companyRegistrationNumberController,
                     decoration: InputDecoration(
                       hintText: 'Enter your License Number',
                       fillColor: Colors.white,
                       filled: true,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(23.0),
-                        borderSide: BorderSide(
-                          color: Colors.white,
-                        ),
                       ),
                       contentPadding: const EdgeInsets.all(12.0),
                     ),
@@ -440,7 +575,7 @@ class _MaterialRegistrationState extends State<MaterialRegistration> {
                 alignment: Alignment.centerLeft,
                 child: RichText(
                   text: TextSpan(
-                    text: "Aadhar Number  ",
+                    text: "Aadhaar Number",
                     style: TextStyle(
                       fontSize: width * 0.039,
                       fontFamily: 'Roboto',
@@ -466,18 +601,16 @@ class _MaterialRegistrationState extends State<MaterialRegistration> {
               ),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Container(
+                child: SizedBox(
                   width: width * 0.8,
                   child: TextField(
+                    controller: aadhaarNumberController,
                     decoration: InputDecoration(
-                      hintText: 'Enter your Aadhar Number',
+                      hintText: 'Enter your Aadhaar Number',
                       fillColor: Colors.white,
                       filled: true,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(23.0),
-                        borderSide: BorderSide(
-                          color: Colors.white,
-                        ),
                       ),
                       contentPadding: const EdgeInsets.all(12.0),
                     ),
@@ -490,7 +623,45 @@ class _MaterialRegistrationState extends State<MaterialRegistration> {
                 left: width * 0.08,
                 top: width * 0.024,
               ),
-              child: GenderDropdown(),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Select Gender",
+                  style: TextStyle(
+                    fontSize: width * 0.038,
+                    fontWeight: FontWeight.w900,
+                    fontFamily: 'Roboto',
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                left: width * 0.08,
+                top: width * 0.024,
+              ),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: DropdownButton<String>(
+                  value: selectedGender,
+                  underline: Container(
+                    height: 2,
+                    color: Colors.white54,
+                  ),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      selectedGender = newValue!;
+                    });
+                  },
+                  items: <String>['Male', 'Female', 'Other']
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
+              ),
             ),
             Padding(
               padding: EdgeInsets.only(
@@ -523,7 +694,9 @@ class _MaterialRegistrationState extends State<MaterialRegistration> {
                   bottom: width * 0.05,
                 ),
                 child: TextButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    _storeUserData();
+                  },
                   style: TextButton.styleFrom(
                     foregroundColor: Colors.white,
                     backgroundColor: HexColor('#242424'),
@@ -541,58 +714,6 @@ class _MaterialRegistrationState extends State<MaterialRegistration> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class GenderDropdown extends StatefulWidget {
-  @override
-  _GenderDropdownState createState() => _GenderDropdownState();
-}
-
-class _GenderDropdownState extends State<GenderDropdown> {
-  String selectedGender = 'Male'; // Default value
-
-  @override
-  Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            "Select Gender",
-            style: TextStyle(
-              fontSize: width * 0.038,
-              fontWeight: FontWeight.w900,
-              fontFamily: 'Roboto',
-            ),
-          ),
-        ),
-        Align(
-          alignment: Alignment.centerLeft,
-          child: DropdownButton<String>(
-            value: selectedGender,
-            underline: Container(
-              height: 2,
-              color: Colors.white54,
-            ),
-            onChanged: (String? newValue) {
-              setState(() {
-                selectedGender = newValue!;
-              });
-            },
-            items: <String>['Male', 'Female', 'Other']
-                .map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-          ),
-        ),
-      ],
     );
   }
 }

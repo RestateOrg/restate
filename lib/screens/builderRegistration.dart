@@ -1,3 +1,4 @@
+// ignore: file_names
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -254,6 +255,7 @@ class _BuilderRegistrationState extends State<BuilderRegistration> {
                   width: width * 0.8,
                   child: TextField(
                     controller: passwordController,
+                    obscureText: true,
                     decoration: InputDecoration(
                       hintText: 'Enter Your Password',
                       fillColor: Colors.white,
@@ -294,6 +296,7 @@ class _BuilderRegistrationState extends State<BuilderRegistration> {
                   width: width * 0.8,
                   child: TextField(
                     controller: confirmPasswordController,
+                    obscureText: true,
                     decoration: InputDecoration(
                       hintText: 'Confirm Your Password',
                       fillColor: Colors.white,
