@@ -14,6 +14,7 @@ class MachinaryRegistration extends StatefulWidget {
 class _MachinaryRegistrationState extends State<MachinaryRegistration> {
   bool isChecked = false;
   String selectedGender = 'Male';
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
   TextEditingController fullNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController contactNumberController = TextEditingController();
@@ -50,14 +51,42 @@ class _MachinaryRegistrationState extends State<MachinaryRegistration> {
     );
   }
 
-  void _storeUserData() async {
-    try {
-      // Access Firestore instance
-      FirebaseFirestore firestore = FirebaseFirestore.instance;
+  void _showDocumentIdPopup2(String documentId, String title) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(documentId),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Continue'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
-      // Create a new document reference
-      DocumentReference documentReference =
-          await firestore.collection('machinery').add({
+  void _storeUserData() async {
+    String str = "The Account Was Created Successfully";
+    String str2 = "Account Created";
+    try {
+      if (passwordController.text != confirmPasswordController.text) {
+        throw Exception("The Passwords Doesn't Match");
+      }
+      if (companyRegistrationNumberController.text.isEmpty) {
+        throw Exception("The Registration number should be entered");
+      }
+      if (aadhaarNumberController.text.isEmpty) {
+        throw Exception("The aadhar number should be entered");
+      }
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: emailController.text, password: passwordController.text);
+      await firestore.collection('machinery').add({
         'fullName': fullNameController.text,
         'email': emailController.text,
         'contactNumber': contactNumberController.text,
@@ -71,14 +100,27 @@ class _MachinaryRegistrationState extends State<MachinaryRegistration> {
         'aadhaarNumber': aadhaarNumberController.text,
         'gender': selectedGender,
         'acceptedTerms': isChecked,
+        'label': 'Machinery',
       });
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: emailController.text, password: passwordController.text);
-      String str = "The Account Was Created Successfully";
-      String str2 = "Account Created";
+      str = "The Account Was Created Successfully";
+      str2 = "Account Created";
       _showDocumentIdPopup(str, str2);
+    } on FirebaseAuthException catch (e) {
+      str2 = "Error occured";
+      str = "User not found";
+      if (e.code == "email-already-in-use") {
+        str = "The Email is Already in use";
+        _showDocumentIdPopup2(str, str2);
+      }
+      if (e.code == 'weak-password') {
+        str = "The Password is Too Weak";
+        _showDocumentIdPopup2(str, str2);
+      }
     } catch (e) {
-      print('Error storing data: $e');
+      str2 = "Error occured";
+      str = e.toString();
+      str = str.replaceAll('Exception: ', '');
+      _showDocumentIdPopup2(str, str2);
     }
   }
 
@@ -104,7 +146,7 @@ class _MachinaryRegistrationState extends State<MachinaryRegistration> {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "Machinerys Owner Sign Up",
+                  "Machinery Owner Sign Up",
                   style: TextStyle(
                     fontSize: width * 0.075,
                     fontWeight: FontWeight.w900,
@@ -363,7 +405,7 @@ class _MachinaryRegistrationState extends State<MachinaryRegistration> {
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  "city",
+                  "City",
                   style: TextStyle(
                     fontSize: width * 0.039,
                     fontWeight: FontWeight.w900,

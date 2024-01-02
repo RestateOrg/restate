@@ -15,6 +15,7 @@ class BuilderRegistration extends StatefulWidget {
 class _BuilderRegistrationState extends State<BuilderRegistration> {
   bool isChecked = false;
   String selectedGender = 'Male';
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
   TextEditingController fullNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController contactNumberController = TextEditingController();
@@ -25,13 +26,13 @@ class _BuilderRegistrationState extends State<BuilderRegistration> {
   TextEditingController zipCodeController = TextEditingController();
   TextEditingController companyNameController = TextEditingController();
   TextEditingController licenseNumberController = TextEditingController();
-  void _showDocumentIdPopup(String documentId) {
+  void _showDocumentIdPopup(String documentId, String title) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Account Created'),
-          content: Text('The Account Was Created Successfully'),
+          title: Text(title),
+          content: Text(documentId),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -48,14 +49,40 @@ class _BuilderRegistrationState extends State<BuilderRegistration> {
     );
   }
 
-  void _storeUserData() async {
-    try {
-      // Access Firestore instance
-      FirebaseFirestore firestore = FirebaseFirestore.instance;
+  void _showDocumentIdPopup2(String documentId, String title) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(documentId),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Continue'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
-      // Create a new document reference
-      DocumentReference documentReference =
-          await firestore.collection('builders').add({
+  void _storeUserData() async {
+    String str = "The Account Was Created Successfully";
+    String str2 = "Account Created";
+    try {
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      if (passwordController.text != confirmPasswordController.text) {
+        throw Exception("The Passwords Doesn't Match");
+      }
+      if (licenseNumberController.text.isEmpty) {
+        throw Exception("The License number should be entered");
+      }
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: emailController.text, password: passwordController.text);
+      await firestore.collection('builders').add({
         'fullName': fullNameController.text,
         'email': emailController.text,
         'contactNumber': contactNumberController.text,
@@ -67,13 +94,27 @@ class _BuilderRegistrationState extends State<BuilderRegistration> {
         'licenseNumber': licenseNumberController.text,
         'gender': selectedGender,
         'acceptedTerms': isChecked,
+        'label': 'Builder',
       });
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: emailController.text, password: passwordController.text);
-      String documentId = documentReference.id;
-      _showDocumentIdPopup(documentId);
+      str = "The Account Was Created Successfully";
+      str2 = "Account Created";
+      _showDocumentIdPopup(str, str2);
+    } on FirebaseAuthException catch (e) {
+      str2 = "Error occured";
+      str = "User not found";
+      if (e.code == "email-already-in-use") {
+        str = "The Email is Already in use";
+        _showDocumentIdPopup2(str, str2);
+      }
+      if (e.code == 'weak-password') {
+        str = "The Password is Too Weak";
+        _showDocumentIdPopup2(str, str2);
+      }
     } catch (e) {
-      print('Error storing data: $e');
+      str2 = "Error occured";
+      str = e.toString();
+      str = str.replaceAll('Exception: ', '');
+      _showDocumentIdPopup2(str, str2);
     }
   }
 
