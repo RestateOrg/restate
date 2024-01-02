@@ -27,13 +27,13 @@ class _MachinaryRegistrationState extends State<MachinaryRegistration> {
   TextEditingController companyRegistrationNumberController =
       TextEditingController();
   TextEditingController aadhaarNumberController = TextEditingController();
-  void _showDocumentIdPopup(String documentId) {
+  void _showDocumentIdPopup(String documentId, String title) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Account Created'),
-          content: Text('The Account Was Created Successfully'),
+          title: Text(title),
+          content: Text(documentId),
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -74,8 +74,9 @@ class _MachinaryRegistrationState extends State<MachinaryRegistration> {
       });
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
-      String documentId = documentReference.id;
-      _showDocumentIdPopup(documentId);
+      String str = "The Account Was Created Successfully";
+      String str2 = "Account Created";
+      _showDocumentIdPopup(str, str2);
     } catch (e) {
       print('Error storing data: $e');
     }
@@ -97,15 +98,15 @@ class _MachinaryRegistrationState extends State<MachinaryRegistration> {
           children: [
             Padding(
               padding: EdgeInsets.only(
-                left: width * 0.04,
-                top: width * 0.03,
+                left: width * 0.05,
+                top: width * 0.02,
               ),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "Machinerys Owner Sign Up",
                   style: TextStyle(
-                    fontSize: width * 0.0835,
+                    fontSize: width * 0.075,
                     fontWeight: FontWeight.w900,
                     fontFamily: 'Roboto',
                   ),
