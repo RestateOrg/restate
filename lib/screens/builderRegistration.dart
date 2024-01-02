@@ -41,7 +41,7 @@ class _BuilderRegistrationState extends State<BuilderRegistration> {
                   MaterialPageRoute(builder: (context) => const LoginView()),
                 ); // Close the dialog
               },
-              child: Text('Continue'),
+              child: const Text('Continue'),
             ),
           ],
         );
@@ -61,7 +61,7 @@ class _BuilderRegistrationState extends State<BuilderRegistration> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Continue'),
+              child: const Text('Continue'),
             ),
           ],
         );
@@ -172,7 +172,7 @@ class _BuilderRegistrationState extends State<BuilderRegistration> {
               ),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Container(
+                child: SizedBox(
                   width: width * 0.8,
                   child: TextField(
                     controller: fullNameController,
@@ -212,7 +212,7 @@ class _BuilderRegistrationState extends State<BuilderRegistration> {
               ),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Container(
+                child: SizedBox(
                   width: width * 0.8,
                   child: TextField(
                     controller: emailController,
@@ -252,7 +252,7 @@ class _BuilderRegistrationState extends State<BuilderRegistration> {
               ),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Container(
+                child: SizedBox(
                   width: width * 0.8,
                   child: TextField(
                     controller: contactNumberController,
@@ -292,7 +292,7 @@ class _BuilderRegistrationState extends State<BuilderRegistration> {
               ),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Container(
+                child: SizedBox(
                   width: width * 0.8,
                   child: TextField(
                     controller: passwordController,
@@ -333,7 +333,7 @@ class _BuilderRegistrationState extends State<BuilderRegistration> {
               ),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Container(
+                child: SizedBox(
                   width: width * 0.8,
                   child: TextField(
                     controller: confirmPasswordController,
@@ -374,7 +374,7 @@ class _BuilderRegistrationState extends State<BuilderRegistration> {
               ),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Container(
+                child: SizedBox(
                   width: width * 0.8,
                   child: TextField(
                     controller: addressLine1Controller,

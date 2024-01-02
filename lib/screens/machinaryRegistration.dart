@@ -43,7 +43,7 @@ class _MachinaryRegistrationState extends State<MachinaryRegistration> {
                   MaterialPageRoute(builder: (context) => const LoginView()),
                 ); // Close the dialog
               },
-              child: Text('Continue'),
+              child: const Text('Continue'),
             ),
           ],
         );
@@ -63,7 +63,7 @@ class _MachinaryRegistrationState extends State<MachinaryRegistration> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Continue'),
+              child: const Text('Continue'),
             ),
           ],
         );
@@ -178,7 +178,7 @@ class _MachinaryRegistrationState extends State<MachinaryRegistration> {
               ),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Container(
+                child: SizedBox(
                   width: width * 0.8,
                   child: TextField(
                     controller: fullNameController,
@@ -218,7 +218,7 @@ class _MachinaryRegistrationState extends State<MachinaryRegistration> {
               ),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Container(
+                child: SizedBox(
                   width: width * 0.8,
                   child: TextField(
                     controller: emailController,
@@ -258,7 +258,7 @@ class _MachinaryRegistrationState extends State<MachinaryRegistration> {
               ),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Container(
+                child: SizedBox(
                   width: width * 0.8,
                   child: TextField(
                     controller: contactNumberController,
@@ -298,7 +298,7 @@ class _MachinaryRegistrationState extends State<MachinaryRegistration> {
               ),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Container(
+                child: SizedBox(
                   width: width * 0.8,
                   child: TextField(
                     controller: passwordController,
@@ -339,7 +339,7 @@ class _MachinaryRegistrationState extends State<MachinaryRegistration> {
               ),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Container(
+                child: SizedBox(
                   width: width * 0.8,
                   child: TextField(
                     controller: confirmPasswordController,
@@ -380,7 +380,7 @@ class _MachinaryRegistrationState extends State<MachinaryRegistration> {
               ),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Container(
+                child: SizedBox(
                   width: width * 0.8,
                   child: TextField(
                     controller: addressController,
