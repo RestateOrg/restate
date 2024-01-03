@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:restate/screens/signIn.dart';
 
 class GetStarted extends StatefulWidget {
-  const GetStarted({Key? key}) : super(key: key);
+  const GetStarted({super.key});
 
   @override
   State<GetStarted> createState() => _GetStartedState();

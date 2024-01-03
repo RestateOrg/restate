@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../firebase_options.dart';
 import 'package:restate/screens/chooseUserType.dart';
+import 'package:restate/screens/resetPassword.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -168,6 +169,23 @@ class _LoginViewState extends State<LoginView> {
                                 ),
                               ),
                             ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16.0),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ResetPassword()),
+                          );
+                        },
+                        child: Text(
+                          'Forgot Password',
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            color: Colors.blue,
                           ),
                         ),
                       ),
