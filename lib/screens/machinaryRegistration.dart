@@ -90,7 +90,6 @@ class _MachinaryRegistrationState extends State<MachinaryRegistration> {
         'fullName': fullNameController.text,
         'email': emailController.text,
         'contactNumber': contactNumberController.text,
-        'password': passwordController.text,
         'address': addressController.text,
         'city': cityController.text,
         'state': stateController.text,

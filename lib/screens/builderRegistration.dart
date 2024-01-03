@@ -86,7 +86,6 @@ class _BuilderRegistrationState extends State<BuilderRegistration> {
         'fullName': fullNameController.text,
         'email': emailController.text,
         'contactNumber': contactNumberController.text,
-        'password': passwordController.text,
         'addressLine1': addressLine1Controller.text,
         'addressLine2': addressLine2Controller.text,
         'zipCode': zipCodeController.text,
