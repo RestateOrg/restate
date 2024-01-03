@@ -104,6 +104,20 @@ class _ResetPasswordState extends State<ResetPassword> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              Container(
+                margin: const EdgeInsets.all(16.0),
+                child: Container(
+                  width: 200.0,
+                  height: 200.0,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.0),
+                    image: const DecorationImage(
+                      image: AssetImage('assets/images/email.png'),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ),
               TextField(
                 controller: eMail,
                 keyboardType: TextInputType.emailAddress,
