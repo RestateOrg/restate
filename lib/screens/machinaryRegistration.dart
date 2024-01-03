@@ -28,6 +28,25 @@ class _MachinaryRegistrationState extends State<MachinaryRegistration> {
   TextEditingController companyRegistrationNumberController =
       TextEditingController();
   TextEditingController aadhaarNumberController = TextEditingController();
+  @override
+  void dispose() {
+    // Dispose of all controllers when the widget is disposed
+    fullNameController.dispose();
+    emailController.dispose();
+    contactNumberController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    addressController.dispose();
+    cityController.dispose();
+    stateController.dispose();
+    countryController.dispose();
+    zipCodeController.dispose();
+    companyRegistrationNumberController.dispose();
+    aadhaarNumberController.dispose();
+
+    super.dispose();
+  }
+
   void _showDocumentIdPopup(String documentId, String title) {
     showDialog(
       context: context,
@@ -86,21 +105,22 @@ class _MachinaryRegistrationState extends State<MachinaryRegistration> {
       }
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
-      await firestore.collection('machinery').add({
-        'fullName': fullNameController.text,
-        'email': emailController.text,
-        'contactNumber': contactNumberController.text,
-        'address': addressController.text,
-        'city': cityController.text,
-        'state': stateController.text,
-        'country': countryController.text,
-        'zipCode': zipCodeController.text,
-        'companyRegistrationNumber': companyRegistrationNumberController.text,
-        'aadhaarNumber': aadhaarNumberController.text,
-        'gender': selectedGender,
-        'acceptedTerms': isChecked,
-        'label': 'Machinery',
-      });
+      await firestore.collection('machinery').doc(emailController.text)
+        ..collection('userinformation').doc('userinfo').set({
+          'fullName': fullNameController.text,
+          'email': emailController.text,
+          'contactNumber': contactNumberController.text,
+          'address': addressController.text,
+          'city': cityController.text,
+          'state': stateController.text,
+          'country': countryController.text,
+          'zipCode': zipCodeController.text,
+          'companyRegistrationNumber': companyRegistrationNumberController.text,
+          'aadhaarNumber': aadhaarNumberController.text,
+          'gender': selectedGender,
+          'acceptedTerms': isChecked,
+          'label': 'Machinery',
+        });
       str = "The Account Was Created Successfully";
       str2 = "Account Created";
       _showDocumentIdPopup(str, str2);

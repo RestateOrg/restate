@@ -26,6 +26,23 @@ class _BuilderRegistrationState extends State<BuilderRegistration> {
   TextEditingController zipCodeController = TextEditingController();
   TextEditingController companyNameController = TextEditingController();
   TextEditingController licenseNumberController = TextEditingController();
+
+  @override
+  void dispose() {
+    fullNameController.dispose();
+    emailController.dispose();
+    contactNumberController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    addressLine1Controller.dispose();
+    addressLine2Controller.dispose();
+    zipCodeController.dispose();
+    companyNameController.dispose();
+    licenseNumberController.dispose();
+
+    super.dispose();
+  }
+
   void _showDocumentIdPopup(String documentId, String title) {
     showDialog(
       context: context,

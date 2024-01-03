@@ -16,13 +16,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Restate',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const GetStarted(),
+      home: const Begin(),
       routes: {
         '/Getstarted/': (context) => const GetStarted(),
         '/login/': (context) => const LoginView(),
@@ -32,32 +32,43 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class Begin extends StatelessWidget {
+class Begin extends StatefulWidget {
   const Begin({super.key});
+
+  @override
+  _BeginState createState() => _BeginState();
+}
+
+class _BeginState extends State<Begin> {
+  @override
+  void initState() {
+    super.initState();
+    checkUserAndNavigate();
+  }
+
+  Future<void> checkUserAndNavigate() async {
+    await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform);
+
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginView()),
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const GetStarted()),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder(
-        future: Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform,
-        ),
-        builder: (context, snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.done:
-              final user = FirebaseAuth.instance.currentUser ?? false;
-              if (user != false) {
-                Navigator.pushNamedAndRemoveUntil(
-                    context, '/login/', (route) => false);
-              } else {
-                Navigator.pushNamedAndRemoveUntil(
-                    context, '/Getstarted/', (route) => false);
-              }
-              return const Text("Done");
-            default:
-              return const Text('Loading...');
-          }
-        },
+      body: const Center(
+        child: CircularProgressIndicator(),
       ),
     );
   }

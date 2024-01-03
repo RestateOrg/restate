@@ -28,6 +28,25 @@ class _MaterialRegistrationState extends State<MaterialRegistration> {
   TextEditingController companyRegistrationNumberController =
       TextEditingController();
   TextEditingController aadhaarNumberController = TextEditingController();
+  @override
+  void dispose() {
+    // Dispose of all controllers when the widget is disposed
+    fullNameController.dispose();
+    emailController.dispose();
+    contactNumberController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    addressController.dispose();
+    cityController.dispose();
+    stateController.dispose();
+    countryController.dispose();
+    zipCodeController.dispose();
+    companyRegistrationNumberController.dispose();
+    aadhaarNumberController.dispose();
+
+    super.dispose();
+  }
+
   void _showDocumentIdPopup(String documentId, String title) {
     showDialog(
       context: context,
