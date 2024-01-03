@@ -105,22 +105,26 @@ class _MachinaryRegistrationState extends State<MachinaryRegistration> {
       }
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
-      await firestore.collection('machinery').doc(emailController.text)
-        ..collection('userinformation').doc('userinfo').set({
-          'fullName': fullNameController.text,
-          'email': emailController.text,
-          'contactNumber': contactNumberController.text,
-          'address': addressController.text,
-          'city': cityController.text,
-          'state': stateController.text,
-          'country': countryController.text,
-          'zipCode': zipCodeController.text,
-          'companyRegistrationNumber': companyRegistrationNumberController.text,
-          'aadhaarNumber': aadhaarNumberController.text,
-          'gender': selectedGender,
-          'acceptedTerms': isChecked,
-          'label': 'Machinery',
-        });
+      await firestore
+          .collection('machinery')
+          .doc(emailController.text)
+          .collection('userinformation')
+          .doc('userinfo')
+          .set({
+        'fullName': fullNameController.text,
+        'email': emailController.text,
+        'contactNumber': contactNumberController.text,
+        'address': addressController.text,
+        'city': cityController.text,
+        'state': stateController.text,
+        'country': countryController.text,
+        'zipCode': zipCodeController.text,
+        'companyRegistrationNumber': companyRegistrationNumberController.text,
+        'aadhaarNumber': aadhaarNumberController.text,
+        'gender': selectedGender,
+        'acceptedTerms': isChecked,
+        'label': 'Machinery',
+      });
       str = "The Account Was Created Successfully";
       str2 = "Account Created";
       _showDocumentIdPopup(str, str2);

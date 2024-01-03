@@ -105,7 +105,12 @@ class _MaterialRegistrationState extends State<MaterialRegistration> {
       }
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
-      await firestore.collection('materials').add({
+      await firestore
+          .collection('materials')
+          .doc(emailController.text)
+          .collection('userinformation')
+          .doc('userinfo')
+          .set({
         'fullName': fullNameController.text,
         'email': emailController.text,
         'contactNumber': contactNumberController.text,

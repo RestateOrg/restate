@@ -99,7 +99,12 @@ class _BuilderRegistrationState extends State<BuilderRegistration> {
       }
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
-      await firestore.collection('builders').add({
+      await firestore
+          .collection('builders')
+          .doc(emailController.text)
+          .collection('userinformation')
+          .doc('userinfo')
+          .set({
         'fullName': fullNameController.text,
         'email': emailController.text,
         'contactNumber': contactNumberController.text,
