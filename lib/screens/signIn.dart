@@ -30,6 +30,26 @@ class _LoginViewState extends State<LoginView> {
     super.dispose();
   }
 
+  void _showDocumentIdPopup2(String documentId, String title) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(documentId),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Continue'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -116,13 +136,14 @@ class _LoginViewState extends State<LoginView> {
                                     email: _email, password: _password);
                           } on FirebaseAuthException catch (e) {
                             if (e.code == "user-not-found") {
-                              print("user not found");
-                            }
-                            if (e.code == "invalid-credential") {
-                              print("invalid credential");
+                              _showDocumentIdPopup2(
+                                  "There is no account existing with this email",
+                                  "No User Found");
                             }
                             if (e.code == "wrong-password") {
-                              print("wrong password");
+                              _showDocumentIdPopup2(
+                                  "The Password You have Entered Is Incorrected",
+                                  "Incorrect Password");
                             }
                             print(e.code);
                           }
