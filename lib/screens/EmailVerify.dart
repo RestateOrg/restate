@@ -59,10 +59,13 @@ class _VerificationPageState extends State<VerificationPage> {
             Text(
               'A verification email has been sent to ${widget.email}. Please check your inbox and click the verification link.',
               textAlign: TextAlign.center,
+<<<<<<< HEAD
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontFamily: 'Roboto',
               ),
+=======
+>>>>>>> f1f7a7cb2311558b658fc7f28b3e09b43dcd4743
             ),
             const SizedBox(height: 20),
             ElevatedButton(
