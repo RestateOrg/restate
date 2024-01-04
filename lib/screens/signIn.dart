@@ -1,12 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:restate/Builder/builderHome.dart';
+import 'package:restate/Machinery/machineryHome.dart';
+import 'package:restate/Materials/materialHome.dart';
 import '../firebase_options.dart';
 import 'package:restate/screens/chooseUserType.dart';
 import 'package:restate/screens/resetPassword.dart';
 
 class LoginView extends StatefulWidget {
-  const LoginView({super.key});
+  const LoginView({Key? key}) : super(key: key);
 
   @override
   State<LoginView> createState() => _LoginViewState();
@@ -50,9 +54,54 @@ class _LoginViewState extends State<LoginView> {
     );
   }
 
+  Future<String?> _getUserRole(String email) async {
+    try {
+      // Check "builder" collection (corrected label in the comment)
+      var builderSnapshot = await FirebaseFirestore.instance
+          .collection('builders')
+          .doc(email)
+          .collection('userinformation')
+          .doc('userinfo')
+          .get();
+      if (builderSnapshot.exists) {
+        return 'Builder';
+      }
+
+      // Check "machinery" collection
+      var machinerySnapshot = await FirebaseFirestore.instance
+          .collection('machinery')
+          .doc(email)
+          .collection('userinformation')
+          .doc('userinfo')
+          .get();
+
+      if (machinerySnapshot.exists) {
+        return 'Machinery';
+      }
+
+      // Check "materials" collection (corrected label in the comment)
+      var materialsSnapshot = await FirebaseFirestore.instance
+          .collection('materials')
+          .doc(email)
+          .collection('userinformation')
+          .doc('userinfo')
+          .get();
+      if (materialsSnapshot.exists) {
+        return 'Material';
+      }
+
+      // User not found in any collection
+      return null;
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       backgroundColor:
           Colors.amber, // Set the background color of the app to amber
       body: FutureBuilder(
@@ -134,6 +183,40 @@ class _LoginViewState extends State<LoginView> {
                             await FirebaseAuth.instance
                                 .signInWithEmailAndPassword(
                                     email: _email, password: _password);
+                            final userRole = await _getUserRole(_email);
+                            SizedBox(
+                              height: 50,
+                              child: Text(
+                                userRole.toString(),
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            );
+
+                            if (userRole == 'Builder') {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => BuilderHomeScreen(),
+                                ),
+                              );
+                            } else if (userRole == 'Material') {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => MaterialsHomeScreen(),
+                                ),
+                              );
+                            } else if (userRole == 'Machinery') {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => MachinaryHomeScreen(),
+                                ),
+                              );
+                            }
                           } on FirebaseAuthException catch (e) {
                             if (e.code == "user-not-found") {
                               _showDocumentIdPopup2(
@@ -142,7 +225,7 @@ class _LoginViewState extends State<LoginView> {
                             }
                             if (e.code == "wrong-password") {
                               _showDocumentIdPopup2(
-                                  "The Password You have Entered Is Incorrected",
+                                  "The Password You have Entered Is Incorrect",
                                   "Incorrect Password");
                             }
                             print(e.code);
@@ -170,7 +253,8 @@ class _LoginViewState extends State<LoginView> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const ChooseUser()),
+                              builder: (context) => const ChooseUser(),
+                            ),
                           );
                         },
                         child: RichText(
@@ -199,7 +283,8 @@ class _LoginViewState extends State<LoginView> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => ResetPassword()),
+                              builder: (context) => ResetPassword(),
+                            ),
                           );
                         },
                         child: Text(
