@@ -2,8 +2,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:restate/screens/EmailVerify.dart';
-import 'package:restate/screens/hexcolor.dart';
+import 'package:restate/Utils/EmailVerify.dart';
+import 'package:restate/Utils/hexcolor.dart';
 import 'package:restate/screens/signIn.dart';
 
 class BuilderRegistration extends StatefulWidget {

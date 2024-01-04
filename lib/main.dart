@@ -1,6 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:restate/Builder/builderHome.dart';
+import 'package:restate/Machinery/machineryHome.dart';
+import 'package:restate/Materials/materialHome.dart';
+import 'package:restate/Utils/getuserinfo.dart';
 import 'package:restate/firebase_options.dart';
 import 'package:restate/screens/chooseUserType.dart';
 import 'package:restate/screens/home.dart';
@@ -52,10 +56,30 @@ class _BeginState extends State<Begin> {
 
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const LoginView()),
-      );
+      final email = user.email;
+      final userRole = await UserRole.getUserRole(email!);
+
+      if (userRole == 'Builder') {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const BuilderHomeScreen()),
+        );
+      } else if (userRole == 'Machinery') {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const MachinaryHomeScreen()),
+        );
+      } else if (userRole == 'Material') {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const MaterialsHomeScreen()),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const GetStarted()),
+        );
+      }
     } else {
       Navigator.pushReplacement(
         context,

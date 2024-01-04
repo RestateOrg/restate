@@ -1,13 +1,13 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:restate/Builder/builderHome.dart';
 import 'package:restate/Machinery/machineryHome.dart';
 import 'package:restate/Materials/materialHome.dart';
+import 'package:restate/Utils/getuserinfo.dart';
 import '../firebase_options.dart';
 import 'package:restate/screens/chooseUserType.dart';
-import 'package:restate/screens/resetPassword.dart';
+import 'package:restate/Utils/resetPassword.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
@@ -52,50 +52,6 @@ class _LoginViewState extends State<LoginView> {
         );
       },
     );
-  }
-
-  Future<String?> _getUserRole(String email) async {
-    try {
-      // Check "builder" collection (corrected label in the comment)
-      var builderSnapshot = await FirebaseFirestore.instance
-          .collection('builders')
-          .doc(email)
-          .collection('userinformation')
-          .doc('userinfo')
-          .get();
-      if (builderSnapshot.exists) {
-        return 'Builder';
-      }
-
-      // Check "machinery" collection
-      var machinerySnapshot = await FirebaseFirestore.instance
-          .collection('machinery')
-          .doc(email)
-          .collection('userinformation')
-          .doc('userinfo')
-          .get();
-
-      if (machinerySnapshot.exists) {
-        return 'Machinery';
-      }
-
-      // Check "materials" collection (corrected label in the comment)
-      var materialsSnapshot = await FirebaseFirestore.instance
-          .collection('materials')
-          .doc(email)
-          .collection('userinformation')
-          .doc('userinfo')
-          .get();
-      if (materialsSnapshot.exists) {
-        return 'Material';
-      }
-
-      // User not found in any collection
-      return null;
-    } catch (e) {
-      print(e);
-      return null;
-    }
   }
 
   @override
@@ -183,7 +139,7 @@ class _LoginViewState extends State<LoginView> {
                             await FirebaseAuth.instance
                                 .signInWithEmailAndPassword(
                                     email: _email, password: _password);
-                            final userRole = await _getUserRole(_email);
+                            final userRole = await UserRole.getUserRole(_email);
                             SizedBox(
                               height: 50,
                               child: Text(
