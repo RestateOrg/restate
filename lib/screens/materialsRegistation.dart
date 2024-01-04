@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:restate/screens/EmailVerify.dart';
 import 'package:restate/screens/hexcolor.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -105,6 +106,11 @@ class _MaterialRegistrationState extends State<MaterialRegistration> {
       }
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
+      await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  VerificationPage(email: emailController.text)));
       await firestore
           .collection('materials')
           .doc(emailController.text)

@@ -3,6 +3,7 @@ import 'package:restate/screens/hexcolor.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:restate/screens/signIn.dart';
+import 'package:restate/screens/EmailVerify.dart';
 
 class MachinaryRegistration extends StatefulWidget {
   const MachinaryRegistration({Key? key}) : super(key: key);
@@ -105,6 +106,11 @@ class _MachinaryRegistrationState extends State<MachinaryRegistration> {
       }
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
+      await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  VerificationPage(email: emailController.text)));
       await firestore
           .collection('machinery')
           .doc(emailController.text)
