@@ -18,6 +18,7 @@ class _VerificationPageState extends State<VerificationPage> {
   @override
   void initState() {
     super.initState();
+    sendVerificationEmail();
     verificationTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
       checkVerificationStatus();
     });

@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:restate/Builder/builderHome.dart';
 import 'package:restate/Machinery/machineryHome.dart';
 import 'package:restate/Materials/materialHome.dart';
+import 'package:restate/Utils/EmailVerify.dart';
 import 'package:restate/Utils/getuserinfo.dart';
 import '../firebase_options.dart';
 import 'package:restate/screens/chooseUserType.dart';
@@ -139,6 +140,7 @@ class _LoginViewState extends State<LoginView> {
                             await FirebaseAuth.instance
                                 .signInWithEmailAndPassword(
                                     email: _email, password: _password);
+                            final user = FirebaseAuth.instance.currentUser;
                             final userRole = await UserRole.getUserRole(_email);
                             SizedBox(
                               height: 50,
@@ -150,28 +152,35 @@ class _LoginViewState extends State<LoginView> {
                                 ),
                               ),
                             );
-
-                            if (userRole == 'Builder') {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => BuilderHomeScreen(),
-                                ),
-                              );
-                            } else if (userRole == 'Material') {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => MaterialsHomeScreen(),
-                                ),
-                              );
-                            } else if (userRole == 'Machinery') {
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => MachinaryHomeScreen(),
-                                ),
-                              );
+                            if (user?.emailVerified ?? false) {
+                              if (userRole == 'Builder') {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => BuilderHomeScreen(),
+                                  ),
+                                );
+                              } else if (userRole == 'Material') {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => MaterialsHomeScreen(),
+                                  ),
+                                );
+                              } else if (userRole == 'Machinery') {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => MachinaryHomeScreen(),
+                                  ),
+                                );
+                              }
+                            } else {
+                              await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          VerificationPage(email: _email)));
                             }
                           } on FirebaseAuthException catch (e) {
                             if (e.code == "user-not-found") {
@@ -217,14 +226,14 @@ class _LoginViewState extends State<LoginView> {
                           text: const TextSpan(
                             text: "Don't have an account? ",
                             style: TextStyle(
-                              fontSize: 18.0,
-                              color: Colors.white,
-                            ),
+                                fontSize: 16.0,
+                                color: Colors.white,
+                                fontFamily: 'Roboto'),
                             children: <TextSpan>[
                               TextSpan(
                                 text: 'Sign up',
                                 style: TextStyle(
-                                  fontSize: 18.0,
+                                  fontSize: 16.0,
                                   color: Colors.blue,
                                   decoration: TextDecoration.underline,
                                 ),
