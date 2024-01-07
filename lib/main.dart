@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:restate/Builder/Upload_project.dart';
 import 'package:restate/Builder/builderHome.dart';
 import 'package:restate/Machinery/machineryHome.dart';
 import 'package:restate/Materials/materialHome.dart';
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const Begin(),
+      home: const UploadProject(),
       routes: {
         '/Getstarted/': (context) => const GetStarted(),
         '/login/': (context) => const LoginView(),
