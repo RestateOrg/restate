@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:restate/Builder/Upload_project.dart';
 import 'package:restate/Utils/hexcolor.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:restate/screens/signIn.dart';
 
 class BuilderHomeScreen extends StatefulWidget {
   const BuilderHomeScreen({Key? key}) : super(key: key);
@@ -40,17 +42,56 @@ class _BuilderHomeScreenState extends State<BuilderHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     return Scaffold(
+      floatingActionButton: Container(
+        width: 100,
+        child: FloatingActionButton(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(40.0),
+          ),
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => UploadProject()));
+          },
+          child: Row(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: width * 0.05),
+                child: Icon(Icons.add),
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                  left: width * 0.02,
+                ),
+                child: Text("New",
+                    style: TextStyle(
+                      fontFamily: 'Roboto',
+                    )),
+              )
+            ],
+          ), // Replace with your desired icon
+          backgroundColor: HexColor('#242424'),
+          foregroundColor: Colors.white,
+          // Customize button color
+        ),
+      ),
       backgroundColor: Colors.amber,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.amber,
       ),
       body: Center(
-        child: Text(
-          'Builder Home',
-          style: TextStyle(
-            fontSize: 34,
-            color: Colors.white,
+        child: GestureDetector(
+          onTap: () {
+            _signOut(context);
+          },
+          child: Text(
+            'Builder Home',
+            style: TextStyle(
+              fontSize: 34,
+              color: Colors.white,
+            ),
           ),
         ),
       ),
@@ -166,6 +207,7 @@ class _BuilderHomeScreenState extends State<BuilderHomeScreen> {
         ],
       ),
       endDrawer: Drawer(
+        width: width * 0.80,
         child: FutureBuilder<String?>(
           future: getUsername(),
           builder: (context, snapshot) {
@@ -204,31 +246,29 @@ class _BuilderHomeScreenState extends State<BuilderHomeScreen> {
                         ),
                         Row(
                           children: [
-                            FaIcon(
-                              // ignore: deprecated_member_use
-                              FontAwesomeIcons.portrait,
+                            Icon(
+                              Icons.account_circle,
                               color: Colors.amber,
-                              size: 70,
+                              size: 60,
                             ),
-                            SizedBox(height: 10),
                             Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  '   ${snapshot.data}',
+                                  ' Welcome,',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontFamily: 'Roboto',
-                                    fontSize: 20,
+                                    fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 Text(
-                                  '  ${User!.email}',
+                                  '  ${snapshot.data}',
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 15,
+                                    fontSize: 14,
                                     fontFamily: 'Roboto',
                                   ),
                                 ),
@@ -243,7 +283,7 @@ class _BuilderHomeScreenState extends State<BuilderHomeScreen> {
                   ListTile(
                     leading: FaIcon(
                       // ignore: deprecated_member_use
-                      FontAwesomeIcons.home,
+                      FontAwesomeIcons.houseChimney,
                       color: Colors.black,
                     ),
                     title: Text(
@@ -297,7 +337,7 @@ class _BuilderHomeScreenState extends State<BuilderHomeScreen> {
                   ),
                   ListTile(
                     leading: FaIcon(
-                      FontAwesomeIcons.box,
+                      FontAwesomeIcons.boxArchive,
                       color: Colors.black,
                     ),
                     title: Text(
@@ -397,5 +437,17 @@ class _BuilderHomeScreenState extends State<BuilderHomeScreen> {
         ),
       ),
     );
+  }
+
+  void _signOut(BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginView()),
+      );
+    } catch (e) {
+      print("Error signing out: $e");
+    }
   }
 }

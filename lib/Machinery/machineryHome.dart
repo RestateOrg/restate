@@ -41,6 +41,7 @@ class _MachinaryHomeScreenState extends State<MachinaryHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(backgroundColor: Colors.amber),
       backgroundColor: Colors.amber,
@@ -172,6 +173,7 @@ class _MachinaryHomeScreenState extends State<MachinaryHomeScreen> {
         ],
       ),
       endDrawer: Drawer(
+        width: width * 0.76,
         child: FutureBuilder<String?>(
           future: getUsername(),
           builder: (context, snapshot) {
@@ -199,8 +201,7 @@ class _MachinaryHomeScreenState extends State<MachinaryHomeScreen> {
                             child: Container(
                               padding: EdgeInsets.all(16.0),
                               child: FaIcon(
-                                // ignore: deprecated_member_use
-                                FontAwesomeIcons.close,
+                                FontAwesomeIcons.xmark,
                                 color: Colors.white,
                               ),
                             ),
@@ -208,31 +209,29 @@ class _MachinaryHomeScreenState extends State<MachinaryHomeScreen> {
                         ),
                         Row(
                           children: [
-                            FaIcon(
-                              // ignore: deprecated_member_use
-                              FontAwesomeIcons.portrait,
+                            Icon(
+                              Icons.account_circle,
                               color: Colors.amber,
-                              size: 70,
+                              size: 60,
                             ),
-                            SizedBox(height: 10),
                             Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  '   ${snapshot.data}',
+                                  ' Welcome,',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontFamily: 'Roboto',
-                                    fontSize: 20,
+                                    fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 Text(
-                                  '  ${User!.email}',
+                                  '  ${snapshot.data}',
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 15,
+                                    fontSize: 14,
                                     fontFamily: 'Roboto',
                                   ),
                                 ),
@@ -262,7 +261,7 @@ class _MachinaryHomeScreenState extends State<MachinaryHomeScreen> {
                   ),
                   Divider(
                     color: Colors.black,
-                    thickness: 0,
+                    thickness: 1,
                     indent: 0,
                     endIndent: 0,
                   ),

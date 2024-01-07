@@ -14,11 +14,25 @@ class UploadProject extends StatefulWidget {
 class _UploadProjectState extends State<UploadProject> {
   TextEditingController _fromdate = TextEditingController();
   TextEditingController _todate = TextEditingController();
+  TextEditingController _Machineryrequired = TextEditingController();
+  TextEditingController _duration = TextEditingController();
+  TextEditingController _pricewilling = TextEditingController();
+  TextEditingController _itemrequired = TextEditingController();
+  TextEditingController _quantity = TextEditingController();
+  TextEditingController _deliverydate = TextEditingController();
+  List<List<String>> materialList = [];
+  List<List<String>> machineryList = [];
   File? _image;
   @override
   void dispose() {
     _fromdate.dispose();
     _todate.dispose();
+    _Machineryrequired.dispose();
+    _duration.dispose();
+    _pricewilling.dispose();
+    _itemrequired.dispose();
+    _quantity.dispose();
+    _deliverydate.dispose();
     super.dispose();
   }
 
@@ -455,7 +469,6 @@ class _UploadProjectState extends State<UploadProject> {
           Padding(
             padding: EdgeInsets.only(
               left: width * 0.02,
-              bottom: width * 0.03,
             ),
             child: Column(
               children: [
@@ -599,9 +612,49 @@ class _UploadProjectState extends State<UploadProject> {
                         ),
                       ),
                     ])),
+                Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: width * 0.06,
+                        top: width * 0.024,
+                      ),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "Project Requirements",
+                          style: TextStyle(
+                            fontSize: width * 0.045,
+                            fontWeight: FontWeight.w900,
+                            fontFamily: 'Roboto',
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: width * 0.36,
+                        top: width * 0.026,
+                      ),
+                      child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: GestureDetector(
+                            onTap: () {
+                              _showDialog(context);
+                            },
+                            child: Icon(
+                              Icons.add,
+                              size: 27,
+                            ),
+                          )),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
+          _buildCombinedListView(),
+          _buildCombinedListView2(),
         ]),
       ),
     );
@@ -647,5 +700,237 @@ class _UploadProjectState extends State<UploadProject> {
     setState(() {
       _image = File(pickedimage!.path);
     });
+  }
+
+  void _showDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Choose Option'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  _showMaterialDialog(context);
+                },
+                child: Text('Materials'),
+              ),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  _showMachineryDialog(context);
+                },
+                child: Text('Machinery'),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showMaterialDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Text('Material Fields'),
+              Padding(
+                padding: const EdgeInsets.only(left: 40),
+                child: Container(
+                  color: Colors.black,
+                  child: GestureDetector(
+                    onTap: () {
+                      _addToMaterialList(context);
+                    },
+                    child: Icon(
+                      Icons.arrow_forward,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _itemrequired,
+                decoration: InputDecoration(labelText: 'Item Required'),
+              ),
+              TextField(
+                controller: _quantity,
+                decoration: InputDecoration(labelText: 'Quantity'),
+              ),
+              TextField(
+                controller: _deliverydate,
+                decoration: InputDecoration(labelText: 'Delivery Date'),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showMachineryDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Text('Machinery Fields'),
+              Padding(
+                padding: const EdgeInsets.only(left: 26),
+                child: Container(
+                  color: Colors.black,
+                  child: GestureDetector(
+                    onTap: () {
+                      _addToMachineryList(context);
+                    },
+                    child: Icon(
+                      Icons.arrow_forward,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _Machineryrequired,
+                decoration: InputDecoration(labelText: 'Machinery Required'),
+              ),
+              TextField(
+                controller: _duration,
+                decoration: InputDecoration(labelText: 'Duration'),
+              ),
+              TextField(
+                controller: _pricewilling,
+                decoration: InputDecoration(labelText: 'Price Willing to Pay'),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _addToMaterialList(BuildContext context) {
+    // Get the text field values
+    String itemRequired = _itemrequired
+        .text; // Retrieve the value from the corresponding TextField
+    String quantity =
+        _quantity.text; // Retrieve the value from the corresponding TextField
+    String deliveryDate = _deliverydate
+        .text; // Retrieve the value from the corresponding TextField
+
+    // Add the values to the nested list
+    materialList.add(['$itemRequired', '$quantity', '$deliveryDate']);
+    print(materialList);
+    setState(() {});
+    // Close the dialog
+    Navigator.of(context).pop();
+  }
+
+  void _addToMachineryList(BuildContext context) {
+    // Get the text field values
+    String machineryRequired = _Machineryrequired
+        .text; // Retrieve the value from the corresponding TextField
+    String duration =
+        _duration.text; // Retrieve the value from the corresponding TextField
+    String priceWillingToPay = _pricewilling
+        .text; // Retrieve the value from the corresponding TextField
+
+    // Add the values to the list
+    machineryList
+        .add(['$machineryRequired', '$duration', '$priceWillingToPay']);
+    setState(() {});
+
+    print(machineryList);
+    // Close the dialog
+    Navigator.of(context).pop();
+  }
+
+  Widget _buildCombinedListView() {
+    // Combine material and machinery lists
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: materialList.length,
+      itemBuilder: (context, index) {
+        // Determine whether the item is from material or machinery list
+        return _buildListItem(materialList[index]);
+      },
+    );
+  }
+
+  Widget _buildListItem(List<String> item) {
+    return Card(
+      child: ListTile(
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildField("Item name", item[0]),
+            _buildField("Quantity", item[1]),
+            _buildField("Delivery Date", item[2]),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildField(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Text('$label: $value'),
+    );
+  }
+
+  Widget _buildCombinedListView2() {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemCount: machineryList.length,
+      itemBuilder: (context, index) {
+        // Determine whether the item is from material or machinery list
+        return _buildListItem2(machineryList[index]);
+      },
+    );
+  }
+
+  Widget _buildListItem2(List<String> item) {
+    return Card(
+      child: ListTile(
+        // Assuming the first element is the item name
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildField("Machinery name", item[0]),
+            _buildField("Duration", item[1]),
+            _buildField("Price Willing to Pay",
+                item[2]), // Assuming the remaining elements are fields
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildField2(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Text('$label: $value'),
+    );
   }
 }

@@ -41,6 +41,7 @@ class _MaterialsHomeScreenState extends State<MaterialsHomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(backgroundColor: Colors.amber),
       backgroundColor: Colors.amber,
@@ -172,6 +173,7 @@ class _MaterialsHomeScreenState extends State<MaterialsHomeScreen> {
         ],
       ),
       endDrawer: Drawer(
+        width: width * 0.80,
         child: FutureBuilder<String?>(
           future: getUsername(),
           builder: (context, snapshot) {
@@ -207,30 +209,29 @@ class _MaterialsHomeScreenState extends State<MaterialsHomeScreen> {
                         ),
                         Row(
                           children: [
-                            FaIcon(
-                              FontAwesomeIcons.portrait,
+                            Icon(
+                              Icons.account_circle,
                               color: Colors.amber,
-                              size: 70,
+                              size: 60,
                             ),
-                            SizedBox(height: 10),
                             Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  '   ${snapshot.data}',
+                                  ' Welcome,',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontFamily: 'Roboto',
-                                    fontSize: 20,
+                                    fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 Text(
-                                  '  ${User!.email}',
+                                  '  ${snapshot.data}',
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 15,
+                                    fontSize: 14,
                                     fontFamily: 'Roboto',
                                   ),
                                 ),
@@ -243,7 +244,7 @@ class _MaterialsHomeScreenState extends State<MaterialsHomeScreen> {
                   ),
                   ListTile(
                     leading: FaIcon(
-                      FontAwesomeIcons.home,
+                      FontAwesomeIcons.houseChimney,
                       color: Colors.black,
                     ),
                     title: Text(
@@ -259,7 +260,7 @@ class _MaterialsHomeScreenState extends State<MaterialsHomeScreen> {
                   ),
                   Divider(
                     color: Colors.black,
-                    thickness: 0,
+                    thickness: 1,
                     indent: 0,
                     endIndent: 0,
                   ),
@@ -353,7 +354,7 @@ class _MaterialsHomeScreenState extends State<MaterialsHomeScreen> {
                   ),
                   ListTile(
                     leading: FaIcon(
-                      FontAwesomeIcons.cogs,
+                      FontAwesomeIcons.gears,
                       color: Colors.black,
                     ),
                     title: Text(
