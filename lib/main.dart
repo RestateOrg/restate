@@ -59,28 +59,35 @@ class _BeginState extends State<Begin> {
       final email = user.email;
       final userRole = await UserRole.getUserRole(email!);
 
+      print("User Role: $userRole");
+
       if (userRole == 'Builder') {
+        print("Navigating to BuilderHomeScreen");
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const BuilderHomeScreen()),
         );
       } else if (userRole == 'Machinery') {
+        print("Navigating to MachineryHomeScreen");
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const MachinaryHomeScreen()),
         );
       } else if (userRole == 'Material') {
+        print("Navigating to MaterialHomeScreen");
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const MaterialsHomeScreen()),
         );
       } else {
+        print("Navigating to GetStarted");
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const GetStarted()),
         );
       }
     } else {
+      print("Navigating to GetStarted (User is null)");
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const GetStarted()),
