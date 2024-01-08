@@ -1,4 +1,7 @@
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
@@ -14,25 +17,109 @@ class UploadProject extends StatefulWidget {
 class _UploadProjectState extends State<UploadProject> {
   TextEditingController _fromdate = TextEditingController();
   TextEditingController _todate = TextEditingController();
-  TextEditingController _Machineryrequired = TextEditingController();
+  TextEditingController _machineryrequired = TextEditingController();
   TextEditingController _duration = TextEditingController();
   TextEditingController _pricewilling = TextEditingController();
   TextEditingController _itemrequired = TextEditingController();
   TextEditingController _quantity = TextEditingController();
   TextEditingController _deliverydate = TextEditingController();
+  TextEditingController _projectname = TextEditingController();
+  TextEditingController _projectdescription = TextEditingController();
+  TextEditingController _location = TextEditingController();
+  TextEditingController _contactnumber = TextEditingController();
+  TextEditingController _siteconditions = TextEditingController();
+  TextEditingController _deliveryandpickup = TextEditingController();
   List<List<String>> materialList = [];
   List<List<String>> machineryList = [];
   File? _image;
+  String? useremail = FirebaseAuth.instance.currentUser?.email;
+
+  Future<void> uploadData() async {
+    String imageurl = await _getimageUrl();
+    try {
+      // Get a reference to the Firestore database
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      DocumentReference projectRef = firestore
+          .collection('builders')
+          .doc(useremail)
+          .collection('Projects')
+          .doc(_projectname.text);
+      // Create a document reference with a unique ID
+      await projectRef.set({
+        'fromdate': _fromdate.text,
+        'todate': _todate.text,
+        'machineryrequired': _machineryrequired.text,
+        'duration': _duration.text,
+        'pricewilling': _pricewilling.text,
+        'itemrequired': _itemrequired.text,
+        'quantity': _quantity.text,
+        'deliverydate': _deliverydate.text,
+        'projectname': _projectname.text,
+        'projectdescription': _projectdescription.text,
+        'location': _location.text,
+        'contactnumber': _contactnumber.text,
+        'siteconditions': _siteconditions.text,
+        'deliveryandpickup': _deliveryandpickup.text,
+        'imageURl': imageurl,
+      });
+      // Upload materialList and machineryList to Firestore
+      for (List<String> material in materialList) {
+        await projectRef.collection('Project requirements').add({
+          'Item Name': material[0],
+          'Quantity': material[1],
+          'Delivery Date': material[2],
+        });
+      }
+      for (List<String> machinery in machineryList) {
+        await projectRef.collection('Project requirements').add({
+          'Machinery Name': machinery[0],
+          'Duration': machinery[1],
+          'Price Willing to Pay': machinery[2],
+        });
+      }
+      print('Data uploaded successfully!');
+    } catch (e) {
+      print('Error uploading data: $e');
+    }
+  }
+
+  Future<String> _getimageUrl() async {
+    if (_image != null) {
+      String imageName = _projectname.text;
+      Reference storageReference =
+          FirebaseStorage.instance.ref().child('images/$imageName.jpg');
+      UploadTask uploadTask = storageReference.putFile(_image!);
+
+      try {
+        await uploadTask; // Ensure upload completes before getting URL
+        String imageURL = await storageReference.getDownloadURL();
+        return imageURL;
+      } catch (e) {
+        // Handle any errors during upload
+        print('Error uploading image: $e');
+        return ''; // Return empty string if upload fails
+      }
+    } else {
+      return ''; // No image to upload, return empty string
+    }
+  }
+
   @override
   void dispose() {
     _fromdate.dispose();
     _todate.dispose();
-    _Machineryrequired.dispose();
+    _machineryrequired.dispose();
     _duration.dispose();
     _pricewilling.dispose();
     _itemrequired.dispose();
     _quantity.dispose();
     _deliverydate.dispose();
+    _projectname.dispose();
+    _projectdescription.dispose();
+    _location.dispose();
+    _contactnumber.dispose();
+    _siteconditions.dispose();
+    _deliveryandpickup.dispose();
     super.dispose();
   }
 
@@ -56,7 +143,10 @@ class _UploadProjectState extends State<UploadProject> {
         ),
         actions: [
           GestureDetector(
-            onTap: () {},
+            onTap: () {
+              uploadData();
+              Navigator.pop(context);
+            },
             child: Padding(
               padding: EdgeInsets.only(right: width * 0.06),
               child: Text("Upload",
@@ -248,6 +338,7 @@ class _UploadProjectState extends State<UploadProject> {
                 padding:
                     EdgeInsets.only(right: width * 0.04, left: width * 0.04),
                 child: TextField(
+                  controller: _projectname,
                   decoration: InputDecoration(
                     hintText: 'Enter the project Name',
                     hintStyle: TextStyle(fontSize: 14.0),
@@ -286,6 +377,7 @@ class _UploadProjectState extends State<UploadProject> {
                 padding:
                     EdgeInsets.only(right: width * 0.04, left: width * 0.04),
                 child: TextField(
+                  controller: _projectdescription,
                   decoration: InputDecoration(
                     hintText: 'Enter the project description',
                     hintStyle: TextStyle(fontSize: 14.0),
@@ -324,6 +416,7 @@ class _UploadProjectState extends State<UploadProject> {
                 padding:
                     EdgeInsets.only(right: width * 0.04, left: width * 0.04),
                 child: TextField(
+                  controller: _location,
                   decoration: InputDecoration(
                     hintText: 'Enter the project location',
                     hintStyle: TextStyle(fontSize: 14.0),
@@ -362,6 +455,7 @@ class _UploadProjectState extends State<UploadProject> {
                 padding:
                     EdgeInsets.only(right: width * 0.04, left: width * 0.04),
                 child: TextField(
+                  controller: _contactnumber,
                   decoration: InputDecoration(
                     hintText: 'Enter the contact number',
                     hintStyle: TextStyle(fontSize: 14.0),
@@ -400,6 +494,7 @@ class _UploadProjectState extends State<UploadProject> {
                 padding:
                     EdgeInsets.only(right: width * 0.04, left: width * 0.04),
                 child: TextField(
+                  controller: _siteconditions,
                   decoration: InputDecoration(
                     hintText: 'Describe about site conditions',
                     hintStyle: TextStyle(fontSize: 14.0),
@@ -438,6 +533,7 @@ class _UploadProjectState extends State<UploadProject> {
                 padding:
                     EdgeInsets.only(right: width * 0.04, left: width * 0.04),
                 child: TextField(
+                  controller: _deliveryandpickup,
                   decoration: InputDecoration(
                     hintText: 'Enter delivery and pickup points',
                     hintStyle: TextStyle(fontSize: 14.0),
@@ -809,7 +905,7 @@ class _UploadProjectState extends State<UploadProject> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller: _Machineryrequired,
+                controller: _machineryrequired,
                 decoration: InputDecoration(labelText: 'Machinery Required'),
               ),
               TextField(
@@ -838,7 +934,6 @@ class _UploadProjectState extends State<UploadProject> {
 
     // Add the values to the nested list
     materialList.add(['$itemRequired', '$quantity', '$deliveryDate']);
-    print(materialList);
     setState(() {});
     // Close the dialog
     Navigator.of(context).pop();
@@ -846,7 +941,7 @@ class _UploadProjectState extends State<UploadProject> {
 
   void _addToMachineryList(BuildContext context) {
     // Get the text field values
-    String machineryRequired = _Machineryrequired
+    String machineryRequired = _machineryrequired
         .text; // Retrieve the value from the corresponding TextField
     String duration =
         _duration.text; // Retrieve the value from the corresponding TextField
@@ -857,8 +952,6 @@ class _UploadProjectState extends State<UploadProject> {
     machineryList
         .add(['$machineryRequired', '$duration', '$priceWillingToPay']);
     setState(() {});
-
-    print(machineryList);
     // Close the dialog
     Navigator.of(context).pop();
   }
@@ -878,6 +971,11 @@ class _UploadProjectState extends State<UploadProject> {
 
   Widget _buildListItem(List<String> item) {
     return Card(
+      color: Colors.black12,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(5), // Add rounded corners
+      ),
+      margin: EdgeInsets.only(left: 10, right: 10, bottom: 8),
       child: ListTile(
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -894,7 +992,12 @@ class _UploadProjectState extends State<UploadProject> {
   Widget _buildField(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Text('$label: $value'),
+      child: Text('$label: $value',
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
+            fontSize: 14,
+          )),
     );
   }
 
@@ -912,6 +1015,11 @@ class _UploadProjectState extends State<UploadProject> {
 
   Widget _buildListItem2(List<String> item) {
     return Card(
+      color: Colors.black12,
+      margin: EdgeInsets.only(left: 10, right: 10, bottom: 8),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(5), // Add rounded corners
+      ),
       child: ListTile(
         // Assuming the first element is the item name
         subtitle: Column(
@@ -924,13 +1032,6 @@ class _UploadProjectState extends State<UploadProject> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildField2(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Text('$label: $value'),
     );
   }
 }
