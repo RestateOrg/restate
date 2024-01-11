@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:restate/Builder/Upload_project.dart';
+import 'package:restate/Builder/builderProfile.dart';
 import 'package:restate/Utils/hexcolor.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:restate/screens/signIn.dart';
@@ -246,10 +247,19 @@ class _BuilderHomeScreenState extends State<BuilderHomeScreen> {
                         ),
                         Row(
                           children: [
-                            Icon(
-                              Icons.account_circle,
-                              color: Colors.amber,
-                              size: 60,
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            BuilderProfiles()));
+                              },
+                              child: Icon(
+                                Icons.account_circle,
+                                color: Colors.amber,
+                                size: 60,
+                              ),
                             ),
                             Column(
                               mainAxisAlignment: MainAxisAlignment.center,

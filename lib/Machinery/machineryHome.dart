@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:restate/Machinery/machineryProfile.dart';
 import 'package:restate/Utils/hexcolor.dart';
 import 'package:restate/screens/signIn.dart';
 
@@ -17,6 +18,7 @@ class _MachinaryHomeScreenState extends State<MachinaryHomeScreen> {
   double selectedIconScale = 1.2;
   double unselectedIconScale = 1.0;
 
+  // ignore: non_constant_identifier_names
   final User = FirebaseAuth.instance.currentUser;
 
   Future<String?> getUsername() async {
@@ -209,10 +211,19 @@ class _MachinaryHomeScreenState extends State<MachinaryHomeScreen> {
                         ),
                         Row(
                           children: [
-                            Icon(
-                              Icons.account_circle,
-                              color: Colors.amber,
-                              size: 60,
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            MachineryProfile()));
+                              },
+                              child: Icon(
+                                Icons.account_circle,
+                                color: Colors.amber,
+                                size: 60,
+                              ),
                             ),
                             Column(
                               mainAxisAlignment: MainAxisAlignment.center,

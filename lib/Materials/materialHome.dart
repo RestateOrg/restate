@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:restate/Materials/materialProfile.dart';
 import 'package:restate/Utils/hexcolor.dart';
 import 'package:restate/screens/signIn.dart';
 
@@ -201,6 +202,7 @@ class _MaterialsHomeScreenState extends State<MaterialsHomeScreen> {
                             child: Container(
                               padding: EdgeInsets.all(16.0),
                               child: FaIcon(
+                                // ignore: deprecated_member_use
                                 FontAwesomeIcons.close,
                                 color: Colors.white,
                               ),
@@ -209,10 +211,19 @@ class _MaterialsHomeScreenState extends State<MaterialsHomeScreen> {
                         ),
                         Row(
                           children: [
-                            Icon(
-                              Icons.account_circle,
-                              color: Colors.amber,
-                              size: 60,
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            MaterialsProfile()));
+                              },
+                              child: Icon(
+                                Icons.account_circle,
+                                color: Colors.amber,
+                                size: 60,
+                              ),
                             ),
                             Column(
                               mainAxisAlignment: MainAxisAlignment.center,
