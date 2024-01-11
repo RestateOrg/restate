@@ -95,9 +95,6 @@ class _BuilderRegistrationState extends State<BuilderRegistration> {
       if (passwordController.text != confirmPasswordController.text) {
         throw Exception("The Passwords Doesn't Match");
       }
-      if (licenseNumberController.text.isEmpty) {
-        throw Exception("The License number should be entered");
-      }
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
       await Navigator.push(
@@ -554,15 +551,6 @@ class _BuilderRegistrationState extends State<BuilderRegistration> {
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                     ),
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: '*',
-                        style: TextStyle(
-                          fontSize: width * 0.04,
-                          color: Colors.red,
-                        ),
-                      ),
-                    ],
                   ),
                 ),
               ),

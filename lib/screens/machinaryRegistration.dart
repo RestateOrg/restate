@@ -99,7 +99,7 @@ class _MachinaryRegistrationState extends State<MachinaryRegistration> {
         throw Exception("The Passwords Doesn't Match");
       }
       if (companyRegistrationNumberController.text.isEmpty) {
-        throw Exception("The Registration number should be entered");
+        throw Exception("The GSTIN should be entered");
       }
       if (aadhaarNumberController.text.isEmpty) {
         throw Exception("The aadhar number should be entered");
@@ -595,7 +595,7 @@ class _MachinaryRegistrationState extends State<MachinaryRegistration> {
                 alignment: Alignment.centerLeft,
                 child: RichText(
                   text: TextSpan(
-                    text: "Company Registration Number",
+                    text: "GSTIN",
                     style: TextStyle(
                       fontSize: width * 0.039,
                       fontFamily: 'Roboto',
@@ -626,7 +626,7 @@ class _MachinaryRegistrationState extends State<MachinaryRegistration> {
                   child: TextField(
                     controller: companyRegistrationNumberController,
                     decoration: InputDecoration(
-                      hintText: 'Enter your License Number',
+                      hintText: 'Enter your GSTIN',
                       fillColor: Colors.white,
                       filled: true,
                       border: OutlineInputBorder(

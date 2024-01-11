@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:restate/Utils/getlocation.dart';
 import 'package:restate/Utils/hexcolor.dart';
 
 class UploadProject extends StatefulWidget {
@@ -26,7 +27,7 @@ class _UploadProjectState extends State<UploadProject> {
   TextEditingController _projectname = TextEditingController();
   TextEditingController _projectdescription = TextEditingController();
   TextEditingController _location = TextEditingController();
-  TextEditingController _contactnumber = TextEditingController();
+  TextEditingController _zipCode = TextEditingController();
   TextEditingController _siteconditions = TextEditingController();
   TextEditingController _deliveryandpickup = TextEditingController();
   List<List<String>> materialList = [];
@@ -36,6 +37,7 @@ class _UploadProjectState extends State<UploadProject> {
 
   Future<void> uploadData() async {
     String imageurl = await _getimageUrl();
+    Map<String, String>? locationInfo = await getLocationInfo(_zipCode.text);
     try {
       // Get a reference to the Firestore database
       FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -57,9 +59,61 @@ class _UploadProjectState extends State<UploadProject> {
         'projectname': _projectname.text,
         'projectdescription': _projectdescription.text,
         'location': _location.text,
-        'contactnumber': _contactnumber.text,
+        'city': locationInfo?['city'],
+        'state': locationInfo?['state'],
+        'country': locationInfo?['country'],
         'siteconditions': _siteconditions.text,
         'deliveryandpickup': _deliveryandpickup.text,
+        'imageURl': imageurl,
+      });
+      // Upload materialList and machineryList to Firestore
+      for (List<String> material in materialList) {
+        await projectRef.collection('Project requirements').add({
+          'Item Name': material[0],
+          'Quantity': material[1],
+          'Delivery Date': material[2],
+        });
+      }
+      for (List<String> machinery in machineryList) {
+        await projectRef.collection('Project requirements').add({
+          'Machinery Name': machinery[0],
+          'Duration': machinery[1],
+          'Price Willing to Pay': machinery[2],
+        });
+      }
+      uploadData2();
+    } catch (e) {
+      print('Error uploading data: $e');
+    }
+  }
+
+  Future<void> uploadData2() async {
+    String imageurl = await _getimageUrl();
+    try {
+      // Get a reference to the Firestore database
+      Map<String, String>? locationInfo = await getLocationInfo(_zipCode.text);
+      FirebaseFirestore firestore = FirebaseFirestore.instance;
+      DocumentReference projectRef =
+          firestore.collection('builder projects').doc();
+      // Create a document reference with a unique ID
+      await projectRef.set({
+        'fromdate': _fromdate.text,
+        'todate': _todate.text,
+        'machineryrequired': _machineryrequired.text,
+        'duration': _duration.text,
+        'pricewilling': _pricewilling.text,
+        'itemrequired': _itemrequired.text,
+        'quantity': _quantity.text,
+        'deliverydate': _deliverydate.text,
+        'projectname': _projectname.text,
+        'projectdescription': _projectdescription.text,
+        'location': _location.text,
+        'city': locationInfo?['city'],
+        'state': locationInfo?['state'],
+        'country': locationInfo?['country'],
+        'siteconditions': _siteconditions.text,
+        'deliveryandpickup': _deliveryandpickup.text,
+        'email': useremail,
         'imageURl': imageurl,
       });
       // Upload materialList and machineryList to Firestore
@@ -117,9 +171,9 @@ class _UploadProjectState extends State<UploadProject> {
     _projectname.dispose();
     _projectdescription.dispose();
     _location.dispose();
-    _contactnumber.dispose();
     _siteconditions.dispose();
     _deliveryandpickup.dispose();
+    _zipCode.dispose();
     super.dispose();
   }
 
@@ -287,17 +341,28 @@ class _UploadProjectState extends State<UploadProject> {
                             ),
                           )),
                           Positioned(
-                              top: width * 0.38,
-                              left: width * 0.39,
-                              child: GestureDetector(
-                                onTap: () {
-                                  _pickImageFromGallery();
-                                },
-                                child: Image.asset(
-                                  'assets/images/Addphoto2.png',
-                                  width: width * 0.13,
-                                  height: width * 0.13,
-                                ),
+                              top: width * 0.35,
+                              left: width * 0.33,
+                              child: Column(
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      _pickImageFromGallery();
+                                    },
+                                    child: Image.asset(
+                                      'assets/images/Addphoto2.png',
+                                      width: width * 0.13,
+                                      height: width * 0.13,
+                                    ),
+                                  ),
+                                  Text(
+                                    "Click to Add Photo",
+                                    style: TextStyle(
+                                      fontSize: width * 0.03,
+                                      color: Colors.black38,
+                                    ),
+                                  ),
+                                ],
                               )),
                           Positioned(
                               bottom: width * 0.02,
@@ -436,7 +501,7 @@ class _UploadProjectState extends State<UploadProject> {
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                "Contact Number",
+                "Zipcode",
                 style: TextStyle(
                   fontSize: width * 0.045,
                   fontWeight: FontWeight.w900,
@@ -455,9 +520,9 @@ class _UploadProjectState extends State<UploadProject> {
                 padding:
                     EdgeInsets.only(right: width * 0.04, left: width * 0.04),
                 child: TextField(
-                  controller: _contactnumber,
+                  controller: _zipCode,
                   decoration: InputDecoration(
-                    hintText: 'Enter the contact number',
+                    hintText: 'Enter the project Zipcode',
                     hintStyle: TextStyle(fontSize: 14.0),
                     contentPadding: const EdgeInsets.only(
                       left: 5,
@@ -475,7 +540,7 @@ class _UploadProjectState extends State<UploadProject> {
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                "Site Conditions",
+                "Working Conditions",
                 style: TextStyle(
                   fontSize: width * 0.045,
                   fontWeight: FontWeight.w900,
@@ -496,7 +561,7 @@ class _UploadProjectState extends State<UploadProject> {
                 child: TextField(
                   controller: _siteconditions,
                   decoration: InputDecoration(
-                    hintText: 'Describe about site conditions',
+                    hintText: 'Describe about Working conditions',
                     hintStyle: TextStyle(fontSize: 14.0),
                     contentPadding: const EdgeInsets.only(
                       left: 5,
@@ -714,6 +779,7 @@ class _UploadProjectState extends State<UploadProject> {
                       padding: EdgeInsets.only(
                         left: width * 0.06,
                         top: width * 0.024,
+                        bottom: width * 0.05,
                       ),
                       child: Align(
                         alignment: Alignment.centerLeft,
@@ -731,6 +797,7 @@ class _UploadProjectState extends State<UploadProject> {
                       padding: EdgeInsets.only(
                         left: width * 0.36,
                         top: width * 0.026,
+                        bottom: width * 0.05,
                       ),
                       child: Align(
                           alignment: Alignment.centerLeft,
@@ -975,7 +1042,7 @@ class _UploadProjectState extends State<UploadProject> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5), // Add rounded corners
       ),
-      margin: EdgeInsets.only(left: 10, right: 10, bottom: 8),
+      margin: EdgeInsets.only(left: 15, right: 12, bottom: 8),
       child: ListTile(
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

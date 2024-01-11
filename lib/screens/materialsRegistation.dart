@@ -99,7 +99,7 @@ class _MaterialRegistrationState extends State<MaterialRegistration> {
         throw Exception("The Passwords Doesn't Match");
       }
       if (companyRegistrationNumberController.text.isEmpty) {
-        throw Exception("The Registration number should be entered");
+        throw Exception("The GSTIN should be entered");
       }
       if (aadhaarNumberController.text.isEmpty) {
         throw Exception("The aadhar number should be entered");
@@ -595,23 +595,13 @@ class _MaterialRegistrationState extends State<MaterialRegistration> {
                 alignment: Alignment.centerLeft,
                 child: RichText(
                   text: TextSpan(
-                    text: "Company Registration Number",
-                    style: TextStyle(
-                      fontSize: width * 0.039,
-                      fontFamily: 'Roboto',
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: '*',
-                        style: TextStyle(
-                          fontSize: width * 0.04,
-                          color: Colors.red,
-                        ),
-                      ),
-                    ],
-                  ),
+                      text: "Company Registration Number",
+                      style: TextStyle(
+                        fontSize: width * 0.039,
+                        fontFamily: 'Roboto',
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      )),
                 ),
               ),
             ),
