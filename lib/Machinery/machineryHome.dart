@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:restate/Machinery/Upload_machinery.dart';
 import 'package:restate/Machinery/machineryProfile.dart';
 import 'package:restate/Utils/hexcolor.dart';
 import 'package:restate/screens/signIn.dart';
@@ -46,6 +47,38 @@ class _MachinaryHomeScreenState extends State<MachinaryHomeScreen> {
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(backgroundColor: Colors.amber),
+      floatingActionButton: Container(
+        width: 100,
+        child: FloatingActionButton(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(40.0),
+          ),
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => UploadMachinery()));
+          },
+          child: Row(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: width * 0.05),
+                child: Icon(Icons.add),
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                  left: width * 0.02,
+                ),
+                child: Text("New",
+                    style: TextStyle(
+                      fontFamily: 'Roboto',
+                    )),
+              )
+            ],
+          ), // Replace with your desired icon
+          backgroundColor: HexColor('#242424'),
+          foregroundColor: Colors.white,
+          // Customize button color
+        ),
+      ),
       backgroundColor: Colors.amber,
       body: Center(
         child: GestureDetector(
