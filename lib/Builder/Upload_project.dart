@@ -63,6 +63,7 @@ class _UploadProjectState extends State<UploadProject> {
         'siteconditions': _siteconditions.text,
         'deliveryandpickup': _deliveryandpickup.text,
         'imageURl': imageurl,
+        'status': 'ongoing'
       });
       // Upload materialList and machineryList to Firestore
       for (List<String> material in materialList) {
@@ -111,6 +112,7 @@ class _UploadProjectState extends State<UploadProject> {
         'deliveryandpickup': _deliveryandpickup.text,
         'email': useremail,
         'imageURl': imageurl,
+        'status': 'ongoing'
       });
       // Upload materialList and machineryList to Firestore
       for (List<String> material in materialList) {
