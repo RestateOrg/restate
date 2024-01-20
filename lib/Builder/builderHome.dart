@@ -81,6 +81,16 @@ class _BuilderHomeScreenState extends State<BuilderHomeScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.amber,
+        leading: IconButton(
+          icon: Icon(
+            Icons.account_circle,
+            size: 35,
+          ),
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => BuilderProfiles()));
+          },
+        ),
       ),
       body: Center(
         child: GestureDetector(

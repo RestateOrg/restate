@@ -34,9 +34,9 @@ class _UploadProjectState extends State<UploadProject> {
   List<List<String>> machineryList = [];
   File? _image;
   String? useremail = FirebaseAuth.instance.currentUser?.email;
-
+  late String imageurl;
   Future<void> uploadData() async {
-    String imageurl = await _getimageUrl();
+    imageurl = await _getimageUrl();
     Map<String, String>? locationInfo = await getLocationInfo(_zipCode.text);
     try {
       // Get a reference to the Firestore database
@@ -87,7 +87,6 @@ class _UploadProjectState extends State<UploadProject> {
   }
 
   Future<void> uploadData2() async {
-    String imageurl = await _getimageUrl();
     try {
       // Get a reference to the Firestore database
       Map<String, String>? locationInfo = await getLocationInfo(_zipCode.text);

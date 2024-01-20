@@ -38,7 +38,7 @@ class _UploadMachineryState extends State<UploadMachinery> {
   TextEditingController _rentonweeklybasis = TextEditingController();
   TextEditingController _rentonmonthlybasis = TextEditingController();
   TextEditingController _zipCode = TextEditingController();
-
+  late List<String> downloadurls;
   String condition = 'Excellent';
   @override
   void initState() {
@@ -64,7 +64,7 @@ class _UploadMachineryState extends State<UploadMachinery> {
   Future<void> uploadData() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     Map<String, String>? locationInfo = await getLocationInfo(_zipCode.text);
-    List<String> downloadurls = await uploadImages(images!);
+    downloadurls = await uploadImages(images!);
     DocumentReference projectRef = firestore
         .collection('machinery')
         .doc(useremail)
@@ -72,11 +72,11 @@ class _UploadMachineryState extends State<UploadMachinery> {
         .doc(_machineryname.text);
     (machinerytype == "Backhoe Loader")
         ? await projectRef.set({
-            'machinery name': _machineryname.text,
-            'brand name': _brandname.text,
-            'machinery type': machinerytype,
+            'machinery_name': _machineryname.text,
+            'brand_name': _brandname.text,
+            'machinery_type': machinerytype,
             'specifications': _specifications.text,
-            'back hoe size': _backhoesize.text,
+            'back_hoe_size': _backhoesize.text,
             'condition': condition,
             'city': locationInfo?['city'],
             'state': locationInfo?['state'],
@@ -85,13 +85,13 @@ class _UploadMachineryState extends State<UploadMachinery> {
             'day': _rentondaybasis.text,
             'week': _rentonweeklybasis.text,
             'month': _rentonmonthlybasis.text,
-            'image urls': downloadurls,
+            'image_urls': downloadurls,
             'status': 'Available'
           })
         : await projectRef.set({
-            'machinery name': _machineryname.text,
-            'brand name': _brandname.text,
-            'machinery type': machinerytype,
+            'machinery_name': _machineryname.text,
+            'brand_name': _brandname.text,
+            'machinery_type': machinerytype,
             'specifications': _specifications.text,
             'condition': condition,
             'city': locationInfo?['city'],
@@ -101,7 +101,7 @@ class _UploadMachineryState extends State<UploadMachinery> {
             'day': _rentondaybasis.text,
             'week': _rentonweeklybasis.text,
             'month': _rentonmonthlybasis.text,
-            'image urls': downloadurls,
+            'image_urls': downloadurls,
             'status': 'Available'
           });
     uploadData2();
@@ -109,17 +109,16 @@ class _UploadMachineryState extends State<UploadMachinery> {
 
   Future<void> uploadData2() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
-    List<String> downloadurls = await uploadImages(images!);
     Map<String, String>? locationInfo = await getLocationInfo(_zipCode.text);
     DocumentReference projectRef =
         firestore.collection('machinery inventory').doc();
     (machinerytype == "Backhoe Loader")
         ? await projectRef.set({
-            'machinery name': _machineryname.text,
-            'brand name': _brandname.text,
+            'machinery_name': _machineryname.text,
+            'brand_name': _brandname.text,
             'machinery type': machinerytype,
             'specifications': _specifications.text,
-            'back hoe size': _backhoesize.text,
+            'back_hoe_size': _backhoesize.text,
             'condition': condition,
             'city': locationInfo?['city'],
             'state': locationInfo?['state'],
@@ -128,13 +127,13 @@ class _UploadMachineryState extends State<UploadMachinery> {
             'day': _rentondaybasis.text,
             'week': _rentonweeklybasis.text,
             'month': _rentonmonthlybasis.text,
-            'image urls': downloadurls,
+            'image_urls': downloadurls,
             'status': 'Available'
           })
         : await projectRef.set({
-            'machinery name': _machineryname.text,
-            'brand name': _brandname.text,
-            'machinery type': machinerytype,
+            'machinery_name': _machineryname.text,
+            'brand_name': _brandname.text,
+            'machinery_type': machinerytype,
             'specifications': _specifications.text,
             'condition': condition,
             'city': locationInfo?['city'],
@@ -144,7 +143,7 @@ class _UploadMachineryState extends State<UploadMachinery> {
             'day': _rentondaybasis.text,
             'week': _rentonweeklybasis.text,
             'month': _rentonmonthlybasis.text,
-            'image urls': downloadurls,
+            'image_urls': downloadurls,
             'status': 'Available'
           });
   }

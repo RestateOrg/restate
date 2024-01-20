@@ -44,13 +44,21 @@ class _MaterialsHomeScreenState extends State<MaterialsHomeScreen> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.amber),
+      appBar: AppBar(
+        backgroundColor: Colors.amber,
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          icon: Icon(Icons.account_circle, size: 35),
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => MaterialsProfile()));
+          },
+        ),
+      ),
       backgroundColor: Colors.amber,
       body: Center(
         child: GestureDetector(
-          onTap: () {
-            _signOut(context);
-          },
+          onTap: () {},
           child: Text(
             'material home',
             style: TextStyle(
