@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:restate/Builder/builderHome.dart';
-import 'package:restate/Machinery/machineryHome.dart';
+import 'package:restate/Machinery/machinery.dart';
 import 'package:restate/Materials/materialHome.dart';
 import 'package:restate/Utils/EmailVerify.dart';
 import 'package:restate/Utils/getuserinfo.dart';
