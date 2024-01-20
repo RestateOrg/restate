@@ -10,6 +10,10 @@ class MachineryHome extends StatefulWidget {
 class _MachineryHomeState extends State<MachineryHome> {
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text("Machinery Home"));
+    return Scaffold(
+        backgroundColor: Colors.amber,
+        body: Center(
+          child: Text("Machinery Home"),
+        ));
   }
 }
