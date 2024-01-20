@@ -25,7 +25,7 @@ class _BuilderProfilesState extends State<BuilderProfiles> {
   Future<String?> getUsername() async {
     try {
       var userDocument = await FirebaseFirestore.instance
-          .collection('machinery')
+          .collection('builders')
           .doc(_user?.email)
           .collection('userinformation')
           .doc('userinfo')

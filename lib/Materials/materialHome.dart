@@ -44,6 +44,35 @@ class _MaterialsHomeScreenState extends State<MaterialsHomeScreen> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
+      floatingActionButton: Container(
+        width: 100,
+        child: FloatingActionButton(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(40.0),
+          ),
+          onPressed: () {},
+          child: Row(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(left: width * 0.05),
+                child: Icon(Icons.add),
+              ),
+              Padding(
+                padding: EdgeInsets.only(
+                  left: width * 0.02,
+                ),
+                child: Text("New",
+                    style: TextStyle(
+                      fontFamily: 'Roboto',
+                    )),
+              )
+            ],
+          ), // Replace with your desired icon
+          backgroundColor: HexColor('#242424'),
+          foregroundColor: Colors.white,
+          // Customize button color
+        ),
+      ),
       appBar: AppBar(
         backgroundColor: Colors.amber,
         automaticallyImplyLeading: false,
