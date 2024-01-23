@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class MachineryInventory extends StatefulWidget {
@@ -14,6 +15,7 @@ class _MachineryInventoryState extends State<MachineryInventory> {
   late String useremail; // Use 'late' to initialize later
   late CollectionReference collectionRef; // Initialize later as well
   List<DocumentSnapshot> allSnapshots = [];
+  List<DocumentSnapshot> filteredSnapshots = [];
 
   @override
   void initState() {
@@ -34,6 +36,28 @@ class _MachineryInventoryState extends State<MachineryInventory> {
       backgroundColor: Colors.amber,
       body: Column(
         children: [
+          CupertinoSearchTextField(
+            backgroundColor: Colors.white,
+            borderRadius: BorderRadius.circular(30),
+            padding: EdgeInsets.all(10),
+            onChanged: (value) {
+              setState(() {
+                if (value.isEmpty) {
+                  // If the search query is empty, show all items
+                  filteredSnapshots = allSnapshots; // Use the normal list
+                } else {
+                  // filter the list based on Material_type
+                  filteredSnapshots = allSnapshots
+                      .where((element) => (element.data()
+                              as Map<String, dynamic>)['Material_type']
+                          .toString()
+                          .toLowerCase()
+                          .contains(value.toLowerCase()))
+                      .toList();
+                }
+              });
+            },
+          ),
           Align(
               alignment: Alignment.centerLeft,
               child: Padding(
@@ -45,9 +69,9 @@ class _MachineryInventoryState extends State<MachineryInventory> {
               )),
           Expanded(
             child: ListView.builder(
-              itemCount: allSnapshots.length,
+              itemCount: filteredSnapshots.length,
               itemBuilder: (context, index) {
-                final snapshot = allSnapshots[index];
+                final snapshot = filteredSnapshots[index];
                 return Card(
                   margin: EdgeInsets.all(width * 0.03),
                   child: Container(
@@ -259,6 +283,7 @@ class _MachineryInventoryState extends State<MachineryInventory> {
       final querySnapshot = await collectionRef.get();
       setState(() {
         allSnapshots = querySnapshot.docs;
+        filteredSnapshots = querySnapshot.docs;
       });
     } catch (error) {}
   }
