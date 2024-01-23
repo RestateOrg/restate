@@ -1,41 +1,40 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:restate/Machinery/Upload_machinery.dart';
-import 'package:restate/Machinery/machineryProfile.dart';
-import 'package:restate/Machinery/machineryhome.dart';
-import 'package:restate/Machinery/machineryinventory.dart';
-import 'package:restate/Machinery/machineryorder.dart';
-import 'package:restate/Machinery/machinerystats.dart';
+import 'package:restate/Materials/Upload_material.dart';
+import 'package:restate/Materials/materialHome.dart';
+import 'package:restate/Materials/materialProfile.dart';
+import 'package:restate/Materials/materialinventory.dart';
+import 'package:restate/Materials/materialorder.dart';
+import 'package:restate/Materials/materialstats.dart';
 import 'package:restate/Utils/hexcolor.dart';
 import 'package:restate/screens/signIn.dart';
 
-class MachinaryHomeScreen extends StatefulWidget {
-  const MachinaryHomeScreen({super.key});
+class MaterialsHomeScreen extends StatefulWidget {
+  const MaterialsHomeScreen({super.key});
 
   @override
-  State<MachinaryHomeScreen> createState() => _MachinaryHomeScreenState();
+  State<MaterialsHomeScreen> createState() => _MaterialsHomeScreenState();
 }
 
-class _MachinaryHomeScreenState extends State<MachinaryHomeScreen> {
+class _MaterialsHomeScreenState extends State<MaterialsHomeScreen> {
   int _selectedIndex = 0;
   double selectedIconScale = 1.2;
   double unselectedIconScale = 1.0;
   final screens = [
-    MachineryHome(),
-    MachineryOrders(),
-    MachineryStats(),
-    MachineryInventory()
+    MaterialHome(),
+    MaterialOrder(),
+    MaterialStats(),
+    MaterialInventory()
   ];
-  // ignore: non_constant_identifier_names
   final User = FirebaseAuth.instance.currentUser;
 
   Future<String?> getUsername() async {
     String? username;
     try {
       var userDocument = await FirebaseFirestore.instance
-          .collection('machinery')
+          .collection('materials')
           .doc(User!.email)
           .collection('userinformation')
           .doc('userinfo')
@@ -55,18 +54,6 @@ class _MachinaryHomeScreenState extends State<MachinaryHomeScreen> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.amber,
-        automaticallyImplyLeading: false,
-        leading: IconButton(
-          icon: Icon(Icons.account_circle, size: 35),
-          onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => MachineryProfile()));
-          },
-        ),
-      ),
-      body: screens[_selectedIndex],
       floatingActionButton: Container(
         width: 100,
         child: FloatingActionButton(
@@ -75,7 +62,7 @@ class _MachinaryHomeScreenState extends State<MachinaryHomeScreen> {
           ),
           onPressed: () {
             Navigator.push(context,
-                MaterialPageRoute(builder: (context) => UploadMachinery()));
+                MaterialPageRoute(builder: (context) => UploadMaterial()));
           },
           child: Row(
             children: [
@@ -99,7 +86,19 @@ class _MachinaryHomeScreenState extends State<MachinaryHomeScreen> {
           // Customize button color
         ),
       ),
+      appBar: AppBar(
+        backgroundColor: Colors.amber,
+        automaticallyImplyLeading: false,
+        leading: IconButton(
+          icon: Icon(Icons.account_circle, size: 35),
+          onPressed: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => MaterialsProfile()));
+          },
+        ),
+      ),
       backgroundColor: Colors.amber,
+      body: screens[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         selectedLabelStyle: TextStyle(fontSize: 0),
         unselectedLabelStyle: TextStyle(fontSize: 0),
@@ -109,7 +108,7 @@ class _MachinaryHomeScreenState extends State<MachinaryHomeScreen> {
         items: [
           BottomNavigationBarItem(
             icon: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
+              padding: EdgeInsets.symmetric(horizontal: 2.0, vertical: 4.0),
               child: GestureDetector(
                 onTap: () => setState(() => _selectedIndex = 0),
                 child: AnimatedContainer(
@@ -135,7 +134,7 @@ class _MachinaryHomeScreenState extends State<MachinaryHomeScreen> {
           ),
           BottomNavigationBarItem(
             icon: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
+              padding: EdgeInsets.symmetric(horizontal: 2.0, vertical: 4.0),
               child: GestureDetector(
                 onTap: () => setState(() => _selectedIndex = 1),
                 child: AnimatedContainer(
@@ -161,7 +160,7 @@ class _MachinaryHomeScreenState extends State<MachinaryHomeScreen> {
           ),
           BottomNavigationBarItem(
             icon: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
+              padding: EdgeInsets.symmetric(horizontal: 2.0, vertical: 4.0),
               child: GestureDetector(
                 onTap: () => setState(() => _selectedIndex = 2),
                 child: AnimatedContainer(
@@ -187,7 +186,7 @@ class _MachinaryHomeScreenState extends State<MachinaryHomeScreen> {
           ),
           BottomNavigationBarItem(
             icon: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
+              padding: EdgeInsets.symmetric(horizontal: 2.0, vertical: 4.0),
               child: GestureDetector(
                 onTap: () => setState(() => _selectedIndex = 3),
                 child: AnimatedContainer(
@@ -214,12 +213,12 @@ class _MachinaryHomeScreenState extends State<MachinaryHomeScreen> {
         ],
       ),
       endDrawer: Drawer(
-        width: width * 0.76,
+        width: width * 0.80,
         child: FutureBuilder<String?>(
           future: getUsername(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Scaffold();
+              return CircularProgressIndicator();
             } else if (snapshot.hasError) {
               return Text("Error: ${snapshot.error}");
             } else {
@@ -242,7 +241,8 @@ class _MachinaryHomeScreenState extends State<MachinaryHomeScreen> {
                             child: Container(
                               padding: EdgeInsets.all(16.0),
                               child: FaIcon(
-                                FontAwesomeIcons.xmark,
+                                // ignore: deprecated_member_use
+                                FontAwesomeIcons.close,
                                 color: Colors.white,
                               ),
                             ),
@@ -256,7 +256,7 @@ class _MachinaryHomeScreenState extends State<MachinaryHomeScreen> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) =>
-                                            MachineryProfile()));
+                                            MaterialsProfile()));
                               },
                               child: Icon(
                                 Icons.account_circle,
@@ -294,8 +294,7 @@ class _MachinaryHomeScreenState extends State<MachinaryHomeScreen> {
                   ),
                   ListTile(
                     leading: FaIcon(
-                      // ignore: deprecated_member_use
-                      FontAwesomeIcons.home,
+                      FontAwesomeIcons.houseChimney,
                       color: Colors.black,
                     ),
                     title: Text(
@@ -399,7 +398,7 @@ class _MachinaryHomeScreenState extends State<MachinaryHomeScreen> {
                       color: Colors.black,
                     ),
                     title: Text(
-                      'Your Revenve',
+                      'Your Revenue',
                       style: TextStyle(
                         fontFamily: 'Roboto',
                         fontWeight: FontWeight.bold,
@@ -417,8 +416,7 @@ class _MachinaryHomeScreenState extends State<MachinaryHomeScreen> {
                   ),
                   ListTile(
                     leading: FaIcon(
-                      // ignore: deprecated_member_use
-                      FontAwesomeIcons.cogs,
+                      FontAwesomeIcons.gears,
                       color: Colors.black,
                     ),
                     title: Text(

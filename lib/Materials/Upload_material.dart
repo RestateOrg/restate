@@ -74,6 +74,7 @@ class _UploadMaterialState extends State<UploadMaterial> {
       'state': locationInfo?['state'],
       'country': locationInfo?['country'],
       'Images': downloadurls,
+      'status': 'In Stock'
     });
     uploadData2();
   }
@@ -94,6 +95,7 @@ class _UploadMaterialState extends State<UploadMaterial> {
       'state': locationInfo?['state'],
       'country': locationInfo?['country'],
       'Images': downloadurls,
+      'status': 'In Stock'
     });
   }
 

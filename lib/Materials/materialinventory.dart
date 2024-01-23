@@ -2,14 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class MachineryInventory extends StatefulWidget {
-  const MachineryInventory({super.key});
+class MaterialInventory extends StatefulWidget {
+  const MaterialInventory({super.key});
 
   @override
-  State<MachineryInventory> createState() => _MachineryInventoryState();
+  State<MaterialInventory> createState() => _MaterialInventoryState();
 }
 
-class _MachineryInventoryState extends State<MachineryInventory> {
+class _MaterialInventoryState extends State<MaterialInventory> {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   late String useremail; // Use 'late' to initialize later
   late CollectionReference collectionRef; // Initialize later as well
@@ -20,10 +20,8 @@ class _MachineryInventoryState extends State<MachineryInventory> {
     super.initState();
     useremail =
         FirebaseAuth.instance.currentUser?.email ?? ''; // Assign in initState
-    collectionRef = firestore
-        .collection('machinery')
-        .doc(useremail)
-        .collection('inventory');
+    collectionRef =
+        firestore.collection('materials').doc(useremail).collection('items');
     fetchData(); // Fetch data after initialization
   }
 
@@ -72,7 +70,7 @@ class _MachineryInventoryState extends State<MachineryInventory> {
                             color: Colors.black12,
                           ),
                           child: Image.network((snapshot.data()
-                              as Map<String, dynamic>)['image_urls'][0]),
+                              as Map<String, dynamic>)['Images'][0]),
                         ),
                         Column(
                           children: [
@@ -83,7 +81,7 @@ class _MachineryInventoryState extends State<MachineryInventory> {
                                       top: 5.0, left: 8.0, right: 8.0),
                                   child: Text(
                                     (snapshot.data() as Map<String, dynamic>)[
-                                        'machinery_name'],
+                                        'Material_name'],
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: width * 0.04,
@@ -96,10 +94,10 @@ class _MachineryInventoryState extends State<MachineryInventory> {
                                     top: 5.0,
                                     left: 3.0,
                                     right: 7 *
-                                            (17 -
+                                            (15 -
                                                 (snapshot.data() as Map<String,
                                                             dynamic>)[
-                                                        'machinery_name']
+                                                        'Material_name']
                                                     .toString()
                                                     .length
                                                     .toDouble()) +
@@ -114,11 +112,11 @@ class _MachineryInventoryState extends State<MachineryInventory> {
                                     child: Center(
                                         child: Text(
                                       (snapshot.data() as Map<String, dynamic>)[
-                                          'machinery_type'],
+                                          'Material_type'],
                                       style: TextStyle(
                                         fontSize: (snapshot.data() as Map<
                                                             String, dynamic>)[
-                                                        'machinery_type']
+                                                        'Material_type']
                                                     .toString()
                                                     .length <=
                                                 17
@@ -166,23 +164,10 @@ class _MachineryInventoryState extends State<MachineryInventory> {
                                 Align(
                                   alignment: Alignment.topLeft,
                                   child: Padding(
-                                    padding:
-                                        EdgeInsets.only(left: width * 0.025),
-                                    child: Text(
-                                      '₹ ${(snapshot.data() as Map<String, dynamic>)['hourly']} Per Hour',
-                                      style: TextStyle(
-                                          fontSize: width * 0.033,
-                                          fontWeight: FontWeight.w100),
-                                    ),
-                                  ),
-                                ),
-                                Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Padding(
                                     padding: EdgeInsets.only(
-                                        left: width * 0.025, top: width * 0.05),
+                                        left: width * 0.025, top: width * 0.02),
                                     child: Text(
-                                      '₹ ${(snapshot.data() as Map<String, dynamic>)['day']} Per Day',
+                                      '₹ ${(snapshot.data() as Map<String, dynamic>)['Price_per']} Per ${(snapshot.data() as Map<String, dynamic>)['Price_per_unit']}',
                                       style: TextStyle(
                                           fontSize: width * 0.033,
                                           fontWeight: FontWeight.w100),
@@ -215,7 +200,7 @@ class _MachineryInventoryState extends State<MachineryInventory> {
                                             color: (snapshot.data() as Map<
                                                         String,
                                                         dynamic>)['status'] ==
-                                                    'Available'
+                                                    'In Stock'
                                                 ? Colors.green.withOpacity(0.4)
                                                 : Colors.red.withOpacity(0.4),
                                           ),
@@ -232,7 +217,7 @@ class _MachineryInventoryState extends State<MachineryInventory> {
                                                                   as Map<String,
                                                                       dynamic>)[
                                                               'status'] ==
-                                                          'Available'
+                                                          'In Stock'
                                                       ? Colors.green.shade900
                                                       : Colors.red.shade900),
                                             ),
