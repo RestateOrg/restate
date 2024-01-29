@@ -11,7 +11,7 @@ Future<Map<String, String>?> getLocationInfo(String pincode) async {
     final data = jsonDecode(response.body);
 
     if (data['Status'] == 'Success') {
-      final city = data['PostOffice'][0]['District'];
+      final city = data['PostOffice'][0]['Taluk'];
       final state = data['PostOffice'][0]['State'];
       final country = 'India';
       return {'city': city, 'state': state, 'country': country};
