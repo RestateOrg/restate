@@ -61,50 +61,108 @@ class _UploadMachineryState extends State<UploadMachinery> {
     super.dispose();
   }
 
+  void _showDocumentIdPopup(String documentId, String title) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(documentId),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Retry'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showDocumentIdPopup2(String documentId, String title) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(documentId),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+              child: const Text('Continue'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Future<void> uploadData() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     Map<String, String>? locationInfo = await getLocationInfo(_zipCode.text);
-    downloadurls = await uploadImages(images!);
-    DocumentReference projectRef = firestore
-        .collection('machinery')
-        .doc(useremail)
-        .collection('inventory')
-        .doc(_machineryname.text);
-    (machinerytype == "Backhoe Loader")
-        ? await projectRef.set({
-            'machinery_name': _machineryname.text,
-            'brand_name': _brandname.text,
-            'machinery_type': machinerytype,
-            'specifications': _specifications.text,
-            'back_hoe_size': _backhoesize.text,
-            'condition': condition,
-            'city': locationInfo?['city'],
-            'state': locationInfo?['state'],
-            'country': locationInfo?['country'],
-            'hourly': _rentonhourlybasis.text,
-            'day': _rentondaybasis.text,
-            'week': _rentonweeklybasis.text,
-            'month': _rentonmonthlybasis.text,
-            'image_urls': downloadurls,
-            'status': 'Available'
-          })
-        : await projectRef.set({
-            'machinery_name': _machineryname.text,
-            'brand_name': _brandname.text,
-            'machinery_type': machinerytype,
-            'specifications': _specifications.text,
-            'condition': condition,
-            'city': locationInfo?['city'],
-            'state': locationInfo?['state'],
-            'country': locationInfo?['country'],
-            'hourly': _rentonhourlybasis.text,
-            'day': _rentondaybasis.text,
-            'week': _rentonweeklybasis.text,
-            'month': _rentonmonthlybasis.text,
-            'image_urls': downloadurls,
-            'status': 'Available'
-          });
-    uploadData2();
+    try {
+      DocumentReference projectRef = firestore
+          .collection('machinery')
+          .doc(useremail)
+          .collection('inventory')
+          .doc(_machineryname.text);
+
+      if (_machineryname.text.isEmpty ||
+          _brandname.text.isEmpty ||
+          machinerytype!.isEmpty ||
+          _specifications.text.isEmpty ||
+          _zipCode.text.isEmpty ||
+          _rentonhourlybasis.text.isEmpty ||
+          _rentondaybasis.text.isEmpty) {
+        throw Exception("Fields must not be empty");
+      }
+      _showDocumentIdPopup2("Data Upload Sucessful",
+          "Your Material has been uploaded sucessfully");
+      downloadurls = await uploadImages(images!);
+      (machinerytype == "Backhoe Loader")
+          ? await projectRef.set({
+              'machinery_name': _machineryname.text,
+              'brand_name': _brandname.text,
+              'machinery_type': machinerytype,
+              'specifications': _specifications.text,
+              'back_hoe_size': _backhoesize.text,
+              'condition': condition,
+              'city': locationInfo?['city'],
+              'state': locationInfo?['state'],
+              'country': locationInfo?['country'],
+              'hourly': _rentonhourlybasis.text,
+              'day': _rentondaybasis.text,
+              'week': _rentonweeklybasis.text,
+              'month': _rentonmonthlybasis.text,
+              'image_urls': downloadurls,
+              'status': 'Available'
+            })
+          : await projectRef.set({
+              'machinery_name': _machineryname.text,
+              'brand_name': _brandname.text,
+              'machinery_type': machinerytype,
+              'specifications': _specifications.text,
+              'condition': condition,
+              'city': locationInfo?['city'],
+              'state': locationInfo?['state'],
+              'country': locationInfo?['country'],
+              'hourly': _rentonhourlybasis.text,
+              'day': _rentondaybasis.text,
+              'week': _rentonweeklybasis.text,
+              'month': _rentonmonthlybasis.text,
+              'image_urls': downloadurls,
+              'status': 'Available'
+            });
+      uploadData2();
+    } catch (e) {
+      _showDocumentIdPopup(
+          "All Fields Must Not Be Empty", 'Error Uploading Data');
+    }
   }
 
   Future<void> uploadData2() async {
@@ -210,7 +268,6 @@ class _UploadMachineryState extends State<UploadMachinery> {
           GestureDetector(
             onTap: () {
               uploadData();
-              Navigator.pop(context);
             },
             child: Padding(
               padding: EdgeInsets.only(right: width * 0.06),

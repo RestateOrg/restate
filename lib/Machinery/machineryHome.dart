@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class MachineryHome extends StatefulWidget {
@@ -12,8 +13,10 @@ class _MachineryHomeState extends State<MachineryHome> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.amber,
-        body: Center(
-          child: Text("Machinery Home"),
+        body: CupertinoSearchTextField(
+          backgroundColor: Colors.white,
+          borderRadius: BorderRadius.circular(30),
+          padding: EdgeInsets.all(10),
         ));
   }
 }

@@ -11,7 +11,7 @@ class _MachineryStatsState extends State<MachineryStats> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text("Machinery stats"),
+      child: Text("Coming Soon..."),
     );
   }
 }
