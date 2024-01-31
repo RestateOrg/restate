@@ -134,24 +134,22 @@ class _MaterialInventoryState extends State<MaterialInventory> {
                                       padding: EdgeInsets.only(
                                           top: 5.0, left: 8.0, right: 8.0),
                                       child: Text(
-                                        (snapshot.data() as Map<String,
-                                                    dynamic>)['Material_name']
-                                                .substring(
-                                                    0,
-                                                    min<int>(
-                                                        15,
-                                                        (snapshot.data() as Map<
-                                                                    String,
-                                                                    dynamic>)[
-                                                                'Material_name']
-                                                            .length)) +
-                                            ((snapshot.data() as Map<String,
-                                                                dynamic>)[
-                                                            'Material_name']
-                                                        .length >
-                                                    15
-                                                ? "..."
-                                                : ""),
+                                        length >= 15
+                                            ? (snapshot.data() as Map<String,
+                                                            dynamic>)[
+                                                        'Material_name']
+                                                    .substring(
+                                                        0,
+                                                        min<int>(
+                                                            12,
+                                                            (snapshot.data() as Map<
+                                                                        String,
+                                                                        dynamic>)[
+                                                                    'Material_name']
+                                                                .length)) +
+                                                "..."
+                                            : (snapshot.data() as Map<String,
+                                                dynamic>)['Material_name'],
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: width * 0.04,
