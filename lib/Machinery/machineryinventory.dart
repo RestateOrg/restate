@@ -5,6 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 
+import 'package:restate/Machinery/editpage.dart';
+
 class MachineryInventory extends StatefulWidget {
   const MachineryInventory({super.key});
 
@@ -157,40 +159,9 @@ class _MachineryInventoryState extends State<MachineryInventory> {
                                     ),
                                     Padding(
                                       padding: EdgeInsets.only(
-                                          top: 5.0,
-                                          left: 3.0,
-                                          right: length == 1
-                                              ? width * 0.38
-                                              : length == 2
-                                                  ? width * 0.35
-                                                  : length == 3
-                                                      ? width * 0.33
-                                                      : length == 4
-                                                          ? width * 0.30
-                                                          : length == 5
-                                                              ? width * 0.26
-                                                              : length == 6
-                                                                  ? width * 0.24
-                                                                  : length == 7
-                                                                      ? width *
-                                                                          0.22
-                                                                      : length ==
-                                                                              8
-                                                                          ? width *
-                                                                              0.20
-                                                                          : length == 9
-                                                                              ? width * 0.18
-                                                                              : length == 10
-                                                                                  ? width * 0.16
-                                                                                  : length == 11
-                                                                                      ? width * 0.14
-                                                                                      : length == 12
-                                                                                          ? width * 0.12
-                                                                                          : length == 13
-                                                                                              ? width * 0.10
-                                                                                              : length == 14
-                                                                                                  ? width * 0.08
-                                                                                                  : width * 0.05),
+                                        top: 5.0,
+                                        left: 3.0,
+                                      ),
                                       child: Container(
                                         height: width * 0.06,
                                         width: width * 0.17,
@@ -217,16 +188,27 @@ class _MachineryInventoryState extends State<MachineryInventory> {
                                         )),
                                       ),
                                     ),
-                                    Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Padding(
-                                          padding: EdgeInsets.only(
-                                              top: width * 0.015,
-                                              left: width * 0.12),
+                                    Flexible(
+                                      child: Align(
+                                        alignment: AlignmentDirectional(1, 0),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => EditPage(
+                                                    snapshot: snapshot),
+                                                settings: RouteSettings(
+                                                    arguments: snapshot),
+                                              ),
+                                            );
+                                          },
                                           child: Icon(
                                             Icons.edit,
                                             size: 20,
-                                          )),
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                     Align(
                                       alignment: Alignment.centerRight,

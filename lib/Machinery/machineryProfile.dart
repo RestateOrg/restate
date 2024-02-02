@@ -47,6 +47,33 @@ class _MachineryProfileState extends State<MachineryProfile> {
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Colors.amber,
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          // Handle "Help" button action here
+        },
+        backgroundColor: HexColor('#2A2828'),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+        label: Row(
+          children: [
+            FaIcon(
+              FontAwesomeIcons.headphonesSimple,
+              color: Colors.white,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Text(
+                "Help",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Roboto',
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
       body: Stack(
         children: [
           Container(
@@ -323,40 +350,6 @@ class _MachineryProfileState extends State<MachineryProfile> {
                   indent: 0,
                   endIndent: 0,
                 ),
-                Padding(
-                  padding:
-                      EdgeInsets.only(left: width * 0.7, top: width * 0.30),
-                  child: Container(
-                    height: width * 0.12,
-                    width: width * 0.24,
-                    decoration: BoxDecoration(
-                        color: HexColor('#2A2828'),
-                        borderRadius: BorderRadius.circular(30)),
-                    child: Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: FaIcon(
-                            FontAwesomeIcons.headphonesSimple,
-                            color: Colors.white,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              right: 8.0, bottom: 8, top: 8),
-                          child: Text(
-                            "Help",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'Roboto',
-                                fontSize: 16),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                )
               ],
             ),
           )

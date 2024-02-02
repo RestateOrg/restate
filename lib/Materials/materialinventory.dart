@@ -161,38 +161,6 @@ class _MaterialInventoryState extends State<MaterialInventory> {
                                       padding: EdgeInsets.only(
                                         top: 5.0,
                                         left: 3.0,
-                                        right: length == 1
-                                            ? width * 0.30
-                                            : length == 2
-                                                ? width * 0.27
-                                                : length == 3
-                                                    ? width * 0.24
-                                                    : length == 4
-                                                        ? width * 0.21
-                                                        : length == 5
-                                                            ? width * 0.18
-                                                            : length == 6
-                                                                ? width * 0.16
-                                                                : length == 7
-                                                                    ? width *
-                                                                        0.15
-                                                                    : length ==
-                                                                            8
-                                                                        ? width *
-                                                                            0.125
-                                                                        : length ==
-                                                                                9
-                                                                            ? width *
-                                                                                0.10
-                                                                            : length == 10
-                                                                                ? width * 0.08
-                                                                                : length == 11
-                                                                                    ? width * 0.06
-                                                                                    : length == 12
-                                                                                        ? width * 0.04
-                                                                                        : length == 13
-                                                                                            ? width * 0.01
-                                                                                            : 0,
                                       ),
                                       child: Container(
                                         height: width * 0.06,
@@ -220,30 +188,27 @@ class _MaterialInventoryState extends State<MaterialInventory> {
                                         )),
                                       ),
                                     ),
-                                    Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Padding(
-                                          padding: EdgeInsets.only(
-                                              top: width * 0.015,
-                                              left: width * 0.2),
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      EditPage(
-                                                          snapshot: snapshot),
-                                                  settings: RouteSettings(
-                                                      arguments: snapshot),
-                                                ),
-                                              );
-                                            },
-                                            child: Icon(
-                                              Icons.edit,
-                                              size: 20,
-                                            ),
-                                          )),
+                                    Flexible(
+                                      child: Align(
+                                        alignment: AlignmentDirectional(1, 0),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => EditPage(
+                                                    snapshot: snapshot),
+                                                settings: RouteSettings(
+                                                    arguments: snapshot),
+                                              ),
+                                            );
+                                          },
+                                          child: Icon(
+                                            Icons.edit,
+                                            size: 20,
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                     Align(
                                       alignment: Alignment.centerRight,
