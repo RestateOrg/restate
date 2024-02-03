@@ -18,7 +18,10 @@ class _SearchPageState extends State<SearchPage> {
   List<String> machinery = [];
   List<String> materials = [];
   void initState() {
-    create_list();
+    setState(() {
+      create_list();
+    });
+
     super.initState();
   }
 
@@ -32,6 +35,10 @@ class _SearchPageState extends State<SearchPage> {
         List<String> values =
             fields.values.cast<String>().toList(); // Cast to strings
         machinery.addAll(values);
+      });
+    }).then((value) {
+      setState(() {
+        items.addAll(machinery);
       });
     }).catchError((error) {
       // Handle errors here
@@ -52,9 +59,6 @@ class _SearchPageState extends State<SearchPage> {
         items.addAll(materials);
       });
     }).then((value) {
-      setState(() {
-        items.addAll(machinery);
-      });
       FocusScope.of(context).requestFocus(_searchFocusNode);
     }).catchError((error) {
       // Handle errors here

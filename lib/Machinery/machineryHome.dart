@@ -30,7 +30,7 @@ class _MachineryHomeState extends State<MachineryHome> {
                       context,
                       PageRouteBuilder(
                         transitionDuration: Duration(
-                            milliseconds: 300), // Adjust the duration as needed
+                            milliseconds: 200), // Adjust the duration as needed
                         pageBuilder: (_, __, ___) => SearchPage(),
                         transitionsBuilder: (_, animation, __, child) {
                           return FadeTransition(
