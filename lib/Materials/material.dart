@@ -9,7 +9,6 @@ import 'package:restate/Materials/materialinventory.dart';
 import 'package:restate/Materials/materialorder.dart';
 import 'package:restate/Materials/materialstats.dart';
 import 'package:restate/Utils/hexcolor.dart';
-import 'package:restate/screens/signIn.dart';
 
 class MaterialsHomeScreen extends StatefulWidget {
   const MaterialsHomeScreen({super.key});
@@ -443,17 +442,5 @@ class _MaterialsHomeScreenState extends State<MaterialsHomeScreen> {
         ),
       ),
     );
-  }
-}
-
-void _signOut(BuildContext context) async {
-  try {
-    await FirebaseAuth.instance.signOut();
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const LoginView()),
-    );
-  } catch (e) {
-    print("Error signing out: $e");
   }
 }

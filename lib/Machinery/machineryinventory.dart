@@ -21,7 +21,7 @@ class _MachineryInventoryState extends State<MachineryInventory> {
   List<DocumentSnapshot> allSnapshots = [];
   List<DocumentSnapshot> filteredSnapshots = [];
   CollectionReference CollectionRef =
-      FirebaseFirestore.instance.collection('machinery_inventory');
+      FirebaseFirestore.instance.collection('machinery inventory');
   @override
   void initState() {
     super.initState();
@@ -44,6 +44,10 @@ class _MachineryInventoryState extends State<MachineryInventory> {
         children: [
           Container(
             width: width * 0.92,
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.black.withOpacity(0.2)),
+              borderRadius: BorderRadius.circular(30),
+            ),
             child: CupertinoSearchTextField(
               backgroundColor: Colors.white,
               borderRadius: BorderRadius.circular(30),

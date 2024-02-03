@@ -121,7 +121,7 @@ class _UploadMachineryState extends State<UploadMachinery> {
         throw Exception("Fields must not be empty");
       }
       _showDocumentIdPopup2("Data Upload Sucessful",
-          "Your Material has been uploaded sucessfully");
+          "Your Machinery has been uploaded sucessfully");
       downloadurls = await uploadImages(images!);
       (machinerytype == "Backhoe Loader")
           ? await projectRef.set({
@@ -175,7 +175,7 @@ class _UploadMachineryState extends State<UploadMachinery> {
         ? await projectRef.set({
             'machinery_name': _machineryname.text,
             'brand_name': _brandname.text,
-            'machinery type': machinerytype,
+            'machinery_type': machinerytype,
             'specifications': _specifications.text,
             'back_hoe_size': _backhoesize.text,
             'condition': condition,
