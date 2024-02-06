@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:restate/Utils/EmailVerify.dart';
+import 'package:restate/Utils/getlocation.dart';
 import 'package:restate/Utils/hexcolor.dart';
 import 'package:restate/screens/signIn.dart';
 
@@ -94,6 +95,8 @@ class _MaterialRegistrationState extends State<MaterialRegistration> {
   void _storeUserData() async {
     String str = "The Account Was Created Successfully";
     String str2 = "Account Created";
+    Map<String, String>? locationInfo =
+        await getLocationInfo(zipCodeController.text);
     try {
       if (passwordController.text != confirmPasswordController.text) {
         throw Exception("The Passwords Doesn't Match");
@@ -121,9 +124,9 @@ class _MaterialRegistrationState extends State<MaterialRegistration> {
         'email': emailController.text,
         'contactNumber': contactNumberController.text,
         'address': addressController.text,
-        'city': cityController.text,
-        'state': stateController.text,
-        'country': countryController.text,
+        'city': locationInfo?['city'],
+        'state': locationInfo?['state'],
+        'country': locationInfo?['country'],
         'zipCode': zipCodeController.text,
         'companyRegistrationNumber': companyRegistrationNumberController.text,
         'aadhaarNumber': aadhaarNumberController.text,
@@ -415,126 +418,6 @@ class _MaterialRegistrationState extends State<MaterialRegistration> {
                     controller: addressController,
                     decoration: InputDecoration(
                       hintText: 'Enter Your Address',
-                      fillColor: Colors.white,
-                      filled: true,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(23.0),
-                      ),
-                      contentPadding: const EdgeInsets.all(12.0),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.08,
-                top: width * 0.024,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "City",
-                  style: TextStyle(
-                    fontSize: width * 0.039,
-                    fontWeight: FontWeight.w900,
-                    fontFamily: 'Roboto',
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.04,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: SizedBox(
-                  width: width * 0.8,
-                  child: TextField(
-                    controller: cityController,
-                    decoration: InputDecoration(
-                      hintText: 'Enter Your City',
-                      fillColor: Colors.white,
-                      filled: true,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(23.0),
-                      ),
-                      contentPadding: const EdgeInsets.all(12.0),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.08,
-                top: width * 0.024,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "State",
-                  style: TextStyle(
-                    fontSize: width * 0.039,
-                    fontWeight: FontWeight.w900,
-                    fontFamily: 'Roboto',
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.04,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: SizedBox(
-                  width: width * 0.8,
-                  child: TextField(
-                    controller: stateController,
-                    decoration: InputDecoration(
-                      hintText: 'Enter Your State',
-                      fillColor: Colors.white,
-                      filled: true,
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(23.0),
-                      ),
-                      contentPadding: const EdgeInsets.all(12.0),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.08,
-                top: width * 0.024,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Country",
-                  style: TextStyle(
-                    fontSize: width * 0.039,
-                    fontWeight: FontWeight.w900,
-                    fontFamily: 'Roboto',
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.04,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: SizedBox(
-                  width: width * 0.8,
-                  child: TextField(
-                    controller: countryController,
-                    decoration: InputDecoration(
-                      hintText: 'Enter Your country',
                       fillColor: Colors.white,
                       filled: true,
                       border: OutlineInputBorder(

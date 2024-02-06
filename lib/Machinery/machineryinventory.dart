@@ -4,7 +4,8 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
-
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:restate/Machinery/editpage.dart';
 
 class MachineryInventory extends StatefulWidget {
@@ -32,6 +33,11 @@ class _MachineryInventoryState extends State<MachineryInventory> {
         .doc(useremail)
         .collection('inventory');
     fetchData(); // Fetch data after initialization
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // Clear the image cache when the page is popped
+      CachedNetworkImageProvider('', cacheManager: DefaultCacheManager())
+          .evict();
+    });
   }
 
   @override
@@ -127,8 +133,24 @@ class _MachineryInventoryState extends State<MachineryInventory> {
                                     topRight: Radius.circular(12)),
                                 color: Colors.black12,
                               ),
-                              child: Image.network((snapshot.data()
-                                  as Map<String, dynamic>)['image_urls'][0]),
+                              child: CachedNetworkImage(
+                                imageUrl: (snapshot.data()
+                                    as Map<String, dynamic>)['image_urls'][0],
+                                placeholder: (context, url) => Center(
+                                  child: CircularProgressIndicator(
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                        Colors.black.withOpacity(0.5)),
+                                  ),
+                                ),
+                                errorWidget: (context, url, error) => Center(
+                                    child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(Icons.error),
+                                    Text('Error loading image'),
+                                  ],
+                                )),
+                              ),
                             ),
                             Column(
                               children: [

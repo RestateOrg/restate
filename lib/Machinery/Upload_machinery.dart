@@ -140,7 +140,8 @@ class _UploadMachineryState extends State<UploadMachinery> {
               'month': _rentonmonthlybasis.text,
               'zip_code': _zipCode.text,
               'image_urls': downloadurls,
-              'status': 'Available'
+              'status': 'Available',
+              'rating': 0,
             })
           : await projectRef.set({
               'machinery_name': _machineryname.text,
@@ -157,7 +158,8 @@ class _UploadMachineryState extends State<UploadMachinery> {
               'month': _rentonmonthlybasis.text,
               'zip_code': _zipCode.text,
               'image_urls': downloadurls,
-              'status': 'Available'
+              'status': 'Available',
+              'rating': 0,
             });
       uploadData2();
     } catch (e) {

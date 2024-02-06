@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:restate/Machinery/Searchresults.dart';
@@ -12,6 +13,8 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   final FocusNode _searchFocusNode = FocusNode();
+  final User? _user = FirebaseAuth.instance.currentUser;
+  String city = '';
   String search = '';
   List<String> items = [];
   List<String> searchList = [];
@@ -20,9 +23,24 @@ class _SearchPageState extends State<SearchPage> {
   void initState() {
     setState(() {
       create_list();
+      getCity();
     });
 
     super.initState();
+  }
+
+  void getCity() {
+    var userDocument = FirebaseFirestore.instance
+        .collection('machinery')
+        .doc(_user?.email)
+        .collection('userinformation')
+        .doc('userinfo')
+        .get();
+    userDocument.then((value) {
+      setState(() {
+        city = value['city'];
+      });
+    });
   }
 
   void create_list() {
@@ -127,10 +145,15 @@ class _SearchPageState extends State<SearchPage> {
                   if (machinery.contains(searchList[index])) {
                     CollectionReference reference = FirebaseFirestore.instance
                         .collection('machinery inventory');
-                    Query query = reference.where(
-                      'machinery_type',
-                      isEqualTo: searchList[index],
-                    );
+                    Query query = reference
+                        .where(
+                          'machinery_type',
+                          isEqualTo: searchList[index],
+                        )
+                        .where(
+                          'city',
+                          isEqualTo: city,
+                        );
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -141,10 +164,16 @@ class _SearchPageState extends State<SearchPage> {
                   } else {
                     CollectionReference reference = FirebaseFirestore.instance
                         .collection('materials_inventory');
-                    Query query = reference.where(
-                      'Material_type',
-                      isEqualTo: searchList[index],
-                    );
+                    Query query = reference
+                        .where(
+                          'Material_type',
+                          isEqualTo: searchList[index],
+                        )
+                        .where(
+                          'city',
+                          isEqualTo: city,
+                        );
+
                     Navigator.push(
                       context,
                       MaterialPageRoute(

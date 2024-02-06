@@ -3,6 +3,7 @@ import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:restate/Utils/getlocation.dart';
 import 'package:restate/Utils/hexcolor.dart';
 
 class EditPage extends StatefulWidget {
@@ -98,7 +99,9 @@ class _EditPageState extends State<EditPage> {
         ),
         actions: [
           GestureDetector(
-            onTap: () {
+            onTap: () async {
+              Map<String, String>? locationInfo =
+                  await getLocationInfo(_zipCode.text);
               FirebaseFirestore.instance
                   .collection('machinery')
                   .doc(useremail)
@@ -112,6 +115,9 @@ class _EditPageState extends State<EditPage> {
                 'hourly': _rentonhourlybasis.text,
                 'month': _rentonmonthlybasis.text,
                 'week': _rentonweeklybasis.text,
+                'city': locationInfo?['city'],
+                'state': locationInfo?['state'],
+                'country': locationInfo?['country'],
                 'specifications': _specifications.text,
                 if (data.containsKey('backhoe_size'))
                   'backhoe_size': _backhoesize.text,
@@ -129,6 +135,9 @@ class _EditPageState extends State<EditPage> {
                       'hourly': _rentonhourlybasis.text,
                       'month': _rentonmonthlybasis.text,
                       'week': _rentonweeklybasis.text,
+                      'city': locationInfo?['city'],
+                      'state': locationInfo?['state'],
+                      'country': locationInfo?['country'],
                       'specifications': _specifications.text,
                       if (data.containsKey('backhoe_size'))
                         'backhoe_size': _backhoesize.text,
