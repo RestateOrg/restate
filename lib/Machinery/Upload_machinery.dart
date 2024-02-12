@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:restate/Utils/getlocation.dart';
 import 'package:restate/Utils/hexcolor.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -37,8 +38,10 @@ class _UploadMachineryState extends State<UploadMachinery> {
   TextEditingController _rentonweeklybasis = TextEditingController();
   TextEditingController _rentonmonthlybasis = TextEditingController();
   TextEditingController _zipCode = TextEditingController();
+  TextEditingController _deliveredwithin = TextEditingController();
   late List<String> downloadurls;
   String condition = 'Excellent';
+
   @override
   void initState() {
     super.initState();
@@ -56,6 +59,8 @@ class _UploadMachineryState extends State<UploadMachinery> {
     _rentondaybasis.dispose();
     _rentonweeklybasis.dispose();
     _rentonmonthlybasis.dispose();
+    _zipCode.dispose();
+    _deliveredwithin.dispose();
     super.dispose();
   }
 
@@ -103,6 +108,9 @@ class _UploadMachineryState extends State<UploadMachinery> {
   Future<void> uploadData() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     Map<String, String>? locationInfo = await getLocationInfo(_zipCode.text);
+    Timestamp myTimeStamp = Timestamp.now();
+    DateTime dateTime = myTimeStamp.toDate();
+    String formattedDate = DateFormat('yyyy-MM-dd').format(dateTime);
     try {
       DocumentReference projectRef = firestore
           .collection('machinery')
@@ -142,6 +150,9 @@ class _UploadMachineryState extends State<UploadMachinery> {
               'image_urls': downloadurls,
               'status': 'Available',
               'rating': 0,
+              'rating_count': 0,
+              'timestamp': formattedDate,
+              'delivered_within': _deliveredwithin.text,
             })
           : await projectRef.set({
               'machinery_name': _machineryname.text,
@@ -160,6 +171,9 @@ class _UploadMachineryState extends State<UploadMachinery> {
               'image_urls': downloadurls,
               'status': 'Available',
               'rating': 0,
+              'rating_count': 0,
+              'timestamp': formattedDate,
+              'delivered_within': _deliveredwithin.text,
             });
       uploadData2();
     } catch (e) {
@@ -173,6 +187,10 @@ class _UploadMachineryState extends State<UploadMachinery> {
     Map<String, String>? locationInfo = await getLocationInfo(_zipCode.text);
     DocumentReference projectRef =
         firestore.collection('machinery inventory').doc();
+    Timestamp myTimeStamp = Timestamp.now();
+    DateTime dateTime = myTimeStamp.toDate();
+    String formattedDate = DateFormat('yyyy-MM-dd').format(dateTime);
+
     (machinerytype == "Backhoe Loader")
         ? await projectRef.set({
             'machinery_name': _machineryname.text,
@@ -189,7 +207,12 @@ class _UploadMachineryState extends State<UploadMachinery> {
             'week': _rentonweeklybasis.text,
             'month': _rentonmonthlybasis.text,
             'image_urls': downloadurls,
-            'status': 'Available'
+            'status': 'Available',
+            'rating': 0,
+            'rating_count': 0,
+            'useremail': useremail,
+            'timestamp': formattedDate,
+            'delivered_within': _deliveredwithin.text,
           })
         : await projectRef.set({
             'machinery_name': _machineryname.text,
@@ -205,7 +228,12 @@ class _UploadMachineryState extends State<UploadMachinery> {
             'week': _rentonweeklybasis.text,
             'month': _rentonmonthlybasis.text,
             'image_urls': downloadurls,
-            'status': 'Available'
+            'status': 'Available',
+            'rating': 0,
+            'rating_count': 0,
+            'useremail': useremail,
+            'timestamp': formattedDate,
+            'delivered_within': _deliveredwithin.text,
           });
   }
 
@@ -1140,6 +1168,45 @@ class _UploadMachineryState extends State<UploadMachinery> {
                     controller: _zipCode,
                     decoration: InputDecoration(
                       hintText: 'Enter the Zipcode',
+                      hintStyle: TextStyle(fontSize: 14.0),
+                      contentPadding: const EdgeInsets.only(
+                        left: 5,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                left: width * 0.06,
+                top: width * 0.024,
+              ),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Delivered within",
+                  style: TextStyle(
+                    fontSize: width * 0.045,
+                    fontWeight: FontWeight.w900,
+                    fontFamily: 'Roboto',
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                left: width * 0.02,
+              ),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding:
+                      EdgeInsets.only(right: width * 0.04, left: width * 0.04),
+                  child: TextField(
+                    controller: _deliveredwithin,
+                    decoration: InputDecoration(
+                      hintText: 'Enter how much time will it take to deliver',
                       hintStyle: TextStyle(fontSize: 14.0),
                       contentPadding: const EdgeInsets.only(
                         left: 5,

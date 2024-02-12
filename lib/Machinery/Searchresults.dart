@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:restate/Machinery/ProductDetails.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -22,6 +23,21 @@ String? useremail = FirebaseAuth.instance.currentUser?.email;
 List<String> likedItemIds = [];
 
 class _SearchresultsState extends State<Searchresults> {
+  @override
+  void initState() {
+    super.initState();
+    firestore
+        .collection(widget.type)
+        .doc(useremail)
+        .collection('wishlist')
+        .get()
+        .then((snapshot) {
+      for (DocumentSnapshot ds in snapshot.docs) {
+        likedItemIds.add(ds.id);
+      }
+    });
+  }
+
   @override
   void dispose() {
     // Clear the image cache when the page is disposed
@@ -67,10 +83,13 @@ class _SearchresultsState extends State<Searchresults> {
       ),
       body: widget.type == 'machinery'
           ? StreamBuilder<QuerySnapshot>(
-              stream: widget.query.snapshots(),
+              stream: widget.query
+                  .orderBy('timestamp', descending: true)
+                  .snapshots(),
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.hasError) {
+                  print(snapshot.error);
                   return Text('Something went wrong');
                 }
                 if (snapshot.connectionState == ConnectionState.waiting) {
@@ -163,15 +182,28 @@ class _SearchresultsState extends State<Searchresults> {
                                                       width:
                                                           constraints.maxWidth *
                                                               0.71,
+                                                      height: 40,
                                                       child: Text(
-                                                        "${data['specifications'].toUpperCase()} ${data['back_hoe_size']} ${data['machinery_type']} ( ${data['brand_name'].toUpperCase()} )"
-                                                                    .length <
-                                                                38
+                                                        data.containsKey(
+                                                                'back_hoe_size')
                                                             ? "${data['specifications'].toUpperCase()} ${data['back_hoe_size']} ${data['machinery_type']} ( ${data['brand_name'].toUpperCase()} )"
-                                                            : "${data['specifications'].toUpperCase()} ${data['back_hoe_size']} ${data['machinery_type']} ( ${data['brand_name'].toUpperCase()} )"
-                                                                    .substring(
-                                                                        0, 35) +
-                                                                '...',
+                                                                        .length <
+                                                                    38
+                                                                ? "${data['specifications'].toUpperCase()} ${data['back_hoe_size']} ${data['machinery_type']} ( ${data['brand_name'].toUpperCase()} )"
+                                                                : "${data['specifications'].toUpperCase()} ${data['back_hoe_size']} ${data['machinery_type']} ( ${data['brand_name'].toUpperCase()} )"
+                                                                        .substring(
+                                                                            0,
+                                                                            35) +
+                                                                    '...'
+                                                            : "${data['specifications'].toUpperCase()} ${data['machinery_type']} ( ${data['brand_name'].toUpperCase()} )"
+                                                                        .length <
+                                                                    38
+                                                                ? "${data['specifications'].toUpperCase()} ${data['machinery_type']} ( ${data['brand_name'].toUpperCase()} )"
+                                                                : "${data['specifications'].toUpperCase()} ${data['machinery_type']} ( ${data['brand_name'].toUpperCase()} )"
+                                                                        .substring(
+                                                                            0,
+                                                                            35) +
+                                                                    '...',
                                                         style: TextStyle(
                                                           fontSize: 16,
                                                           fontFamily: 'Roboto',
@@ -365,7 +397,7 @@ class _SearchresultsState extends State<Searchresults> {
                           ),
                         ),
                         child: Card(
-                          elevation: 0,
+                          elevation: 2,
                           clipBehavior: Clip.antiAliasWithSaveLayer,
                           color: Colors.amber,
                           shape: RoundedRectangleBorder(
@@ -577,37 +609,47 @@ class _SearchresultsState extends State<Searchresults> {
                                                     child: Align(
                                                         alignment:
                                                             AlignmentDirectional(
-                                                                0.9, 0),
+                                                                0.85, 0),
                                                         child: GestureDetector(
                                                           onTap: () async {
                                                             isLiked
-                                                                ? ScaffoldMessenger.of(
-                                                                        context)
-                                                                    .showSnackBar(
-                                                                    SnackBar(
-                                                                      content: Text(
-                                                                          "Removed from wishlist"),
-                                                                      duration: Duration(
-                                                                          seconds:
-                                                                              1),
-                                                                      backgroundColor:
-                                                                          Colors
-                                                                              .black,
-                                                                    ),
+                                                                ? Fluttertoast
+                                                                    .showToast(
+                                                                    msg:
+                                                                        "Removed from wishlist",
+                                                                    toastLength:
+                                                                        Toast
+                                                                            .LENGTH_SHORT,
+                                                                    gravity:
+                                                                        ToastGravity
+                                                                            .BOTTOM,
+                                                                    timeInSecForIosWeb:
+                                                                        1,
+                                                                    backgroundColor:
+                                                                        Colors
+                                                                            .black,
+                                                                    textColor:
+                                                                        Colors
+                                                                            .white,
                                                                   )
-                                                                : ScaffoldMessenger.of(
-                                                                        context)
-                                                                    .showSnackBar(
-                                                                    SnackBar(
-                                                                      content: Text(
-                                                                          "Added to wishlist"),
-                                                                      duration: Duration(
-                                                                          seconds:
-                                                                              1),
-                                                                      backgroundColor:
-                                                                          Colors
-                                                                              .black,
-                                                                    ),
+                                                                : Fluttertoast
+                                                                    .showToast(
+                                                                    msg:
+                                                                        "Added to wishlist",
+                                                                    toastLength:
+                                                                        Toast
+                                                                            .LENGTH_SHORT,
+                                                                    gravity:
+                                                                        ToastGravity
+                                                                            .BOTTOM,
+                                                                    timeInSecForIosWeb:
+                                                                        1,
+                                                                    backgroundColor:
+                                                                        Colors
+                                                                            .black,
+                                                                    textColor:
+                                                                        Colors
+                                                                            .white,
                                                                   );
                                                             String itemId =
                                                                 snapshot
@@ -622,6 +664,7 @@ class _SearchresultsState extends State<Searchresults> {
                                                               likedItemIds
                                                                   .remove(
                                                                       itemId);
+                                                              setState(() {});
                                                               await firestore
                                                                   .collection(
                                                                       'machinery')
@@ -648,6 +691,7 @@ class _SearchresultsState extends State<Searchresults> {
                                                               // If item is not liked, like it
                                                               likedItemIds
                                                                   .add(itemId);
+                                                              setState(() {});
                                                               await firestore
                                                                   .collection(
                                                                       'machinery')
@@ -657,33 +701,18 @@ class _SearchresultsState extends State<Searchresults> {
                                                                       'wishlist')
                                                                   .add(data);
                                                             }
-                                                            setState(() {});
                                                           },
-                                                          child:
-                                                              AnimatedSwitcher(
-                                                            duration: Duration(
-                                                                milliseconds:
-                                                                    700),
-                                                            child: Icon(
-                                                              isLiked
-                                                                  ? FontAwesomeIcons
-                                                                      .solidHeart
-                                                                  : FontAwesomeIcons
-                                                                      .heart,
-                                                              key: UniqueKey(),
-                                                              color: isLiked
-                                                                  ? Colors.pink
-                                                                  : null, // Change color based on liked state
-                                                            ),
-                                                            transitionBuilder:
-                                                                (child,
-                                                                    animation) {
-                                                              return ScaleTransition(
-                                                                scale:
-                                                                    animation,
-                                                                child: child,
-                                                              );
-                                                            },
+                                                          child: Icon(
+                                                            isLiked
+                                                                ? FontAwesomeIcons
+                                                                    .solidHeart
+                                                                : FontAwesomeIcons
+                                                                    .solidHeart,
+                                                            key: UniqueKey(),
+                                                            color: isLiked
+                                                                ? Colors.pink
+                                                                : Colors
+                                                                    .grey, // Change color based on liked state
                                                           ),
                                                         )),
                                                   ),

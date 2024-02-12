@@ -26,6 +26,7 @@ class _MachineryInventoryState extends State<MachineryInventory> {
   @override
   void initState() {
     super.initState();
+
     useremail =
         FirebaseAuth.instance.currentUser?.email ?? ''; // Assign in initState
     collectionRef = firestore
@@ -160,14 +161,14 @@ class _MachineryInventoryState extends State<MachineryInventory> {
                                       padding: EdgeInsets.only(
                                           top: 5.0, left: 8.0, right: 8.0),
                                       child: Text(
-                                        length > 15
+                                        length > 19
                                             ? (snapshot.data() as Map<String,
                                                             dynamic>)[
                                                         'machinery_name']
                                                     .substring(
                                                         0,
                                                         min<int>(
-                                                            13,
+                                                            16,
                                                             (snapshot.data() as Map<
                                                                         String,
                                                                         dynamic>)[
@@ -434,7 +435,8 @@ class _MachineryInventoryState extends State<MachineryInventory> {
 
   Future<void> fetchData() async {
     try {
-      final querySnapshot = await collectionRef.get();
+      final querySnapshot =
+          await collectionRef.orderBy('timestamp', descending: true).get();
       setState(() {
         allSnapshots = querySnapshot.docs;
         filteredSnapshots = querySnapshot.docs;

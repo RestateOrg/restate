@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:restate/Utils/getlocation.dart';
 import 'package:restate/Utils/hexcolor.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -98,6 +99,9 @@ class _UploadMaterialState extends State<UploadMaterial> {
   Future<void> uploadData() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     Map<String, String>? locationInfo = await getLocationInfo(_zipCode.text);
+    Timestamp myTimeStamp = Timestamp.now();
+    DateTime dateTime = myTimeStamp.toDate();
+    String formattedDate = DateFormat('yyyy-MM-dd').format(dateTime);
     try {
       if (_materialname.text.isEmpty ||
           _priceper.text.isEmpty ||
@@ -129,6 +133,8 @@ class _UploadMaterialState extends State<UploadMaterial> {
         'Images': downloadurls,
         'status': 'In Stock',
         'rating': 0,
+        'rating_count': 0,
+        'timestamp': formattedDate,
       });
       uploadData2();
     } catch (e) {
@@ -142,6 +148,9 @@ class _UploadMaterialState extends State<UploadMaterial> {
     Map<String, String>? locationInfo = await getLocationInfo(_zipCode.text);
     DocumentReference projectRef =
         firestore.collection('materials_inventory').doc();
+    Timestamp myTimeStamp = Timestamp.now();
+    DateTime dateTime = myTimeStamp.toDate();
+    String formattedDate = DateFormat('yyyy-MM-dd').format(dateTime);
     try {
       projectRef.set({
         'Material_name': _materialname.text,
@@ -156,6 +165,9 @@ class _UploadMaterialState extends State<UploadMaterial> {
         'Images': downloadurls,
         'status': 'In Stock',
         'rating': 0,
+        'rating_count': 0,
+        'useremail': useremail,
+        'timestamp': formattedDate,
       });
     } catch (e) {}
   }

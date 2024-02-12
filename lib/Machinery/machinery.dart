@@ -12,14 +12,14 @@ import 'package:restate/Utils/hexcolor.dart';
 import 'package:restate/screens/signIn.dart';
 
 class MachinaryHomeScreen extends StatefulWidget {
-  const MachinaryHomeScreen({super.key});
+  final int initialSelectedIndex;
+  const MachinaryHomeScreen({required this.initialSelectedIndex});
 
   @override
   State<MachinaryHomeScreen> createState() => _MachinaryHomeScreenState();
 }
 
 class _MachinaryHomeScreenState extends State<MachinaryHomeScreen> {
-  int _selectedIndex = 0;
   double selectedIconScale = 1.2;
   double unselectedIconScale = 1.0;
   final screens = [
@@ -30,6 +30,11 @@ class _MachinaryHomeScreenState extends State<MachinaryHomeScreen> {
   ];
   // ignore: non_constant_identifier_names
   final User = FirebaseAuth.instance.currentUser;
+  int _selectedIndex = 0;
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.initialSelectedIndex;
+  }
 
   Future<String?> getUsername() async {
     String? username;

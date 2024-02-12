@@ -50,7 +50,6 @@ class _UploadProjectState extends State<UploadProject> {
       await projectRef.set({
         'fromdate': _fromdate.text,
         'todate': _todate.text,
-        'duration': _duration.text,
         'pricewilling': _pricewilling.text,
         'quantity': _quantity.text,
         'deliverydate': _deliverydate.text,
@@ -97,7 +96,6 @@ class _UploadProjectState extends State<UploadProject> {
       await projectRef.set({
         'fromdate': _fromdate.text,
         'todate': _todate.text,
-        'duration': _duration.text,
         'pricewilling': _pricewilling.text,
         'quantity': _quantity.text,
         'deliverydate': _deliverydate.text,

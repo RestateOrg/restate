@@ -9,6 +9,7 @@ import 'package:restate/firebase_options.dart';
 import 'package:restate/screens/chooseUserType.dart';
 import 'package:restate/screens/home.dart';
 import 'package:restate/screens/signIn.dart';
+import 'package:go_router/go_router.dart';
 
 void main() {
   runApp(const MyApp());
@@ -23,7 +24,9 @@ class MyApp extends StatelessWidget {
       title: 'Restate',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.amber),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.amber,
+        ),
         useMaterial3: true,
       ),
       home: const Begin(),
@@ -66,7 +69,10 @@ class _BeginState extends State<Begin> {
       } else if (userRole == 'Machinery') {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const MachinaryHomeScreen()),
+          MaterialPageRoute(
+              builder: (context) => const MachinaryHomeScreen(
+                    initialSelectedIndex: 0,
+                  )),
         );
       } else if (userRole == 'Material') {
         Navigator.pushReplacement(

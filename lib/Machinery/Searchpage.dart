@@ -153,7 +153,8 @@ class _SearchPageState extends State<SearchPage> {
                         .where(
                           'city',
                           isEqualTo: city,
-                        );
+                        )
+                        .where('status', isEqualTo: "Available");
                     Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -172,7 +173,8 @@ class _SearchPageState extends State<SearchPage> {
                         .where(
                           'city',
                           isEqualTo: city,
-                        );
+                        )
+                        .where('status', isEqualTo: "In Stock");
 
                     Navigator.push(
                       context,
