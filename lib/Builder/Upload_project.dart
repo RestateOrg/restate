@@ -34,9 +34,9 @@ class _UploadProjectState extends State<UploadProject> {
   List<List<String>> machineryList = [];
   File? _image;
   String? useremail = FirebaseAuth.instance.currentUser?.email;
-  late String imageurl;
+
   Future<void> uploadData() async {
-    imageurl = await _getimageUrl();
+    String imageurl = await _getimageUrl();
     Map<String, String>? locationInfo = await getLocationInfo(_zipCode.text);
     try {
       // Get a reference to the Firestore database
@@ -50,6 +50,7 @@ class _UploadProjectState extends State<UploadProject> {
       await projectRef.set({
         'fromdate': _fromdate.text,
         'todate': _todate.text,
+        'duration': _duration.text,
         'pricewilling': _pricewilling.text,
         'quantity': _quantity.text,
         'deliverydate': _deliverydate.text,
@@ -62,7 +63,6 @@ class _UploadProjectState extends State<UploadProject> {
         'siteconditions': _siteconditions.text,
         'deliveryandpickup': _deliveryandpickup.text,
         'imageURl': imageurl,
-        'status': 'ongoing'
       });
       // Upload materialList and machineryList to Firestore
       for (List<String> material in materialList) {
@@ -86,6 +86,7 @@ class _UploadProjectState extends State<UploadProject> {
   }
 
   Future<void> uploadData2() async {
+    String imageurl = await _getimageUrl();
     try {
       // Get a reference to the Firestore database
       Map<String, String>? locationInfo = await getLocationInfo(_zipCode.text);
@@ -96,6 +97,7 @@ class _UploadProjectState extends State<UploadProject> {
       await projectRef.set({
         'fromdate': _fromdate.text,
         'todate': _todate.text,
+        'duration': _duration.text,
         'pricewilling': _pricewilling.text,
         'quantity': _quantity.text,
         'deliverydate': _deliverydate.text,
@@ -109,7 +111,6 @@ class _UploadProjectState extends State<UploadProject> {
         'deliveryandpickup': _deliveryandpickup.text,
         'email': useremail,
         'imageURl': imageurl,
-        'status': 'ongoing'
       });
       // Upload materialList and machineryList to Firestore
       for (List<String> material in materialList) {

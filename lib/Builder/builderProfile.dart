@@ -107,7 +107,7 @@ class _BuilderProfilesState extends State<BuilderProfiles> {
                   children: [
                     Padding(
                       padding: EdgeInsets.only(
-                        left: width * 0.79,
+                        left: width * 0.8,
                         top: width * 0.185,
                       ),
                       child: Text(
@@ -119,7 +119,7 @@ class _BuilderProfilesState extends State<BuilderProfiles> {
                     ),
                     Padding(
                       padding: EdgeInsets.only(
-                        left: 7,
+                        left: width * 0.04,
                         top: width * 0.185,
                       ),
                       child: Text(
@@ -191,13 +191,13 @@ class _BuilderProfilesState extends State<BuilderProfiles> {
                     Padding(
                       padding: EdgeInsets.only(
                           left: width * 0.07, bottom: width * 0.03),
-                      child: FaIcon(FontAwesomeIcons.box),
+                      child: FaIcon(FontAwesomeIcons.productHunt),
                     ),
                     Padding(
                       padding: EdgeInsets.only(
                           left: width * 0.02, bottom: width * 0.03),
                       child: Text(
-                        'Your Items',
+                        'Your Projects',
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: width * 0.04),
@@ -205,7 +205,7 @@ class _BuilderProfilesState extends State<BuilderProfiles> {
                     ),
                     Padding(
                         padding: EdgeInsets.only(
-                            left: width * 0.57, bottom: width * 0.03),
+                            left: width * 0.52, bottom: width * 0.03),
                         child: FaIcon(FontAwesomeIcons.angleRight)),
                   ]),
                 ),
