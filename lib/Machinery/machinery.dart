@@ -114,7 +114,7 @@ class _MachinaryHomeScreenState extends State<MachinaryHomeScreen> {
         items: [
           BottomNavigationBarItem(
             icon: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
+              padding: EdgeInsets.symmetric(horizontal: 2.0, vertical: 5.0),
               child: GestureDetector(
                 onTap: () => setState(() => _selectedIndex = 0),
                 child: AnimatedContainer(
@@ -128,10 +128,14 @@ class _MachinaryHomeScreenState extends State<MachinaryHomeScreen> {
                           ? selectedIconScale
                           : unselectedIconScale,
                     ),
-                  child: FaIcon(
-                    FontAwesomeIcons.houseChimney,
-                    color:
-                        _selectedIndex == 0 ? Colors.amber : Color(0xFFE8E8E8),
+                  child: Container(
+                    padding: EdgeInsets.all(12),
+                    child: FaIcon(
+                      FontAwesomeIcons.houseChimney,
+                      color: _selectedIndex == 0
+                          ? Colors.amber
+                          : Color(0xFFE8E8E8),
+                    ),
                   ),
                 ),
               ),
@@ -140,7 +144,7 @@ class _MachinaryHomeScreenState extends State<MachinaryHomeScreen> {
           ),
           BottomNavigationBarItem(
             icon: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
+              padding: EdgeInsets.symmetric(horizontal: 2.0, vertical: 5.0),
               child: GestureDetector(
                 onTap: () => setState(() => _selectedIndex = 1),
                 child: AnimatedContainer(
@@ -154,10 +158,14 @@ class _MachinaryHomeScreenState extends State<MachinaryHomeScreen> {
                           ? selectedIconScale
                           : unselectedIconScale,
                     ),
-                  child: FaIcon(
-                    FontAwesomeIcons.clipboardList,
-                    color:
-                        _selectedIndex == 1 ? Colors.amber : Color(0xFFE8E8E8),
+                  child: Container(
+                    padding: EdgeInsets.all(12),
+                    child: FaIcon(
+                      FontAwesomeIcons.clipboardList,
+                      color: _selectedIndex == 1
+                          ? Colors.amber
+                          : Color(0xFFE8E8E8),
+                    ),
                   ),
                 ),
               ),
@@ -166,7 +174,7 @@ class _MachinaryHomeScreenState extends State<MachinaryHomeScreen> {
           ),
           BottomNavigationBarItem(
             icon: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
+              padding: EdgeInsets.symmetric(horizontal: 2.0, vertical: 5.0),
               child: GestureDetector(
                 onTap: () => setState(() => _selectedIndex = 2),
                 child: AnimatedContainer(
@@ -180,10 +188,14 @@ class _MachinaryHomeScreenState extends State<MachinaryHomeScreen> {
                           ? selectedIconScale
                           : unselectedIconScale,
                     ),
-                  child: FaIcon(
-                    FontAwesomeIcons.chartColumn,
-                    color:
-                        _selectedIndex == 2 ? Colors.amber : Color(0xFFE8E8E8),
+                  child: Container(
+                    padding: EdgeInsets.all(12),
+                    child: FaIcon(
+                      FontAwesomeIcons.chartColumn,
+                      color: _selectedIndex == 2
+                          ? Colors.amber
+                          : Color(0xFFE8E8E8),
+                    ),
                   ),
                 ),
               ),
@@ -192,7 +204,7 @@ class _MachinaryHomeScreenState extends State<MachinaryHomeScreen> {
           ),
           BottomNavigationBarItem(
             icon: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 2.0, vertical: 2.0),
+              padding: EdgeInsets.symmetric(horizontal: 2.0, vertical: 5.0),
               child: GestureDetector(
                 onTap: () => setState(() => _selectedIndex = 3),
                 child: AnimatedContainer(
@@ -206,10 +218,14 @@ class _MachinaryHomeScreenState extends State<MachinaryHomeScreen> {
                           ? selectedIconScale
                           : unselectedIconScale,
                     ),
-                  child: FaIcon(
-                    FontAwesomeIcons.box,
-                    color:
-                        _selectedIndex == 3 ? Colors.amber : Color(0xFFE8E8E8),
+                  child: Container(
+                    padding: EdgeInsets.all(12),
+                    child: FaIcon(
+                      FontAwesomeIcons.box,
+                      color: _selectedIndex == 3
+                          ? Colors.amber
+                          : Color(0xFFE8E8E8),
+                    ),
                   ),
                 ),
               ),

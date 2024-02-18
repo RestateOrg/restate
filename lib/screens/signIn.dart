@@ -21,6 +21,7 @@ class _LoginViewState extends State<LoginView> {
   late final TextEditingController email;
   late final TextEditingController password;
   bool _isPasswordVisible = false;
+  bool _showLoading = false;
   @override
   void initState() {
     email = TextEditingController();
@@ -149,6 +150,9 @@ class _LoginViewState extends State<LoginView> {
                           final _email = email.text;
                           final _password = password.text;
                           try {
+                            setState(() {
+                              _showLoading = true; // Set _showLoading to true
+                            });
                             await FirebaseAuth.instance
                                 .signInWithEmailAndPassword(
                                     email: _email, password: _password);
@@ -208,6 +212,10 @@ class _LoginViewState extends State<LoginView> {
                                   "Incorrect Password");
                             }
                             print(e.code);
+                          } finally {
+                            setState(() {
+                              _showLoading = false; // Set _showLoading to false
+                            });
                           }
                         },
                         style: TextButton.styleFrom(
@@ -219,9 +227,20 @@ class _LoginViewState extends State<LoginView> {
                             borderRadius: BorderRadius.circular(25.0),
                           ),
                         ),
-                        child: const Text(
-                          'Login',
-                          style: TextStyle(fontSize: 18.0),
+                        child: Column(
+                          children: [
+                            const Text(
+                              'Login',
+                              style: TextStyle(fontSize: 18.0),
+                            ),
+                            Builder(builder: (context) {
+                              return _showLoading
+                                  ? Center(
+                                      child: CircularProgressIndicator(),
+                                    )
+                                  : SizedBox();
+                            }),
+                          ],
                         ),
                       ),
                       const SizedBox(

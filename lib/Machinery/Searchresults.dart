@@ -128,7 +128,7 @@ class _SearchresultsState extends State<Searchresults> {
                           clipBehavior: Clip.antiAliasWithSaveLayer,
                           color: Colors.amber,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(0),
                           ),
                           child: LayoutBuilder(
                             builder: (BuildContext context,
@@ -401,7 +401,7 @@ class _SearchresultsState extends State<Searchresults> {
                           clipBehavior: Clip.antiAliasWithSaveLayer,
                           color: Colors.amber,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(0),
                           ),
                           child: LayoutBuilder(
                             builder: (BuildContext context,

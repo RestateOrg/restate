@@ -6,6 +6,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:restate/Builder/Upload_project.dart';
+import 'package:restate/Machinery/Buynow.dart';
 import 'package:restate/Machinery/DeliveryInstruction.dart';
 import 'package:restate/Machinery/Searchpage.dart';
 import 'package:restate/Machinery/Searchresults.dart';
@@ -30,6 +31,7 @@ class _ProductDetailsState extends State<ProductDetails> {
   bool isinCart = false;
   String city = '';
   String zipcode = '';
+  String location = '';
   String description = '';
   int _selectedIndex = 0;
   List<QueryDocumentSnapshot> deliverySnapshots = [];
@@ -75,7 +77,11 @@ class _ProductDetailsState extends State<ProductDetails> {
         );
       }
     } else {
-      print('Buy Now');
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  BuyNow(data: widget.data, type: widget.type)));
     }
   }
 
@@ -215,7 +221,7 @@ class _ProductDetailsState extends State<ProductDetails> {
               label: 'Buy Now',
             ),
           ],
-          selectedItemColor: Colors.amber,
+          selectedItemColor: Colors.amber[600],
           onTap: _onItemTapped,
           currentIndex: _selectedIndex,
         ),
@@ -500,43 +506,108 @@ class _ProductDetailsState extends State<ProductDetails> {
                             ),
                             Padding(
                               padding:
-                                  const EdgeInsets.only(left: 8.0, top: 4.0),
+                                  const EdgeInsets.only(left: 15.0, top: 4.0),
                               child: Align(
-                                  alignment: AlignmentDirectional(-0.95, -0.7),
-                                  child: RichText(
-                                    text: TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text: '₹ ${widget.data['hourly']} / ',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Roboto',
+                                  alignment: AlignmentDirectional(-0.9, -0.7),
+                                  child: Row(
+                                    children: [
+                                      RichText(
+                                        text: TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text:
+                                                  '₹ ${widget.data['hourly']} / ',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold,
+                                                fontFamily: 'Roboto',
+                                              ),
+                                            ),
+                                            TextSpan(
+                                              text: 'Hour',
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: const Color.fromARGB(
+                                                      255, 195, 146, 0),
+                                                  fontFamily: 'Roboto'),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Spacer(),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(right: 8.0),
+                                        child: RichText(
+                                          text: TextSpan(
+                                            children: [
+                                              TextSpan(
+                                                text:
+                                                    '₹ ${widget.data['week']} / ',
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontFamily: 'Roboto',
+                                                ),
+                                              ),
+                                              TextSpan(
+                                                text: 'Week',
+                                                style: TextStyle(
+                                                    fontSize: 16,
+                                                    color: const Color.fromARGB(
+                                                        255, 195, 146, 0),
+                                                    fontFamily: 'Roboto'),
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                        TextSpan(
-                                          text: 'Hour',
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              color: const Color.fromARGB(
-                                                  255, 195, 146, 0),
-                                              fontFamily: 'Roboto'),
-                                        ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   )),
                             ),
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  left: 8.0, top: 4.0, bottom: 8.0),
-                              child: Align(
-                                  alignment: AlignmentDirectional(-0.95, -0.7),
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      left: 15.0, top: 4.0, bottom: 8.0),
+                                  child: Align(
+                                      alignment:
+                                          AlignmentDirectional(-0.95, -0.7),
+                                      child: RichText(
+                                        text: TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text:
+                                                  '₹ ${widget.data['day']} / ',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold,
+                                                fontFamily: 'Roboto',
+                                              ),
+                                            ),
+                                            TextSpan(
+                                              text: 'Day',
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: const Color.fromARGB(
+                                                      255, 195, 146, 0),
+                                                  fontFamily: 'Roboto'),
+                                            ),
+                                          ],
+                                        ),
+                                      )),
+                                ),
+                                Spacer(),
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
                                   child: RichText(
                                     text: TextSpan(
                                       children: [
                                         TextSpan(
-                                          text: '₹ ${widget.data['day']} / ',
+                                          text: '₹ ${widget.data['month']} / ',
                                           style: TextStyle(
                                             fontSize: 16,
                                             color: Colors.black,
@@ -545,7 +616,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                           ),
                                         ),
                                         TextSpan(
-                                          text: 'Day',
+                                          text: 'Month',
                                           style: TextStyle(
                                               fontSize: 16,
                                               color: const Color.fromARGB(
@@ -554,7 +625,9 @@ class _ProductDetailsState extends State<ProductDetails> {
                                         ),
                                       ],
                                     ),
-                                  )),
+                                  ),
+                                ),
+                              ],
                             ),
                           ],
                         ),
@@ -567,32 +640,63 @@ class _ProductDetailsState extends State<ProductDetails> {
                           color: Colors.white,
                           child: Row(
                             children: [
-                              Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: RichText(
-                                    text: TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text: 'Deliver to: ',
-                                          style: TextStyle(
-                                            fontSize: 13,
-                                            color: Colors.black,
-                                          ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: RichText(
+                                        text: TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text: 'Deliver to: ',
+                                              style: TextStyle(
+                                                fontSize: 13,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            TextSpan(
+                                              text: '$city - $zipcode',
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        TextSpan(
-                                          text: '$city - $zipcode',
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                      ],
+                                      ),
                                     ),
                                   ),
-                                ),
+                                  location != ''
+                                      ? Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 8.0, bottom: 8),
+                                            child: RichText(
+                                              text: TextSpan(
+                                                children: [
+                                                  TextSpan(
+                                                    text: location.length > 20
+                                                        ? '$location'.substring(
+                                                                0, 20) +
+                                                            '...'
+                                                        : '$location',
+                                                    style: TextStyle(
+                                                      fontSize: 12,
+                                                      color: Colors.grey,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : Container(),
+                                ],
                               ),
                               Spacer(),
                               Padding(
@@ -769,9 +873,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                                       ),
                                                       Flexible(
                                                         child: ListView.builder(
-                                                          itemCount:
-                                                              deliverySnapshots
-                                                                  .length,
+                                                          itemCount: 3,
                                                           itemBuilder:
                                                               (context, index) {
                                                             return RadioListTile(
@@ -795,6 +897,17 @@ class _ProductDetailsState extends State<ProductDetails> {
                                                                 setState(() {
                                                                   selectedIndex =
                                                                       value!;
+                                                                  city = deliverySnapshots[
+                                                                          index]
+                                                                      ['city'];
+                                                                  zipcode = deliverySnapshots[
+                                                                          index]
+                                                                      [
+                                                                      'zipcode'];
+                                                                  location = deliverySnapshots[
+                                                                          index]
+                                                                      [
+                                                                      'location'];
                                                                   Navigator.pop(
                                                                       context);
                                                                 });
@@ -1043,7 +1156,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   child: Align(
                                     alignment: Alignment.centerLeft,
                                     child: Text(
-                                      'Brand name: ${widget.data['brand_name']}',
+                                      'Brand name: ${widget.data['brand_name'].toUpperCase()}',
                                       style: TextStyle(
                                         fontSize: 14,
                                         color: Colors.black.withOpacity(0.7),
@@ -1365,32 +1478,63 @@ class _ProductDetailsState extends State<ProductDetails> {
                           color: Colors.white,
                           child: Row(
                             children: [
-                              Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: RichText(
-                                    text: TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text: 'Deliver to: ',
-                                          style: TextStyle(
-                                            fontSize: 13,
-                                            color: Colors.black,
-                                          ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: RichText(
+                                        text: TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text: 'Deliver to: ',
+                                              style: TextStyle(
+                                                fontSize: 13,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            TextSpan(
+                                              text: '$city - $zipcode',
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                        TextSpan(
-                                          text: '$city - $zipcode',
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                      ],
+                                      ),
                                     ),
                                   ),
-                                ),
+                                  location != ''
+                                      ? Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                left: 8.0, bottom: 8),
+                                            child: RichText(
+                                              text: TextSpan(
+                                                children: [
+                                                  TextSpan(
+                                                    text: location.length > 20
+                                                        ? '$location'.substring(
+                                                                0, 20) +
+                                                            '...'
+                                                        : '$location',
+                                                    style: TextStyle(
+                                                      fontSize: 12,
+                                                      color: Colors.grey,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : Container(),
+                                ],
                               ),
                               Spacer(),
                               Padding(
@@ -1593,6 +1737,17 @@ class _ProductDetailsState extends State<ProductDetails> {
                                                                 setState(() {
                                                                   selectedIndex =
                                                                       value!;
+                                                                  city = deliverySnapshots[
+                                                                          index]
+                                                                      ['city'];
+                                                                  zipcode = deliverySnapshots[
+                                                                          index]
+                                                                      [
+                                                                      'zipcode'];
+                                                                  location = deliverySnapshots[
+                                                                          index]
+                                                                      [
+                                                                      'location'];
                                                                   Navigator.pop(
                                                                       context);
                                                                 });

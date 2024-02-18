@@ -26,12 +26,17 @@ class _UploadMachineryState extends State<UploadMachinery> {
     'Average',
     'Poor',
   ];
+  final List<String> _dropdownValues2 = [
+    'Mini',
+    'Standard',
+    'Large',
+    'Extra Large',
+  ];
   String? machinerytype;
   String? useremail = FirebaseAuth.instance.currentUser?.email;
   TextEditingController search = TextEditingController();
   TextEditingController _machineryname = TextEditingController();
   TextEditingController _brandname = TextEditingController();
-  TextEditingController _backhoesize = TextEditingController();
   TextEditingController _specifications = TextEditingController();
   TextEditingController _rentonhourlybasis = TextEditingController();
   TextEditingController _rentondaybasis = TextEditingController();
@@ -39,9 +44,10 @@ class _UploadMachineryState extends State<UploadMachinery> {
   TextEditingController _rentonmonthlybasis = TextEditingController();
   TextEditingController _zipCode = TextEditingController();
   TextEditingController _deliveredwithin = TextEditingController();
+  TextEditingController _quantity = TextEditingController();
   late List<String> downloadurls;
   String condition = 'Excellent';
-
+  String backhoeSize = 'Standard';
   @override
   void initState() {
     super.initState();
@@ -53,7 +59,6 @@ class _UploadMachineryState extends State<UploadMachinery> {
     search.dispose();
     _machineryname.dispose();
     _brandname.dispose();
-    _backhoesize.dispose();
     _specifications.dispose();
     _rentonhourlybasis.dispose();
     _rentondaybasis.dispose();
@@ -61,6 +66,7 @@ class _UploadMachineryState extends State<UploadMachinery> {
     _rentonmonthlybasis.dispose();
     _zipCode.dispose();
     _deliveredwithin.dispose();
+    _quantity.dispose();
     super.dispose();
   }
 
@@ -137,7 +143,7 @@ class _UploadMachineryState extends State<UploadMachinery> {
               'brand_name': _brandname.text,
               'machinery_type': machinerytype,
               'specifications': _specifications.text,
-              'back_hoe_size': _backhoesize.text,
+              'back_hoe_size': backhoeSize,
               'condition': condition,
               'city': locationInfo?['city'],
               'state': locationInfo?['state'],
@@ -197,7 +203,7 @@ class _UploadMachineryState extends State<UploadMachinery> {
             'brand_name': _brandname.text,
             'machinery_type': machinerytype,
             'specifications': _specifications.text,
-            'back_hoe_size': _backhoesize.text,
+            'back_hoe_size': backhoeSize,
             'condition': condition,
             'city': locationInfo?['city'],
             'state': locationInfo?['state'],
@@ -732,15 +738,29 @@ class _UploadMachineryState extends State<UploadMachinery> {
                           child: Padding(
                             padding: EdgeInsets.only(
                                 right: width * 0.04, left: width * 0.04),
-                            child: TextField(
-                              controller: _backhoesize,
-                              decoration: InputDecoration(
-                                hintText: 'Enter the Backhoe Size',
-                                hintStyle: TextStyle(fontSize: 14.0),
-                                contentPadding: const EdgeInsets.only(
-                                  left: 5,
-                                ),
+                            child: DropdownButton<String>(
+                              underline: Container(
+                                height: 1,
+                                decoration: BoxDecoration(color: Colors.black),
                               ),
+                              value: backhoeSize,
+                              items: _dropdownValues2.map((value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(
+                                    value,
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Theme.of(context).hintColor,
+                                    ),
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: (newValue) {
+                                setState(() {
+                                  backhoeSize = newValue!;
+                                });
+                              },
                             ),
                           ),
                         ),
@@ -1207,6 +1227,45 @@ class _UploadMachineryState extends State<UploadMachinery> {
                     controller: _deliveredwithin,
                     decoration: InputDecoration(
                       hintText: 'Enter how much time will it take to deliver',
+                      hintStyle: TextStyle(fontSize: 14.0),
+                      contentPadding: const EdgeInsets.only(
+                        left: 5,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                left: width * 0.06,
+                top: width * 0.024,
+              ),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Quantity Available",
+                  style: TextStyle(
+                    fontSize: width * 0.045,
+                    fontWeight: FontWeight.w900,
+                    fontFamily: 'Roboto',
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                left: width * 0.02,
+              ),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding:
+                      EdgeInsets.only(right: width * 0.04, left: width * 0.04),
+                  child: TextField(
+                    controller: _deliveredwithin,
+                    decoration: InputDecoration(
+                      hintText: 'Enter How Many Machinery You Have',
                       hintStyle: TextStyle(fontSize: 14.0),
                       contentPadding: const EdgeInsets.only(
                         left: 5,

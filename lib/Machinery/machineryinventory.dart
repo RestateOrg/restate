@@ -218,7 +218,7 @@ class _MachineryInventoryState extends State<MachineryInventory> {
                                     Flexible(
                                       child: Align(
                                         alignment: AlignmentDirectional(1, 0),
-                                        child: GestureDetector(
+                                        child: InkWell(
                                           onTap: () {
                                             Navigator.push(
                                               context,
@@ -243,7 +243,9 @@ class _MachineryInventoryState extends State<MachineryInventory> {
                                         padding: EdgeInsets.only(
                                             top: width * 0.015,
                                             left: width * 0.02),
-                                        child: Icon(Icons.info, size: 20),
+                                        child: InkWell(
+                                            onTap: () {},
+                                            child: Icon(Icons.info, size: 20)),
                                       ),
                                     ),
                                     Align(
@@ -256,26 +258,6 @@ class _MachineryInventoryState extends State<MachineryInventory> {
                                             onTap: () async {
                                               final documentRef =
                                                   snapshot.reference;
-                                              Query query = CollectionRef.where(
-                                                  'image_urls',
-                                                  isEqualTo: ((snapshot.data()
-                                                          as Map<String,
-                                                              dynamic>)[
-                                                      'image_urls']));
-                                              query.get().then((QuerySnapshot
-                                                  snapshot) async {
-                                                if (snapshot.docs.isNotEmpty) {
-                                                  for (DocumentSnapshot document
-                                                      in snapshot.docs) {
-                                                    final documentId =
-                                                        document.reference;
-                                                    await documentId.delete();
-                                                  }
-                                                } else {
-                                                  print(
-                                                      'No documents found with the matching image URL.');
-                                                }
-                                              });
                                               for (int i = 0;
                                                   i <
                                                       (snapshot.data() as Map<
@@ -290,8 +272,40 @@ class _MachineryInventoryState extends State<MachineryInventory> {
                                                             as Map<String,
                                                                 dynamic>)[
                                                         'image_urls'][i])
-                                                    .delete();
+                                                    .delete()
+                                                    .then(
+                                                  (value) {
+                                                    Query query =
+                                                        CollectionRef.where(
+                                                            'image_urls',
+                                                            isEqualTo: ((snapshot
+                                                                        .data()
+                                                                    as Map<
+                                                                        String,
+                                                                        dynamic>)[
+                                                                'image_urls']));
+                                                    query.get().then(
+                                                        (QuerySnapshot
+                                                            snapshot) async {
+                                                      if (snapshot
+                                                          .docs.isNotEmpty) {
+                                                        for (DocumentSnapshot document
+                                                            in snapshot.docs) {
+                                                          final documentId =
+                                                              document
+                                                                  .reference;
+                                                          await documentId
+                                                              .delete();
+                                                        }
+                                                      } else {
+                                                        print(
+                                                            'No documents found with the matching image URL.');
+                                                      }
+                                                    });
+                                                  },
+                                                );
                                               }
+
                                               await documentRef.delete();
                                               ScaffoldMessenger.of(context)
                                                   .showSnackBar(
