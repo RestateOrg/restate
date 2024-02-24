@@ -10,6 +10,8 @@ import 'package:restate/Utils/getlocation.dart';
 import 'package:restate/Utils/hexcolor.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 
+enum DeliveryOption { yes, no }
+
 class UploadMaterial extends StatefulWidget {
   const UploadMaterial({super.key});
 
@@ -37,8 +39,13 @@ class _UploadMaterialState extends State<UploadMaterial> {
   TextEditingController _zipCode = TextEditingController();
   TextEditingController _materialname = TextEditingController();
   TextEditingController _priceper = TextEditingController();
+  TextEditingController _availablequantity = TextEditingController();
+  TextEditingController _bagSize = TextEditingController();
   late List<String> downloadurls;
   String per = 'KG';
+  DeliveryOption? _deliveryOption = DeliveryOption.no;
+  DeliveryOption? _deliveryOutcity = DeliveryOption.no;
+  bool _isUploading = false;
   @override
   void initState() {
     super.initState();
@@ -52,6 +59,7 @@ class _UploadMaterialState extends State<UploadMaterial> {
     _zipCode.dispose();
     _materialname.dispose();
     _priceper.dispose();
+    _availablequantity.dispose();
     super.dispose();
   }
 
@@ -102,6 +110,7 @@ class _UploadMaterialState extends State<UploadMaterial> {
     Timestamp myTimeStamp = Timestamp.now();
     DateTime dateTime = myTimeStamp.toDate();
     String formattedDate = DateFormat('yyyy-MM-dd').format(dateTime);
+    await Future.delayed(Duration(seconds: 2));
     try {
       if (_materialname.text.isEmpty ||
           _priceper.text.isEmpty ||
@@ -111,31 +120,49 @@ class _UploadMaterialState extends State<UploadMaterial> {
           images!.isEmpty) {
         throw Exception("All fields must be filled");
       }
-      _showDocumentIdPopup2("Data Upload Sucessful",
-          "Your Material has been uploaded sucessfully");
       downloadurls = await uploadImages(images!);
       DocumentReference projectRef = firestore
           .collection('materials')
           .doc(useremail)
           .collection('items')
           .doc(_materialname.text);
-
-      projectRef.set({
-        'Material_name': _materialname.text,
-        'Brand_name': brandname,
-        'Material_type': materialtype,
-        'Price_per': _priceper.text,
-        'Price_per_unit': per,
-        'Zipcode': _zipCode.text,
-        'city': locationInfo?['city'],
-        'state': locationInfo?['state'],
-        'country': locationInfo?['country'],
-        'Images': downloadurls,
-        'status': 'In Stock',
-        'rating': 0,
-        'rating_count': 0,
-        'timestamp': formattedDate,
-      });
+      per == 'Bag'
+          ? projectRef.set({
+              'Material_name': _materialname.text,
+              'Brand_name': brandname,
+              'Material_type': materialtype,
+              'Price_per': _priceper.text,
+              'Price_per_unit': per,
+              'Zipcode': _zipCode.text,
+              'city': locationInfo?['city'],
+              'state': locationInfo?['state'],
+              'country': locationInfo?['country'],
+              'Images': downloadurls,
+              'status': 'In Stock',
+              'rating': 0,
+              'rating_count': 0,
+              'bag_size': _bagSize.text,
+              'available_quantity': _availablequantity.text,
+              'useremail': useremail,
+              'timestamp': formattedDate,
+            })
+          : projectRef.set({
+              'Material_name': _materialname.text,
+              'Brand_name': brandname,
+              'Material_type': materialtype,
+              'Price_per': _priceper.text,
+              'Price_per_unit': per,
+              'Zipcode': _zipCode.text,
+              'city': locationInfo?['city'],
+              'state': locationInfo?['state'],
+              'country': locationInfo?['country'],
+              'Images': downloadurls,
+              'status': 'In Stock',
+              'available_quantity': _availablequantity.text,
+              'rating': 0,
+              'rating_count': 0,
+              'timestamp': formattedDate,
+            });
       uploadData2();
     } catch (e) {
       _showDocumentIdPopup(
@@ -152,23 +179,54 @@ class _UploadMaterialState extends State<UploadMaterial> {
     DateTime dateTime = myTimeStamp.toDate();
     String formattedDate = DateFormat('yyyy-MM-dd').format(dateTime);
     try {
-      projectRef.set({
-        'Material_name': _materialname.text,
-        'Brand_name': brandname,
-        'Material_type': materialtype,
-        'Price_per': _priceper.text,
-        'Price_per_unit': per,
-        'Zipcode': _zipCode.text,
-        'city': locationInfo?['city'],
-        'state': locationInfo?['state'],
-        'country': locationInfo?['country'],
-        'Images': downloadurls,
-        'status': 'In Stock',
-        'rating': 0,
-        'rating_count': 0,
-        'useremail': useremail,
-        'timestamp': formattedDate,
-      });
+      per == 'Bag'
+          ? projectRef.set({
+              'Material_name': _materialname.text,
+              'Brand_name': brandname,
+              'Material_type': materialtype,
+              'Price_per': _priceper.text,
+              'Price_per_unit': per,
+              'Zipcode': _zipCode.text,
+              'city': locationInfo?['city'],
+              'state': locationInfo?['state'],
+              'country': locationInfo?['country'],
+              'Images': downloadurls,
+              'status': 'In Stock',
+              'rating': 0,
+              'rating_count': 0,
+              'bag_size': _bagSize.text,
+              'available_quantity': _availablequantity.text,
+              'useremail': useremail,
+              'timestamp': formattedDate,
+            }).then(
+              (value) {
+                _showDocumentIdPopup2("Data Upload Sucessful",
+                    "Your Material has been uploaded sucessfully");
+              },
+            )
+          : projectRef.set({
+              'Material_name': _materialname.text,
+              'Brand_name': brandname,
+              'Material_type': materialtype,
+              'Price_per': _priceper.text,
+              'Price_per_unit': per,
+              'Zipcode': _zipCode.text,
+              'city': locationInfo?['city'],
+              'state': locationInfo?['state'],
+              'country': locationInfo?['country'],
+              'Images': downloadurls,
+              'status': 'In Stock',
+              'rating': 0,
+              'rating_count': 0,
+              'available_quantity': _availablequantity.text,
+              'useremail': useremail,
+              'timestamp': formattedDate,
+            }).then(
+              (value) {
+                _showDocumentIdPopup2("Data Upload Sucessful",
+                    "Your Material has been uploaded sucessfully");
+              },
+            );
     } catch (e) {}
   }
 
@@ -254,581 +312,818 @@ class _UploadMaterialState extends State<UploadMaterial> {
         ),
         actions: [
           GestureDetector(
-            onTap: () {
+            onTap: () async {
+              setState(() {
+                _isUploading =
+                    true; // Start the upload and show progress indicator
+              });
               try {
-                uploadData();
+                await uploadData();
               } catch (e) {
-                print(e);
+                print(e); // Handle or log error
+              } finally {
+                setState(() {
+                  _isUploading =
+                      false; // Hide progress indicator once upload is complete
+                });
               }
             },
             child: Padding(
               padding: EdgeInsets.only(right: width * 0.06),
-              child: Text("Upload",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontFamily: 'Roboto',
-                    fontSize: width * 0.04,
-                  )),
+              child: Container(
+                alignment: Alignment.center,
+                height: width * 0.08,
+                width: width * 0.2,
+                decoration: BoxDecoration(
+                  color: HexColor('#2A2828'),
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                child: Text("Upload",
+                    style: TextStyle(
+                      fontFamily: 'Roboto',
+                      color: Colors.white,
+                      fontSize: width * 0.04,
+                    )),
+              ),
             ),
           )
         ],
         backgroundColor: Colors.amber,
       ),
       backgroundColor: Colors.amber,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            images!.isEmpty
-                ? Padding(
-                    padding: EdgeInsets.only(
-                      left: width * 0.04,
-                      top: width * 0.02,
-                      right: width * 0.04,
-                    ),
-                    child: Container(
-                        decoration: BoxDecoration(
-                          color: HexColor('#F2F2F2'),
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        height: width * 0.78,
-                        child: Stack(
-                          children: [
-                            Positioned(
-                                child: Container(
-                              decoration: BoxDecoration(
-                                color: HexColor('#2A2828'),
-                                borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(10),
-                                    topRight: Radius.circular(10)),
-                              ),
-                              height: width * 0.10,
-                              child: Stack(
-                                children: [
-                                  Positioned(
-                                      top: width * 0.02,
-                                      left: width * 0.03,
-                                      child: Text(
-                                          "Material Photos (${images!.length}/4)",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: 'Roboto',
-                                              fontWeight: FontWeight.w600))),
-                                  Positioned(
-                                      right: width * 0.03,
-                                      top: width * 0.02,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          pickImages();
-                                        },
-                                        child: Text("Edit",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontFamily: 'Roboto',
-                                                fontWeight: FontWeight.w500)),
-                                      )),
-                                ],
-                              ),
-                            )),
-                            Positioned(
-                                top: width * 0.35,
-                                left: width * 0.33,
-                                child: Column(
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        pickImages();
-                                      },
-                                      child: Image.asset(
-                                        'assets/images/Addphoto2.png',
-                                        width: width * 0.13,
-                                        height: width * 0.13,
-                                      ),
-                                    ),
-                                    Text(
-                                      "Click to Add Photo",
-                                      style: TextStyle(
-                                        fontSize: width * 0.03,
-                                        color: Colors.black38,
-                                      ),
-                                    ),
-                                  ],
-                                )),
-                            Positioned(
-                                bottom: width * 0.02,
-                                left: width * 0.02,
-                                child: GestureDetector(
-                                    onTap: () {
-                                      _pickImageFromCamera();
-                                    },
-                                    child: FaIcon(FontAwesomeIcons.camera,
-                                        size: width * 0.06)))
-                          ],
-                        )),
-                  )
-                : Padding(
-                    padding: EdgeInsets.only(
-                      left: width * 0.04,
-                      top: width * 0.02,
-                      right: width * 0.04,
-                    ),
-                    child: Container(
-                        decoration: BoxDecoration(
-                          color: HexColor('#F2F2F2'),
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        height: width * 0.78,
-                        child: Stack(
-                          children: [
-                            Positioned(
-                                child: Container(
-                              decoration: BoxDecoration(
-                                color: HexColor('#2A2828'),
-                                borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(10),
-                                    topRight: Radius.circular(10)),
-                              ),
-                              height: width * 0.10,
-                              child: Stack(
-                                children: [
-                                  Positioned(
-                                      top: width * 0.02,
-                                      left: width * 0.03,
-                                      child: Text(
-                                          "Material Photos (${images!.length}/4)",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: 'Roboto',
-                                              fontWeight: FontWeight.w600))),
-                                  Positioned(
-                                      right: width * 0.03,
-                                      top: width * 0.02,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          pickImages();
-                                        },
-                                        child: Text("Edit",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontFamily: 'Roboto',
-                                                fontWeight: FontWeight.w500)),
-                                      )),
-                                ],
-                              ),
-                            )),
-                            Padding(
-                              padding: EdgeInsets.only(top: width * 0.1),
-                              child: Container(
-                                child: Center(
-                                    child: PageView.builder(
-                                        itemCount: images!.length,
-                                        itemBuilder: (context, index) {
-                                          return Container(
-                                              child: Image.file(
-                                                  File(images![index].path)));
-                                        })),
-                              ),
-                            ),
-                            Positioned(
-                                bottom: width * 0.02,
-                                left: width * 0.02,
-                                child: GestureDetector(
-                                    onTap: () {
-                                      _pickImageFromCamera();
-                                    },
-                                    child: FaIcon(FontAwesomeIcons.camera,
-                                        size: width * 0.06)))
-                          ],
-                        )),
-                  ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.06,
-                top: width * 0.024,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Material name",
-                  style: TextStyle(
-                    fontSize: width * 0.045,
-                    fontWeight: FontWeight.w900,
-                    fontFamily: 'Roboto',
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.02,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding:
-                      EdgeInsets.only(right: width * 0.04, left: width * 0.04),
-                  child: TextField(
-                    controller: _materialname,
-                    decoration: InputDecoration(
-                      hintText: 'Enter the materials Name',
-                      hintStyle: TextStyle(fontSize: 14.0),
-                      contentPadding: const EdgeInsets.only(
-                        left: 5,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.06,
-                top: width * 0.024,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Brand name",
-                  style: TextStyle(
-                    fontSize: width * 0.045,
-                    fontWeight: FontWeight.w900,
-                    fontFamily: 'Roboto',
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.02,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding:
-                      EdgeInsets.only(right: width * 0.04, left: width * 0.01),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton2<String>(
-                        isExpanded: true,
-                        hint: Text(
-                          'Select Brand',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Theme.of(context).hintColor,
+      body: _isUploading
+          ? Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  images!.isEmpty
+                      ? Padding(
+                          padding: EdgeInsets.only(
+                            left: width * 0.04,
+                            top: width * 0.02,
+                            right: width * 0.04,
                           ),
-                        ),
-                        items: brand
-                            .map((item2) => DropdownMenuItem(
-                                  value: item2,
-                                  child: Text(
-                                    item2,
-                                    style: const TextStyle(
-                                      fontSize: 14,
+                          child: Container(
+                              decoration: BoxDecoration(
+                                color: HexColor('#F2F2F2'),
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              height: width * 0.78,
+                              child: Stack(
+                                children: [
+                                  Positioned(
+                                      child: Container(
+                                    decoration: BoxDecoration(
+                                      color: HexColor('#2A2828'),
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(10),
+                                          topRight: Radius.circular(10)),
+                                    ),
+                                    height: width * 0.10,
+                                    child: Stack(
+                                      children: [
+                                        Positioned(
+                                            top: width * 0.02,
+                                            left: width * 0.03,
+                                            child: Text(
+                                                "Material Photos (${images!.length}/4)",
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontFamily: 'Roboto',
+                                                    fontWeight:
+                                                        FontWeight.w600))),
+                                        Positioned(
+                                            right: width * 0.03,
+                                            top: width * 0.02,
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                pickImages();
+                                              },
+                                              child: Text("Edit",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontFamily: 'Roboto',
+                                                      fontWeight:
+                                                          FontWeight.w500)),
+                                            )),
+                                      ],
+                                    ),
+                                  )),
+                                  Positioned(
+                                      top: width * 0.35,
+                                      left: width * 0.33,
+                                      child: Column(
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              pickImages();
+                                            },
+                                            child: Image.asset(
+                                              'assets/images/Addphoto2.png',
+                                              width: width * 0.13,
+                                              height: width * 0.13,
+                                            ),
+                                          ),
+                                          Text(
+                                            "Click to Add Photo",
+                                            style: TextStyle(
+                                              fontSize: width * 0.03,
+                                              color: Colors.black38,
+                                            ),
+                                          ),
+                                        ],
+                                      )),
+                                  Positioned(
+                                      bottom: width * 0.02,
+                                      left: width * 0.02,
+                                      child: GestureDetector(
+                                          onTap: () {
+                                            _pickImageFromCamera();
+                                          },
+                                          child: FaIcon(FontAwesomeIcons.camera,
+                                              size: width * 0.06)))
+                                ],
+                              )),
+                        )
+                      : Padding(
+                          padding: EdgeInsets.only(
+                            left: width * 0.04,
+                            top: width * 0.02,
+                            right: width * 0.04,
+                          ),
+                          child: Container(
+                              decoration: BoxDecoration(
+                                color: HexColor('#F2F2F2'),
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              height: width * 0.78,
+                              child: Stack(
+                                children: [
+                                  Positioned(
+                                      child: Container(
+                                    decoration: BoxDecoration(
+                                      color: HexColor('#2A2828'),
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(10),
+                                          topRight: Radius.circular(10)),
+                                    ),
+                                    height: width * 0.10,
+                                    child: Stack(
+                                      children: [
+                                        Positioned(
+                                            top: width * 0.02,
+                                            left: width * 0.03,
+                                            child: Text(
+                                                "Material Photos (${images!.length}/4)",
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontFamily: 'Roboto',
+                                                    fontWeight:
+                                                        FontWeight.w600))),
+                                        Positioned(
+                                            right: width * 0.03,
+                                            top: width * 0.02,
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                pickImages();
+                                              },
+                                              child: Text("Edit",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontFamily: 'Roboto',
+                                                      fontWeight:
+                                                          FontWeight.w500)),
+                                            )),
+                                      ],
+                                    ),
+                                  )),
+                                  Padding(
+                                    padding: EdgeInsets.only(top: width * 0.1),
+                                    child: Container(
+                                      child: Center(
+                                          child: PageView.builder(
+                                              itemCount: images!.length,
+                                              itemBuilder: (context, index) {
+                                                return Container(
+                                                    child: Image.file(File(
+                                                        images![index].path)));
+                                              })),
                                     ),
                                   ),
-                                ))
-                            .toList(),
-                        value: brandname,
-                        onChanged: (value) {
-                          setState(() {
-                            brandname = value;
-                          });
-                        },
-                        buttonStyleData: const ButtonStyleData(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                          height: 40,
-                          width: 200,
+                                  Positioned(
+                                      bottom: width * 0.02,
+                                      left: width * 0.02,
+                                      child: GestureDetector(
+                                          onTap: () {
+                                            _pickImageFromCamera();
+                                          },
+                                          child: FaIcon(FontAwesomeIcons.camera,
+                                              size: width * 0.06)))
+                                ],
+                              )),
                         ),
-                        dropdownStyleData: const DropdownStyleData(
-                          maxHeight: 200,
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.06,
+                      top: width * 0.024,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Material name",
+                        style: TextStyle(
+                          fontSize: width * 0.045,
+                          fontWeight: FontWeight.w900,
+                          fontFamily: 'Roboto',
                         ),
-                        menuItemStyleData: const MenuItemStyleData(
-                          height: 40,
-                        ),
-                        dropdownSearchData: DropdownSearchData(
-                          searchController: search,
-                          searchInnerWidgetHeight: 50,
-                          searchInnerWidget: Container(
-                            height: 50,
-                            padding: const EdgeInsets.only(
-                              top: 8,
-                              bottom: 4,
-                              right: 8,
-                              left: 8,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.02,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            right: width * 0.04, left: width * 0.04),
+                        child: TextField(
+                          controller: _materialname,
+                          decoration: InputDecoration(
+                            hintText: 'Enter the materials Name',
+                            hintStyle: TextStyle(fontSize: 14.0),
+                            contentPadding: const EdgeInsets.only(
+                              left: 5,
                             ),
-                            child: TextFormField(
-                              expands: true,
-                              maxLines: null,
-                              controller: search,
-                              decoration: InputDecoration(
-                                isDense: true,
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 8,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.06,
+                      top: width * 0.024,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Brand name",
+                        style: TextStyle(
+                          fontSize: width * 0.045,
+                          fontWeight: FontWeight.w900,
+                          fontFamily: 'Roboto',
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.02,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            right: width * 0.04, left: width * 0.01),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton2<String>(
+                              isExpanded: true,
+                              hint: Text(
+                                'Select Brand',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Theme.of(context).hintColor,
                                 ),
-                                hintText: 'Search for an item...',
-                                hintStyle: const TextStyle(fontSize: 12),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
+                              ),
+                              items: brand
+                                  .map((item2) => DropdownMenuItem(
+                                        value: item2,
+                                        child: Text(
+                                          item2,
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ))
+                                  .toList(),
+                              value: brandname,
+                              onChanged: (value) {
+                                setState(() {
+                                  brandname = value;
+                                });
+                              },
+                              buttonStyleData: const ButtonStyleData(
+                                padding: EdgeInsets.symmetric(horizontal: 16),
+                                height: 40,
+                                width: 200,
+                              ),
+                              dropdownStyleData: const DropdownStyleData(
+                                maxHeight: 200,
+                              ),
+                              menuItemStyleData: const MenuItemStyleData(
+                                height: 40,
+                              ),
+                              dropdownSearchData: DropdownSearchData(
+                                searchController: search,
+                                searchInnerWidgetHeight: 50,
+                                searchInnerWidget: Container(
+                                  height: 50,
+                                  padding: const EdgeInsets.only(
+                                    top: 8,
+                                    bottom: 4,
+                                    right: 8,
+                                    left: 8,
+                                  ),
+                                  child: TextFormField(
+                                    expands: true,
+                                    maxLines: null,
+                                    controller: search,
+                                    decoration: InputDecoration(
+                                      isDense: true,
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                        vertical: 8,
+                                      ),
+                                      hintText: 'Search for an item...',
+                                      hintStyle: const TextStyle(fontSize: 12),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                searchMatchFn: (item2, searchValue) {
+                                  return item2.value
+                                      .toString()
+                                      .toLowerCase()
+                                      .contains(searchValue.toLowerCase());
+                                },
+                              ),
+                              //This to clear the search value when you close the menu
+                              onMenuStateChange: (isOpen) {
+                                if (!isOpen) {
+                                  search.clear();
+                                }
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.06,
+                      top: width * 0.024,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Material Type",
+                        style: TextStyle(
+                          fontSize: width * 0.045,
+                          fontWeight: FontWeight.w900,
+                          fontFamily: 'Roboto',
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.03,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton2<String>(
+                          isExpanded: true,
+                          hint: Text(
+                            'Select Type',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Theme.of(context).hintColor,
+                            ),
+                          ),
+                          items: items
+                              .map((item) => DropdownMenuItem(
+                                    value: item,
+                                    child: Text(
+                                      item,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ))
+                              .toList(),
+                          value: materialtype,
+                          onChanged: (value) {
+                            setState(() {
+                              materialtype = value;
+                            });
+                          },
+                          buttonStyleData: const ButtonStyleData(
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            height: 40,
+                            width: 200,
+                          ),
+                          dropdownStyleData: const DropdownStyleData(
+                            maxHeight: 200,
+                          ),
+                          menuItemStyleData: const MenuItemStyleData(
+                            height: 40,
+                          ),
+                          dropdownSearchData: DropdownSearchData(
+                            searchController: search,
+                            searchInnerWidgetHeight: 50,
+                            searchInnerWidget: Container(
+                              height: 50,
+                              padding: const EdgeInsets.only(
+                                top: 8,
+                                bottom: 4,
+                                right: 8,
+                                left: 8,
+                              ),
+                              child: TextFormField(
+                                expands: true,
+                                maxLines: null,
+                                controller: search,
+                                decoration: InputDecoration(
+                                  isDense: true,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 8,
+                                  ),
+                                  hintText: 'Search for an item...',
+                                  hintStyle: const TextStyle(fontSize: 12),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
                                 ),
                               ),
                             ),
+                            searchMatchFn: (item, searchValue) {
+                              return item.value
+                                  .toString()
+                                  .toLowerCase()
+                                  .contains(searchValue.toLowerCase());
+                            },
                           ),
-                          searchMatchFn: (item2, searchValue) {
-                            return item2.value
-                                .toString()
-                                .toLowerCase()
-                                .contains(searchValue.toLowerCase());
+                          //This to clear the search value when you close the menu
+                          onMenuStateChange: (isOpen) {
+                            if (!isOpen) {
+                              search.clear();
+                            }
                           },
                         ),
-                        //This to clear the search value when you close the menu
-                        onMenuStateChange: (isOpen) {
-                          if (!isOpen) {
-                            search.clear();
-                          }
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.06,
+                      top: width * 0.024,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Price Per",
+                        style: TextStyle(
+                          fontSize: width * 0.045,
+                          fontWeight: FontWeight.w900,
+                          fontFamily: 'Roboto',
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: width * 0.09),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: DropdownButton<String>(
+                        underline: Container(
+                          height: 1,
+                          decoration: BoxDecoration(color: Colors.black),
+                        ),
+                        value: per,
+                        items: _dropdownValues.map((value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(
+                              value,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Theme.of(context).hintColor,
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (newValue) {
+                          setState(() {
+                            per = newValue!;
+                            _bagSize.clear();
+                          });
                         },
                       ),
                     ),
                   ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.06,
-                top: width * 0.024,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Material Type",
-                  style: TextStyle(
-                    fontSize: width * 0.045,
-                    fontWeight: FontWeight.w900,
-                    fontFamily: 'Roboto',
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.03,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton2<String>(
-                    isExpanded: true,
-                    hint: Text(
-                      'Select Type',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Theme.of(context).hintColor,
+                  per == 'Bag'
+                      ? Padding(
+                          padding: EdgeInsets.only(
+                            left: width * 0.06,
+                            top: width * 0.024,
+                          ),
+                          child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Bag Size",
+                              style: TextStyle(
+                                fontSize: width * 0.045,
+                                fontWeight: FontWeight.w900,
+                                fontFamily: 'Roboto',
+                              ),
+                            ),
+                          ),
+                        )
+                      : Container(),
+                  per == 'Bag'
+                      ? Padding(
+                          padding: EdgeInsets.only(
+                            left: width * 0.02,
+                          ),
+                          child: Padding(
+                              padding: EdgeInsets.only(
+                                  right: width * 0.04, left: width * 0.04),
+                              child: TextField(
+                                controller: _bagSize,
+                                decoration: InputDecoration(
+                                  hintText: 'Enter the Bag Size',
+                                  hintStyle: TextStyle(fontSize: 14.0),
+                                  contentPadding: const EdgeInsets.only(
+                                    left: 5,
+                                  ),
+                                ),
+                              )))
+                      : Container(),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.06,
+                      top: width * 0.024,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Available Quantity",
+                        style: TextStyle(
+                          fontSize: width * 0.045,
+                          fontWeight: FontWeight.w900,
+                          fontFamily: 'Roboto',
+                        ),
                       ),
                     ),
-                    items: items
-                        .map((item) => DropdownMenuItem(
-                              value: item,
-                              child: Text(
-                                item,
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ))
-                        .toList(),
-                    value: materialtype,
-                    onChanged: (value) {
-                      setState(() {
-                        materialtype = value;
-                      });
-                    },
-                    buttonStyleData: const ButtonStyleData(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      height: 40,
-                      width: 200,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.02,
                     ),
-                    dropdownStyleData: const DropdownStyleData(
-                      maxHeight: 200,
-                    ),
-                    menuItemStyleData: const MenuItemStyleData(
-                      height: 40,
-                    ),
-                    dropdownSearchData: DropdownSearchData(
-                      searchController: search,
-                      searchInnerWidgetHeight: 50,
-                      searchInnerWidget: Container(
-                        height: 50,
-                        padding: const EdgeInsets.only(
-                          top: 8,
-                          bottom: 4,
-                          right: 8,
-                          left: 8,
-                        ),
-                        child: TextFormField(
-                          expands: true,
-                          maxLines: null,
-                          controller: search,
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            right: width * 0.04, left: width * 0.04),
+                        child: TextField(
+                          controller: _availablequantity,
                           decoration: InputDecoration(
-                            isDense: true,
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 8,
-                            ),
-                            hintText: 'Search for an item...',
-                            hintStyle: const TextStyle(fontSize: 12),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
+                            hintText: 'Enter the Available Quantity',
+                            hintStyle: TextStyle(fontSize: 14.0),
+                            contentPadding: const EdgeInsets.only(
+                              left: 5,
                             ),
                           ),
                         ),
                       ),
-                      searchMatchFn: (item, searchValue) {
-                        return item.value
-                            .toString()
-                            .toLowerCase()
-                            .contains(searchValue.toLowerCase());
-                      },
                     ),
-                    //This to clear the search value when you close the menu
-                    onMenuStateChange: (isOpen) {
-                      if (!isOpen) {
-                        search.clear();
-                      }
-                    },
                   ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.06,
-                top: width * 0.024,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Price Per",
-                  style: TextStyle(
-                    fontSize: width * 0.045,
-                    fontWeight: FontWeight.w900,
-                    fontFamily: 'Roboto',
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: width * 0.09),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: DropdownButton<String>(
-                  underline: Container(
-                    height: 1,
-                    decoration: BoxDecoration(color: Colors.black),
-                  ),
-                  value: per,
-                  items: _dropdownValues.map((value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.06,
+                      top: width * 0.024,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
                       child: Text(
-                        value,
+                        "Price Per $per",
                         style: TextStyle(
-                          fontSize: 14,
-                          color: Theme.of(context).hintColor,
+                          fontSize: width * 0.045,
+                          fontWeight: FontWeight.w900,
+                          fontFamily: 'Roboto',
                         ),
                       ),
-                    );
-                  }).toList(),
-                  onChanged: (newValue) {
-                    setState(() {
-                      per = newValue!;
-                    });
-                  },
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.06,
-                top: width * 0.024,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Price Per $per",
-                  style: TextStyle(
-                    fontSize: width * 0.045,
-                    fontWeight: FontWeight.w900,
-                    fontFamily: 'Roboto',
+                    ),
                   ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.02,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding:
-                      EdgeInsets.only(right: width * 0.04, left: width * 0.04),
-                  child: TextField(
-                    controller: _priceper,
-                    decoration: InputDecoration(
-                      hintText: 'Enter the Price per $per',
-                      hintStyle: TextStyle(fontSize: 14.0),
-                      contentPadding: const EdgeInsets.only(
-                        left: 5,
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.02,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            right: width * 0.04, left: width * 0.04),
+                        child: TextField(
+                          controller: _priceper,
+                          decoration: InputDecoration(
+                            hintText: 'Enter the Price per $per',
+                            hintStyle: TextStyle(fontSize: 14.0),
+                            contentPadding: const EdgeInsets.only(
+                              left: 5,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.06,
-                top: width * 0.024,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Zipcode",
-                  style: TextStyle(
-                    fontSize: width * 0.045,
-                    fontWeight: FontWeight.w900,
-                    fontFamily: 'Roboto',
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.02,
-                bottom: width * 0.03,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding:
-                      EdgeInsets.only(right: width * 0.04, left: width * 0.04),
-                  child: TextField(
-                    controller: _zipCode,
-                    decoration: InputDecoration(
-                      hintText: 'Enter the Zipcode',
-                      hintStyle: TextStyle(fontSize: 14.0),
-                      contentPadding: const EdgeInsets.only(
-                        left: 5,
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.06,
+                      top: width * 0.024,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Zipcode",
+                        style: TextStyle(
+                          fontSize: width * 0.045,
+                          fontWeight: FontWeight.w900,
+                          fontFamily: 'Roboto',
+                        ),
                       ),
                     ),
                   ),
-                ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.02,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            right: width * 0.04, left: width * 0.04),
+                        child: TextField(
+                          controller: _zipCode,
+                          decoration: InputDecoration(
+                            hintText: 'Enter the Zipcode',
+                            hintStyle: TextStyle(fontSize: 14.0),
+                            contentPadding: const EdgeInsets.only(
+                              left: 5,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  ListTile(
+                    title: const Text('Delivery Available',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          fontFamily: 'Roboto',
+                        )),
+                    subtitle: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Radio<DeliveryOption>(
+                                value: DeliveryOption.yes,
+                                groupValue: _deliveryOption,
+                                onChanged: (DeliveryOption? value) {
+                                  setState(() {
+                                    _deliveryOption = value;
+                                  });
+                                },
+                              ),
+                              const Text('Yes'),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Radio<DeliveryOption>(
+                                value: DeliveryOption.no,
+                                groupValue: _deliveryOption,
+                                onChanged: (DeliveryOption? value) {
+                                  setState(() {
+                                    _deliveryOption = value;
+                                  });
+                                },
+                              ),
+                              const Text('No'),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  _deliveryOption == DeliveryOption.yes
+                      ? Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(
+                                left: width * 0.06,
+                                top: width * 0.010,
+                              ),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  "Price with Delivery Inside The City",
+                                  style: TextStyle(
+                                    fontSize: width * 0.045,
+                                    fontWeight: FontWeight.w900,
+                                    fontFamily: 'Roboto',
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                left: width * 0.02,
+                              ),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                      right: width * 0.04, left: width * 0.04),
+                                  child: TextField(
+                                    decoration: InputDecoration(
+                                      hintText: 'Enter the Price with Delivery',
+                                      hintStyle: TextStyle(fontSize: 14.0),
+                                      contentPadding: const EdgeInsets.only(
+                                        left: 5,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            ListTile(
+                              title:
+                                  const Text('Delivery Available Outside City',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                        fontFamily: 'Roboto',
+                                      )),
+                              subtitle: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget>[
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        Radio<DeliveryOption>(
+                                          value: DeliveryOption.yes,
+                                          groupValue: _deliveryOutcity,
+                                          onChanged: (DeliveryOption? value) {
+                                            setState(() {
+                                              _deliveryOutcity = value;
+                                            });
+                                          },
+                                        ),
+                                        const Text('Yes'),
+                                      ],
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        Radio<DeliveryOption>(
+                                          value: DeliveryOption.no,
+                                          groupValue: _deliveryOutcity,
+                                          onChanged: (DeliveryOption? value) {
+                                            setState(() {
+                                              _deliveryOutcity = value;
+                                            });
+                                          },
+                                        ),
+                                        const Text('No'),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        )
+                      : Container(),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 

@@ -139,6 +139,7 @@ class _BuilderRegistrationState extends State<BuilderRegistration> {
       str = e.toString();
       str = str.replaceAll('Exception: ', '');
       _showDocumentIdPopup2(str, str2);
+      await firestore.collection('builders').doc(emailController.text).delete();
     }
   }
 

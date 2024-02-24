@@ -153,6 +153,10 @@ class _MaterialRegistrationState extends State<MaterialRegistration> {
       str = e.toString();
       str = str.replaceAll('Exception: ', '');
       _showDocumentIdPopup2(str, str2);
+      await firestore
+          .collection('machinery')
+          .doc(emailController.text)
+          .delete();
     }
   }
 

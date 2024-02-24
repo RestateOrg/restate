@@ -158,8 +158,10 @@ class _SearchPageState extends State<SearchPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            Searchresults(query: query, type: 'machinery'),
+                        builder: (context) => Searchresults(
+                            query: query,
+                            type: 'machinery',
+                            searchkey: searchList[index]),
                       ),
                     );
                   } else {
@@ -179,8 +181,10 @@ class _SearchPageState extends State<SearchPage> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) =>
-                            Searchresults(query: query, type: 'material'),
+                        builder: (context) => Searchresults(
+                            query: query,
+                            type: 'material',
+                            searchkey: searchList[index]),
                       ),
                     );
                   }

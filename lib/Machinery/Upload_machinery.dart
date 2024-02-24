@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:restate/Utils/getlocation.dart';
 import 'package:restate/Utils/hexcolor.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:geolocator/geolocator.dart';
 
 class UploadMachinery extends StatefulWidget {
   const UploadMachinery({super.key});
@@ -45,13 +46,51 @@ class _UploadMachineryState extends State<UploadMachinery> {
   TextEditingController _zipCode = TextEditingController();
   TextEditingController _deliveredwithin = TextEditingController();
   TextEditingController _quantity = TextEditingController();
+  Position? _currentUserPosition;
   late List<String> downloadurls;
   String condition = 'Excellent';
   String backhoeSize = 'Standard';
+  bool _isUploading = false;
   @override
   void initState() {
     super.initState();
+    _getTheDistance();
     create_list();
+  }
+
+  Future _getTheDistance() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied, next time you could try
+        // requesting permissions again (this is also where
+        // Android's shouldShowRequestPermissionRationale
+        // returned true. According to Android guidelines
+        // your App should show an explanatory UI now.
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+    _currentUserPosition = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
   }
 
   @override
@@ -134,8 +173,7 @@ class _UploadMachineryState extends State<UploadMachinery> {
           _rentondaybasis.text.isEmpty) {
         throw Exception("Fields must not be empty");
       }
-      _showDocumentIdPopup2("Data Upload Sucessful",
-          "Your Machinery has been uploaded sucessfully");
+
       downloadurls = await uploadImages(images!);
       (machinerytype == "Backhoe Loader")
           ? await projectRef.set({
@@ -155,8 +193,11 @@ class _UploadMachineryState extends State<UploadMachinery> {
               'zip_code': _zipCode.text,
               'image_urls': downloadurls,
               'status': 'Available',
+              'latitude': _currentUserPosition?.latitude,
+              'longitude': _currentUserPosition?.longitude,
               'rating': 0,
               'rating_count': 0,
+              'available quantity': _quantity.text,
               'timestamp': formattedDate,
               'delivered_within': _deliveredwithin.text,
             })
@@ -176,8 +217,11 @@ class _UploadMachineryState extends State<UploadMachinery> {
               'zip_code': _zipCode.text,
               'image_urls': downloadurls,
               'status': 'Available',
+              'latitude': _currentUserPosition?.latitude,
+              'longitude': _currentUserPosition?.longitude,
               'rating': 0,
               'rating_count': 0,
+              'available quantity': _quantity.text,
               'timestamp': formattedDate,
               'delivered_within': _deliveredwithin.text,
             });
@@ -214,11 +258,17 @@ class _UploadMachineryState extends State<UploadMachinery> {
             'month': _rentonmonthlybasis.text,
             'image_urls': downloadurls,
             'status': 'Available',
+            'latitude': _currentUserPosition?.latitude,
+            'longitude': _currentUserPosition?.longitude,
             'rating': 0,
             'rating_count': 0,
+            'available quantity': _quantity.text,
             'useremail': useremail,
             'timestamp': formattedDate,
             'delivered_within': _deliveredwithin.text,
+          }).then((value) {
+            _showDocumentIdPopup2("Data Upload Sucessful",
+                "Your Machinery has been uploaded sucessfully");
           })
         : await projectRef.set({
             'machinery_name': _machineryname.text,
@@ -235,11 +285,17 @@ class _UploadMachineryState extends State<UploadMachinery> {
             'month': _rentonmonthlybasis.text,
             'image_urls': downloadurls,
             'status': 'Available',
+            'latitude': _currentUserPosition?.latitude,
+            'longitude': _currentUserPosition?.longitude,
             'rating': 0,
             'rating_count': 0,
+            'available quantity': _quantity.text,
             'useremail': useremail,
             'timestamp': formattedDate,
             'delivered_within': _deliveredwithin.text,
+          }).then((value) {
+            _showDocumentIdPopup2("Data Upload Sucessful",
+                "Your Machinery has been uploaded sucessfully");
           });
   }
 
@@ -303,1138 +359,1196 @@ class _UploadMachineryState extends State<UploadMachinery> {
         ),
         actions: [
           GestureDetector(
-            onTap: () {
-              uploadData();
+            onTap: () async {
+              setState(() {
+                _isUploading =
+                    true; // Start the upload and show progress indicator
+              });
+              try {
+                await uploadData();
+              } catch (e) {
+                print(e); // Handle or log error
+              } finally {
+                setState(() {
+                  _isUploading =
+                      false; // Hide progress indicator once upload is complete
+                });
+              }
             },
             child: Padding(
               padding: EdgeInsets.only(right: width * 0.06),
-              child: Text("Upload",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontFamily: 'Roboto',
-                    fontSize: width * 0.04,
-                  )),
+              child: Container(
+                height: width * 0.08,
+                width: width * 0.2,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: HexColor('#2A2828'),
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                child: Text("Upload",
+                    style: TextStyle(
+                      fontFamily: 'Roboto',
+                      color: Colors.white,
+                      fontSize: width * 0.04,
+                    )),
+              ),
             ),
           )
         ],
         backgroundColor: Colors.amber,
       ),
       backgroundColor: Colors.amber,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            images!.isEmpty
-                ? Padding(
-                    padding: EdgeInsets.only(
-                      left: width * 0.04,
-                      top: width * 0.02,
-                      right: width * 0.04,
-                    ),
-                    child: Container(
-                        decoration: BoxDecoration(
-                          color: HexColor('#F2F2F2'),
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        height: width * 0.78,
-                        child: Stack(
-                          children: [
-                            Positioned(
-                                child: Container(
+      body: _isUploading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  images!.isEmpty
+                      ? Padding(
+                          padding: EdgeInsets.only(
+                            left: width * 0.04,
+                            top: width * 0.02,
+                            right: width * 0.04,
+                          ),
+                          child: Container(
                               decoration: BoxDecoration(
-                                color: HexColor('#2A2828'),
-                                borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(10),
-                                    topRight: Radius.circular(10)),
+                                color: HexColor('#F2F2F2'),
+                                borderRadius: BorderRadius.circular(10.0),
                               ),
-                              height: width * 0.10,
+                              height: width * 0.78,
                               child: Stack(
                                 children: [
                                   Positioned(
-                                      top: width * 0.02,
-                                      left: width * 0.03,
-                                      child: Text(
-                                          "Machinery Photo (${images!.length}/4)",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: 'Roboto',
-                                              fontWeight: FontWeight.w600))),
-                                  Positioned(
-                                      right: width * 0.03,
-                                      top: width * 0.02,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          pickImages();
-                                        },
-                                        child: Text("Edit",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontFamily: 'Roboto',
-                                                fontWeight: FontWeight.w500)),
-                                      )),
-                                ],
-                              ),
-                            )),
-                            Positioned(
-                                top: width * 0.35,
-                                left: width * 0.33,
-                                child: Column(
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        pickImages();
-                                      },
-                                      child: Image.asset(
-                                        'assets/images/Addphoto2.png',
-                                        width: width * 0.13,
-                                        height: width * 0.13,
-                                      ),
+                                      child: Container(
+                                    decoration: BoxDecoration(
+                                      color: HexColor('#2A2828'),
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(10),
+                                          topRight: Radius.circular(10)),
                                     ),
-                                    Text(
-                                      "Click to Add Photo",
-                                      style: TextStyle(
-                                        fontSize: width * 0.03,
-                                        color: Colors.black38,
-                                      ),
-                                    ),
-                                  ],
-                                )),
-                            Positioned(
-                                bottom: width * 0.02,
-                                left: width * 0.02,
-                                child: GestureDetector(
-                                    onTap: () {
-                                      _pickImageFromCamera();
-                                    },
-                                    child: FaIcon(FontAwesomeIcons.camera,
-                                        size: width * 0.06)))
-                          ],
-                        )),
-                  )
-                : Padding(
-                    padding: EdgeInsets.only(
-                      left: width * 0.04,
-                      top: width * 0.02,
-                      right: width * 0.04,
-                    ),
-                    child: Container(
-                        decoration: BoxDecoration(
-                          color: HexColor('#F2F2F2'),
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        height: width * 0.78,
-                        child: Stack(
-                          children: [
-                            Positioned(
-                                child: Container(
-                              decoration: BoxDecoration(
-                                color: HexColor('#2A2828'),
-                                borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(10),
-                                    topRight: Radius.circular(10)),
-                              ),
-                              height: width * 0.10,
-                              child: Stack(
-                                children: [
-                                  Positioned(
-                                      top: width * 0.02,
-                                      left: width * 0.03,
-                                      child: Text(
-                                          "Machinery Photo (${images!.length}/4)",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: 'Roboto',
-                                              fontWeight: FontWeight.w600))),
-                                  Positioned(
-                                      right: width * 0.03,
-                                      top: width * 0.02,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          pickImages();
-                                        },
-                                        child: Text("Edit",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontFamily: 'Roboto',
-                                                fontWeight: FontWeight.w500)),
-                                      )),
-                                ],
-                              ),
-                            )),
-                            Padding(
-                              padding: EdgeInsets.only(top: width * 0.1),
-                              child: Container(
-                                child: Center(
-                                    child: PageView.builder(
-                                        itemCount: images!.length,
-                                        itemBuilder: (context, index) {
-                                          return Container(
-                                              child: Image.file(
-                                                  File(images![index].path)));
-                                        })),
-                              ),
-                            ),
-                            Positioned(
-                                bottom: width * 0.02,
-                                left: width * 0.02,
-                                child: GestureDetector(
-                                    onTap: () {
-                                      _pickImageFromCamera();
-                                    },
-                                    child: FaIcon(FontAwesomeIcons.camera,
-                                        size: width * 0.06)))
-                          ],
-                        )),
-                  ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.06,
-                top: width * 0.024,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Machinery name",
-                  style: TextStyle(
-                    fontSize: width * 0.045,
-                    fontWeight: FontWeight.w900,
-                    fontFamily: 'Roboto',
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.02,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding:
-                      EdgeInsets.only(right: width * 0.04, left: width * 0.04),
-                  child: TextField(
-                    controller: _machineryname,
-                    decoration: InputDecoration(
-                      hintText: 'Enter the machinery Name',
-                      hintStyle: TextStyle(fontSize: 14.0),
-                      contentPadding: const EdgeInsets.only(
-                        left: 5,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.06,
-                top: width * 0.024,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Brand name",
-                  style: TextStyle(
-                    fontSize: width * 0.045,
-                    fontWeight: FontWeight.w900,
-                    fontFamily: 'Roboto',
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.02,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding:
-                      EdgeInsets.only(right: width * 0.04, left: width * 0.04),
-                  child: TextField(
-                    controller: _brandname,
-                    decoration: InputDecoration(
-                      hintText: 'Enter the Brand Name',
-                      hintStyle: TextStyle(fontSize: 14.0),
-                      contentPadding: const EdgeInsets.only(
-                        left: 5,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.06,
-                top: width * 0.024,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Machinery Type",
-                  style: TextStyle(
-                    fontSize: width * 0.045,
-                    fontWeight: FontWeight.w900,
-                    fontFamily: 'Roboto',
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.03,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton2<String>(
-                    isExpanded: true,
-                    hint: Text(
-                      'Select Type',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Theme.of(context).hintColor,
-                      ),
-                    ),
-                    items: items
-                        .map((item) => DropdownMenuItem(
-                              value: item,
-                              child: Text(
-                                item,
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ))
-                        .toList(),
-                    value: machinerytype,
-                    onChanged: (value) {
-                      setState(() {
-                        machinerytype = value;
-                      });
-                    },
-                    buttonStyleData: const ButtonStyleData(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      height: 40,
-                      width: 200,
-                    ),
-                    dropdownStyleData: const DropdownStyleData(
-                      maxHeight: 200,
-                    ),
-                    menuItemStyleData: const MenuItemStyleData(
-                      height: 40,
-                    ),
-                    dropdownSearchData: DropdownSearchData(
-                      searchController: search,
-                      searchInnerWidgetHeight: 50,
-                      searchInnerWidget: Container(
-                        height: 50,
-                        padding: const EdgeInsets.only(
-                          top: 8,
-                          bottom: 4,
-                          right: 8,
-                          left: 8,
-                        ),
-                        child: TextFormField(
-                          expands: true,
-                          maxLines: null,
-                          controller: search,
-                          decoration: InputDecoration(
-                            isDense: true,
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 8,
-                            ),
-                            hintText: 'Search for an item...',
-                            hintStyle: const TextStyle(fontSize: 12),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                        ),
-                      ),
-                      searchMatchFn: (item, searchValue) {
-                        return item.value
-                            .toString()
-                            .toLowerCase()
-                            .contains(searchValue.toLowerCase());
-                      },
-                    ),
-                    //This to clear the search value when you close the menu
-                    onMenuStateChange: (isOpen) {
-                      if (!isOpen) {
-                        search.clear();
-                      }
-                    },
-                  ),
-                ),
-              ),
-            ),
-            (machinerytype == "Backhoe Loader")
-                ? Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: width * 0.06,
-                          top: width * 0.024,
-                        ),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            "Horse power",
-                            style: TextStyle(
-                              fontSize: width * 0.045,
-                              fontWeight: FontWeight.w900,
-                              fontFamily: 'Roboto',
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: width * 0.02,
-                        ),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                                right: width * 0.04, left: width * 0.04),
-                            child: TextField(
-                              controller: _specifications,
-                              decoration: InputDecoration(
-                                hintText: 'Enter the Horse Power of Machinery',
-                                hintStyle: TextStyle(fontSize: 14.0),
-                                contentPadding: const EdgeInsets.only(
-                                  left: 5,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: width * 0.06,
-                          top: width * 0.024,
-                        ),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            "Backhoe size",
-                            style: TextStyle(
-                              fontSize: width * 0.045,
-                              fontWeight: FontWeight.w900,
-                              fontFamily: 'Roboto',
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                          left: width * 0.02,
-                        ),
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                                right: width * 0.04, left: width * 0.04),
-                            child: DropdownButton<String>(
-                              underline: Container(
-                                height: 1,
-                                decoration: BoxDecoration(color: Colors.black),
-                              ),
-                              value: backhoeSize,
-                              items: _dropdownValues2.map((value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(
-                                    value,
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Theme.of(context).hintColor,
-                                    ),
-                                  ),
-                                );
-                              }).toList(),
-                              onChanged: (newValue) {
-                                setState(() {
-                                  backhoeSize = newValue!;
-                                });
-                              },
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  )
-                : (machinerytype == "Excavator")
-                    ? Column(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(
-                              left: width * 0.06,
-                              top: width * 0.024,
-                            ),
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: Text(
-                                "Operating Capacity",
-                                style: TextStyle(
-                                  fontSize: width * 0.045,
-                                  fontWeight: FontWeight.w900,
-                                  fontFamily: 'Roboto',
-                                ),
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: EdgeInsets.only(
-                              left: width * 0.02,
-                            ),
-                            child: Align(
-                              alignment: Alignment.centerLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                    right: width * 0.04, left: width * 0.04),
-                                child: TextField(
-                                  controller: _specifications,
-                                  decoration: InputDecoration(
-                                    hintText: 'Enter The operating capacity',
-                                    hintStyle: TextStyle(fontSize: 14.0),
-                                    contentPadding: const EdgeInsets.only(
-                                      left: 5,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
-                    : (machinerytype == "Bulldozer")
-                        ? Column(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(
-                                  left: width * 0.06,
-                                  top: width * 0.024,
-                                ),
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    "Horse power",
-                                    style: TextStyle(
-                                      fontSize: width * 0.045,
-                                      fontWeight: FontWeight.w900,
-                                      fontFamily: 'Roboto',
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                  left: width * 0.02,
-                                ),
-                                child: Align(
-                                  alignment: Alignment.centerLeft,
-                                  child: Padding(
-                                    padding: EdgeInsets.only(
-                                        right: width * 0.04,
-                                        left: width * 0.04),
-                                    child: TextField(
-                                      controller: _specifications,
-                                      decoration: InputDecoration(
-                                        hintText: 'Enter the Horse power',
-                                        hintStyle: TextStyle(fontSize: 14.0),
-                                        contentPadding: const EdgeInsets.only(
-                                          left: 5,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                        : machinerytype != null
-                            ? machinerytype!.contains('Crane') ||
-                                    machinerytype!.contains('Forklift')
-                                ? Column(
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                          left: width * 0.06,
-                                          top: width * 0.024,
-                                        ),
-                                        child: Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Text(
-                                            "Lifting Capacity",
-                                            style: TextStyle(
-                                              fontSize: width * 0.045,
-                                              fontWeight: FontWeight.w900,
-                                              fontFamily: 'Roboto',
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                          left: width * 0.02,
-                                        ),
-                                        child: Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Padding(
-                                            padding: EdgeInsets.only(
-                                                right: width * 0.04,
-                                                left: width * 0.04),
-                                            child: TextField(
-                                              controller: _specifications,
-                                              decoration: InputDecoration(
-                                                hintText:
-                                                    'Enter the lifting capacity',
-                                                hintStyle:
-                                                    TextStyle(fontSize: 14.0),
-                                                contentPadding:
-                                                    const EdgeInsets.only(
-                                                  left: 5,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                : machinerytype!.contains('Rollers')
-                                    ? Column(
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                              left: width * 0.06,
-                                              top: width * 0.024,
-                                            ),
-                                            child: Align(
-                                              alignment: Alignment.centerLeft,
-                                              child: Text(
-                                                "Drum Width",
+                                    height: width * 0.10,
+                                    child: Stack(
+                                      children: [
+                                        Positioned(
+                                            top: width * 0.02,
+                                            left: width * 0.03,
+                                            child: Text(
+                                                "Machinery Photo (${images!.length}/4)",
                                                 style: TextStyle(
-                                                  fontSize: width * 0.045,
-                                                  fontWeight: FontWeight.w900,
-                                                  fontFamily: 'Roboto',
-                                                ),
-                                              ),
+                                                    color: Colors.white,
+                                                    fontFamily: 'Roboto',
+                                                    fontWeight:
+                                                        FontWeight.w600))),
+                                        Positioned(
+                                            right: width * 0.03,
+                                            top: width * 0.02,
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                pickImages();
+                                              },
+                                              child: Text("Edit",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontFamily: 'Roboto',
+                                                      fontWeight:
+                                                          FontWeight.w500)),
+                                            )),
+                                      ],
+                                    ),
+                                  )),
+                                  Positioned(
+                                      top: width * 0.35,
+                                      left: width * 0.33,
+                                      child: Column(
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              pickImages();
+                                            },
+                                            child: Image.asset(
+                                              'assets/images/Addphoto2.png',
+                                              width: width * 0.13,
+                                              height: width * 0.13,
                                             ),
                                           ),
-                                          Padding(
-                                            padding: EdgeInsets.only(
-                                              left: width * 0.02,
-                                            ),
-                                            child: Align(
-                                              alignment: Alignment.centerLeft,
-                                              child: Padding(
-                                                padding: EdgeInsets.only(
-                                                    right: width * 0.04,
-                                                    left: width * 0.04),
-                                                child: TextField(
-                                                  controller: _specifications,
-                                                  decoration: InputDecoration(
-                                                    hintText:
-                                                        'Enter the Drum Width',
-                                                    hintStyle: TextStyle(
-                                                        fontSize: 14.0),
-                                                    contentPadding:
-                                                        const EdgeInsets.only(
-                                                      left: 5,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
+                                          Text(
+                                            "Click to Add Photo",
+                                            style: TextStyle(
+                                              fontSize: width * 0.03,
+                                              color: Colors.black38,
                                             ),
                                           ),
                                         ],
-                                      )
-                                    : machinerytype!.contains('Mixer') ||
-                                            machinerytype!
-                                                .contains('Tractor') ||
-                                            machinerytype!.contains('Loader')
-                                        ? Column(
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                  left: width * 0.06,
-                                                  top: width * 0.024,
-                                                ),
-                                                child: Align(
-                                                  alignment:
-                                                      Alignment.centerLeft,
-                                                  child: Text(
-                                                    "Capacity",
-                                                    style: TextStyle(
-                                                      fontSize: width * 0.045,
-                                                      fontWeight:
-                                                          FontWeight.w900,
-                                                      fontFamily: 'Roboto',
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                  left: width * 0.02,
-                                                ),
-                                                child: Align(
-                                                  alignment:
-                                                      Alignment.centerLeft,
-                                                  child: Padding(
-                                                    padding: EdgeInsets.only(
-                                                        right: width * 0.04,
-                                                        left: width * 0.04),
-                                                    child: TextField(
-                                                      controller:
-                                                          _specifications,
-                                                      decoration:
-                                                          InputDecoration(
-                                                        hintText:
-                                                            'Enter the Capacity',
-                                                        hintStyle: TextStyle(
-                                                            fontSize: 14.0),
-                                                        contentPadding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                          left: 5,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                        : Column(
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                  left: width * 0.06,
-                                                  top: width * 0.024,
-                                                ),
-                                                child: Align(
-                                                  alignment:
-                                                      Alignment.centerLeft,
-                                                  child: Text(
-                                                    "Specifications",
-                                                    style: TextStyle(
-                                                      fontSize: width * 0.045,
-                                                      fontWeight:
-                                                          FontWeight.w900,
-                                                      fontFamily: 'Roboto',
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding: EdgeInsets.only(
-                                                  left: width * 0.02,
-                                                ),
-                                                child: Align(
-                                                  alignment:
-                                                      Alignment.centerLeft,
-                                                  child: Padding(
-                                                    padding: EdgeInsets.only(
-                                                        right: width * 0.04,
-                                                        left: width * 0.04),
-                                                    child: TextField(
-                                                      controller:
-                                                          _specifications,
-                                                      decoration:
-                                                          InputDecoration(
-                                                        hintText:
-                                                            'Enter the Specifications',
-                                                        hintStyle: TextStyle(
-                                                            fontSize: 14.0),
-                                                        contentPadding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                          left: 5,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                            : Column(
+                                      )),
+                                  Positioned(
+                                      bottom: width * 0.02,
+                                      left: width * 0.02,
+                                      child: GestureDetector(
+                                          onTap: () {
+                                            _pickImageFromCamera();
+                                          },
+                                          child: FaIcon(FontAwesomeIcons.camera,
+                                              size: width * 0.06)))
+                                ],
+                              )),
+                        )
+                      : Padding(
+                          padding: EdgeInsets.only(
+                            left: width * 0.04,
+                            top: width * 0.02,
+                            right: width * 0.04,
+                          ),
+                          child: Container(
+                              decoration: BoxDecoration(
+                                color: HexColor('#F2F2F2'),
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              height: width * 0.78,
+                              child: Stack(
                                 children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                      left: width * 0.06,
-                                      top: width * 0.024,
+                                  Positioned(
+                                      child: Container(
+                                    decoration: BoxDecoration(
+                                      color: HexColor('#2A2828'),
+                                      borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(10),
+                                          topRight: Radius.circular(10)),
                                     ),
-                                    child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(
-                                        "Specifications",
-                                        style: TextStyle(
-                                          fontSize: width * 0.045,
-                                          fontWeight: FontWeight.w900,
-                                          fontFamily: 'Roboto',
-                                        ),
+                                    height: width * 0.10,
+                                    child: Stack(
+                                      children: [
+                                        Positioned(
+                                            top: width * 0.02,
+                                            left: width * 0.03,
+                                            child: Text(
+                                                "Machinery Photo (${images!.length}/4)",
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontFamily: 'Roboto',
+                                                    fontWeight:
+                                                        FontWeight.w600))),
+                                        Positioned(
+                                            right: width * 0.03,
+                                            top: width * 0.02,
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                pickImages();
+                                              },
+                                              child: Text("Edit",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontFamily: 'Roboto',
+                                                      fontWeight:
+                                                          FontWeight.w500)),
+                                            )),
+                                      ],
+                                    ),
+                                  )),
+                                  Padding(
+                                    padding: EdgeInsets.only(top: width * 0.1),
+                                    child: Container(
+                                      child: Center(
+                                          child: PageView.builder(
+                                              itemCount: images!.length,
+                                              itemBuilder: (context, index) {
+                                                return Container(
+                                                    child: Image.file(File(
+                                                        images![index].path)));
+                                              })),
+                                    ),
+                                  ),
+                                  Positioned(
+                                      bottom: width * 0.02,
+                                      left: width * 0.02,
+                                      child: GestureDetector(
+                                          onTap: () {
+                                            _pickImageFromCamera();
+                                          },
+                                          child: FaIcon(FontAwesomeIcons.camera,
+                                              size: width * 0.06)))
+                                ],
+                              )),
+                        ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.06,
+                      top: width * 0.024,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Machinery name",
+                        style: TextStyle(
+                          fontSize: width * 0.045,
+                          fontWeight: FontWeight.w900,
+                          fontFamily: 'Roboto',
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.02,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            right: width * 0.04, left: width * 0.04),
+                        child: TextField(
+                          controller: _machineryname,
+                          decoration: InputDecoration(
+                            hintText: 'Enter the machinery Name',
+                            hintStyle: TextStyle(fontSize: 14.0),
+                            contentPadding: const EdgeInsets.only(
+                              left: 5,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.06,
+                      top: width * 0.024,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Brand name",
+                        style: TextStyle(
+                          fontSize: width * 0.045,
+                          fontWeight: FontWeight.w900,
+                          fontFamily: 'Roboto',
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.02,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            right: width * 0.04, left: width * 0.04),
+                        child: TextField(
+                          controller: _brandname,
+                          decoration: InputDecoration(
+                            hintText: 'Enter the Brand Name',
+                            hintStyle: TextStyle(fontSize: 14.0),
+                            contentPadding: const EdgeInsets.only(
+                              left: 5,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.06,
+                      top: width * 0.024,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Machinery Type",
+                        style: TextStyle(
+                          fontSize: width * 0.045,
+                          fontWeight: FontWeight.w900,
+                          fontFamily: 'Roboto',
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.03,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton2<String>(
+                          isExpanded: true,
+                          hint: Text(
+                            'Select Type',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Theme.of(context).hintColor,
+                            ),
+                          ),
+                          items: items
+                              .map((item) => DropdownMenuItem(
+                                    value: item,
+                                    child: Text(
+                                      item,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ))
+                              .toList(),
+                          value: machinerytype,
+                          onChanged: (value) {
+                            setState(() {
+                              machinerytype = value;
+                            });
+                          },
+                          buttonStyleData: const ButtonStyleData(
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            height: 40,
+                            width: 200,
+                          ),
+                          dropdownStyleData: const DropdownStyleData(
+                            maxHeight: 200,
+                          ),
+                          menuItemStyleData: const MenuItemStyleData(
+                            height: 40,
+                          ),
+                          dropdownSearchData: DropdownSearchData(
+                            searchController: search,
+                            searchInnerWidgetHeight: 50,
+                            searchInnerWidget: Container(
+                              height: 50,
+                              padding: const EdgeInsets.only(
+                                top: 8,
+                                bottom: 4,
+                                right: 8,
+                                left: 8,
+                              ),
+                              child: TextFormField(
+                                expands: true,
+                                maxLines: null,
+                                controller: search,
+                                decoration: InputDecoration(
+                                  isDense: true,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 8,
+                                  ),
+                                  hintText: 'Search for an item...',
+                                  hintStyle: const TextStyle(fontSize: 12),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            searchMatchFn: (item, searchValue) {
+                              return item.value
+                                  .toString()
+                                  .toLowerCase()
+                                  .contains(searchValue.toLowerCase());
+                            },
+                          ),
+                          //This to clear the search value when you close the menu
+                          onMenuStateChange: (isOpen) {
+                            if (!isOpen) {
+                              search.clear();
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                  (machinerytype == "Backhoe Loader")
+                      ? Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(
+                                left: width * 0.06,
+                                top: width * 0.024,
+                              ),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  "Horse power",
+                                  style: TextStyle(
+                                    fontSize: width * 0.045,
+                                    fontWeight: FontWeight.w900,
+                                    fontFamily: 'Roboto',
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                left: width * 0.02,
+                              ),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                      right: width * 0.04, left: width * 0.04),
+                                  child: TextField(
+                                    controller: _specifications,
+                                    decoration: InputDecoration(
+                                      hintText:
+                                          'Enter the Horse Power of Machinery',
+                                      hintStyle: TextStyle(fontSize: 14.0),
+                                      contentPadding: const EdgeInsets.only(
+                                        left: 5,
                                       ),
                                     ),
                                   ),
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                      left: width * 0.02,
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                left: width * 0.06,
+                                top: width * 0.024,
+                              ),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  "Backhoe size",
+                                  style: TextStyle(
+                                    fontSize: width * 0.045,
+                                    fontWeight: FontWeight.w900,
+                                    fontFamily: 'Roboto',
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                left: width * 0.02,
+                              ),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                      right: width * 0.04, left: width * 0.04),
+                                  child: DropdownButton<String>(
+                                    underline: Container(
+                                      height: 1,
+                                      decoration:
+                                          BoxDecoration(color: Colors.black),
                                     ),
-                                    child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Padding(
-                                        padding: EdgeInsets.only(
-                                            right: width * 0.04,
-                                            left: width * 0.04),
-                                        child: TextField(
-                                          controller: _specifications,
-                                          decoration: InputDecoration(
-                                            hintText:
-                                                'Enter the Specifications',
-                                            hintStyle:
-                                                TextStyle(fontSize: 14.0),
-                                            contentPadding:
-                                                const EdgeInsets.only(
-                                              left: 5,
-                                            ),
+                                    value: backhoeSize,
+                                    items: _dropdownValues2.map((value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(
+                                          value,
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Theme.of(context).hintColor,
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                                    onChanged: (newValue) {
+                                      setState(() {
+                                        backhoeSize = newValue!;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        )
+                      : (machinerytype == "Excavator")
+                          ? Column(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    left: width * 0.06,
+                                    top: width * 0.024,
+                                  ),
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      "Operating Capacity",
+                                      style: TextStyle(
+                                        fontSize: width * 0.045,
+                                        fontWeight: FontWeight.w900,
+                                        fontFamily: 'Roboto',
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    left: width * 0.02,
+                                  ),
+                                  child: Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(
+                                          right: width * 0.04,
+                                          left: width * 0.04),
+                                      child: TextField(
+                                        controller: _specifications,
+                                        decoration: InputDecoration(
+                                          hintText:
+                                              'Enter The operating capacity',
+                                          hintStyle: TextStyle(fontSize: 14.0),
+                                          contentPadding: const EdgeInsets.only(
+                                            left: 5,
                                           ),
                                         ),
                                       ),
                                     ),
                                   ),
-                                ],
-                              ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.06,
-                top: width * 0.024,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Condition",
-                  style: TextStyle(
-                    fontSize: width * 0.045,
-                    fontWeight: FontWeight.w900,
-                    fontFamily: 'Roboto',
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: width * 0.09),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: DropdownButton<String>(
-                  underline: Container(
-                    height: 1,
-                    decoration: BoxDecoration(color: Colors.black),
-                  ),
-                  value: condition,
-                  items: _dropdownValues.map((value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
+                                ),
+                              ],
+                            )
+                          : (machinerytype == "Bulldozer")
+                              ? Column(
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                        left: width * 0.06,
+                                        top: width * 0.024,
+                                      ),
+                                      child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          "Horse power",
+                                          style: TextStyle(
+                                            fontSize: width * 0.045,
+                                            fontWeight: FontWeight.w900,
+                                            fontFamily: 'Roboto',
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: EdgeInsets.only(
+                                        left: width * 0.02,
+                                      ),
+                                      child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Padding(
+                                          padding: EdgeInsets.only(
+                                              right: width * 0.04,
+                                              left: width * 0.04),
+                                          child: TextField(
+                                            controller: _specifications,
+                                            decoration: InputDecoration(
+                                              hintText: 'Enter the Horse power',
+                                              hintStyle:
+                                                  TextStyle(fontSize: 14.0),
+                                              contentPadding:
+                                                  const EdgeInsets.only(
+                                                left: 5,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              : machinerytype != null
+                                  ? machinerytype!.contains('Crane') ||
+                                          machinerytype!.contains('Forklift')
+                                      ? Column(
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                left: width * 0.06,
+                                                top: width * 0.024,
+                                              ),
+                                              child: Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: Text(
+                                                  "Lifting Capacity",
+                                                  style: TextStyle(
+                                                    fontSize: width * 0.045,
+                                                    fontWeight: FontWeight.w900,
+                                                    fontFamily: 'Roboto',
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: EdgeInsets.only(
+                                                left: width * 0.02,
+                                              ),
+                                              child: Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: Padding(
+                                                  padding: EdgeInsets.only(
+                                                      right: width * 0.04,
+                                                      left: width * 0.04),
+                                                  child: TextField(
+                                                    controller: _specifications,
+                                                    decoration: InputDecoration(
+                                                      hintText:
+                                                          'Enter the lifting capacity',
+                                                      hintStyle: TextStyle(
+                                                          fontSize: 14.0),
+                                                      contentPadding:
+                                                          const EdgeInsets.only(
+                                                        left: 5,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      : machinerytype!.contains('Rollers')
+                                          ? Column(
+                                              children: [
+                                                Padding(
+                                                  padding: EdgeInsets.only(
+                                                    left: width * 0.06,
+                                                    top: width * 0.024,
+                                                  ),
+                                                  child: Align(
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    child: Text(
+                                                      "Drum Width",
+                                                      style: TextStyle(
+                                                        fontSize: width * 0.045,
+                                                        fontWeight:
+                                                            FontWeight.w900,
+                                                        fontFamily: 'Roboto',
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.only(
+                                                    left: width * 0.02,
+                                                  ),
+                                                  child: Align(
+                                                    alignment:
+                                                        Alignment.centerLeft,
+                                                    child: Padding(
+                                                      padding: EdgeInsets.only(
+                                                          right: width * 0.04,
+                                                          left: width * 0.04),
+                                                      child: TextField(
+                                                        controller:
+                                                            _specifications,
+                                                        decoration:
+                                                            InputDecoration(
+                                                          hintText:
+                                                              'Enter the Drum Width',
+                                                          hintStyle: TextStyle(
+                                                              fontSize: 14.0),
+                                                          contentPadding:
+                                                              const EdgeInsets
+                                                                  .only(
+                                                            left: 5,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            )
+                                          : machinerytype!.contains('Mixer') ||
+                                                  machinerytype!
+                                                      .contains('Tractor') ||
+                                                  machinerytype!
+                                                      .contains('Loader')
+                                              ? Column(
+                                                  children: [
+                                                    Padding(
+                                                      padding: EdgeInsets.only(
+                                                        left: width * 0.06,
+                                                        top: width * 0.024,
+                                                      ),
+                                                      child: Align(
+                                                        alignment: Alignment
+                                                            .centerLeft,
+                                                        child: Text(
+                                                          "Capacity",
+                                                          style: TextStyle(
+                                                            fontSize:
+                                                                width * 0.045,
+                                                            fontWeight:
+                                                                FontWeight.w900,
+                                                            fontFamily:
+                                                                'Roboto',
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding: EdgeInsets.only(
+                                                        left: width * 0.02,
+                                                      ),
+                                                      child: Align(
+                                                        alignment: Alignment
+                                                            .centerLeft,
+                                                        child: Padding(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  right: width *
+                                                                      0.04,
+                                                                  left: width *
+                                                                      0.04),
+                                                          child: TextField(
+                                                            controller:
+                                                                _specifications,
+                                                            decoration:
+                                                                InputDecoration(
+                                                              hintText:
+                                                                  'Enter the Capacity',
+                                                              hintStyle:
+                                                                  TextStyle(
+                                                                      fontSize:
+                                                                          14.0),
+                                                              contentPadding:
+                                                                  const EdgeInsets
+                                                                      .only(
+                                                                left: 5,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                )
+                                              : Column(
+                                                  children: [
+                                                    Padding(
+                                                      padding: EdgeInsets.only(
+                                                        left: width * 0.06,
+                                                        top: width * 0.024,
+                                                      ),
+                                                      child: Align(
+                                                        alignment: Alignment
+                                                            .centerLeft,
+                                                        child: Text(
+                                                          "Specifications",
+                                                          style: TextStyle(
+                                                            fontSize:
+                                                                width * 0.045,
+                                                            fontWeight:
+                                                                FontWeight.w900,
+                                                            fontFamily:
+                                                                'Roboto',
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding: EdgeInsets.only(
+                                                        left: width * 0.02,
+                                                      ),
+                                                      child: Align(
+                                                        alignment: Alignment
+                                                            .centerLeft,
+                                                        child: Padding(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  right: width *
+                                                                      0.04,
+                                                                  left: width *
+                                                                      0.04),
+                                                          child: TextField(
+                                                            controller:
+                                                                _specifications,
+                                                            decoration:
+                                                                InputDecoration(
+                                                              hintText:
+                                                                  'Enter the Specifications',
+                                                              hintStyle:
+                                                                  TextStyle(
+                                                                      fontSize:
+                                                                          14.0),
+                                                              contentPadding:
+                                                                  const EdgeInsets
+                                                                      .only(
+                                                                left: 5,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                )
+                                  : Column(
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                            left: width * 0.06,
+                                            top: width * 0.024,
+                                          ),
+                                          child: Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Text(
+                                              "Specifications",
+                                              style: TextStyle(
+                                                fontSize: width * 0.045,
+                                                fontWeight: FontWeight.w900,
+                                                fontFamily: 'Roboto',
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(
+                                            left: width * 0.02,
+                                          ),
+                                          child: Align(
+                                            alignment: Alignment.centerLeft,
+                                            child: Padding(
+                                              padding: EdgeInsets.only(
+                                                  right: width * 0.04,
+                                                  left: width * 0.04),
+                                              child: TextField(
+                                                controller: _specifications,
+                                                decoration: InputDecoration(
+                                                  hintText:
+                                                      'Enter the Specifications',
+                                                  hintStyle:
+                                                      TextStyle(fontSize: 14.0),
+                                                  contentPadding:
+                                                      const EdgeInsets.only(
+                                                    left: 5,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.06,
+                      top: width * 0.024,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
                       child: Text(
-                        value,
+                        "Condition",
                         style: TextStyle(
-                          fontSize: 14,
-                          color: Theme.of(context).hintColor,
+                          fontSize: width * 0.045,
+                          fontWeight: FontWeight.w900,
+                          fontFamily: 'Roboto',
                         ),
                       ),
-                    );
-                  }).toList(),
-                  onChanged: (newValue) {
-                    setState(() {
-                      condition = newValue!;
-                    });
-                  },
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.06,
-                top: width * 0.024,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Zipcode",
-                  style: TextStyle(
-                    fontSize: width * 0.045,
-                    fontWeight: FontWeight.w900,
-                    fontFamily: 'Roboto',
+                    ),
                   ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.02,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding:
-                      EdgeInsets.only(right: width * 0.04, left: width * 0.04),
-                  child: TextField(
-                    controller: _zipCode,
-                    decoration: InputDecoration(
-                      hintText: 'Enter the Zipcode',
-                      hintStyle: TextStyle(fontSize: 14.0),
-                      contentPadding: const EdgeInsets.only(
-                        left: 5,
+                  Padding(
+                    padding: EdgeInsets.only(left: width * 0.09),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: DropdownButton<String>(
+                        underline: Container(
+                          height: 1,
+                          decoration: BoxDecoration(color: Colors.black),
+                        ),
+                        value: condition,
+                        items: _dropdownValues.map((value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(
+                              value,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Theme.of(context).hintColor,
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (newValue) {
+                          setState(() {
+                            condition = newValue!;
+                          });
+                        },
                       ),
                     ),
                   ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.06,
-                top: width * 0.024,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Delivered within",
-                  style: TextStyle(
-                    fontSize: width * 0.045,
-                    fontWeight: FontWeight.w900,
-                    fontFamily: 'Roboto',
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.02,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding:
-                      EdgeInsets.only(right: width * 0.04, left: width * 0.04),
-                  child: TextField(
-                    controller: _deliveredwithin,
-                    decoration: InputDecoration(
-                      hintText: 'Enter how much time will it take to deliver',
-                      hintStyle: TextStyle(fontSize: 14.0),
-                      contentPadding: const EdgeInsets.only(
-                        left: 5,
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.06,
+                      top: width * 0.024,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Zipcode",
+                        style: TextStyle(
+                          fontSize: width * 0.045,
+                          fontWeight: FontWeight.w900,
+                          fontFamily: 'Roboto',
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.06,
-                top: width * 0.024,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Quantity Available",
-                  style: TextStyle(
-                    fontSize: width * 0.045,
-                    fontWeight: FontWeight.w900,
-                    fontFamily: 'Roboto',
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.02,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding:
-                      EdgeInsets.only(right: width * 0.04, left: width * 0.04),
-                  child: TextField(
-                    controller: _deliveredwithin,
-                    decoration: InputDecoration(
-                      hintText: 'Enter How Many Machinery You Have',
-                      hintStyle: TextStyle(fontSize: 14.0),
-                      contentPadding: const EdgeInsets.only(
-                        left: 5,
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.02,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            right: width * 0.04, left: width * 0.04),
+                        child: TextField(
+                          controller: _zipCode,
+                          decoration: InputDecoration(
+                            hintText: 'Enter the Zipcode',
+                            hintStyle: TextStyle(fontSize: 14.0),
+                            contentPadding: const EdgeInsets.only(
+                              left: 5,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.06,
-                top: width * 0.024,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Hourly",
-                  style: TextStyle(
-                    fontSize: width * 0.045,
-                    fontWeight: FontWeight.w900,
-                    fontFamily: 'Roboto',
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.02,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding:
-                      EdgeInsets.only(right: width * 0.04, left: width * 0.04),
-                  child: TextField(
-                    controller: _rentonhourlybasis,
-                    decoration: InputDecoration(
-                      hintText: 'Enter Rent on Hourly Basis',
-                      hintStyle: TextStyle(fontSize: 14.0),
-                      contentPadding: const EdgeInsets.only(
-                        left: 5,
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.06,
+                      top: width * 0.024,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Delivered within",
+                        style: TextStyle(
+                          fontSize: width * 0.045,
+                          fontWeight: FontWeight.w900,
+                          fontFamily: 'Roboto',
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.06,
-                top: width * 0.024,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Day",
-                  style: TextStyle(
-                    fontSize: width * 0.045,
-                    fontWeight: FontWeight.w900,
-                    fontFamily: 'Roboto',
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.02,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding:
-                      EdgeInsets.only(right: width * 0.04, left: width * 0.04),
-                  child: TextField(
-                    controller: _rentondaybasis,
-                    decoration: InputDecoration(
-                      hintText: 'Enter Rent on Day Basis',
-                      hintStyle: TextStyle(fontSize: 14.0),
-                      contentPadding: const EdgeInsets.only(
-                        left: 5,
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.02,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            right: width * 0.04, left: width * 0.04),
+                        child: TextField(
+                          controller: _deliveredwithin,
+                          decoration: InputDecoration(
+                            hintText:
+                                'Enter how much time will it take to deliver',
+                            hintStyle: TextStyle(fontSize: 14.0),
+                            contentPadding: const EdgeInsets.only(
+                              left: 5,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.06,
-                top: width * 0.024,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Week",
-                  style: TextStyle(
-                    fontSize: width * 0.045,
-                    fontWeight: FontWeight.w900,
-                    fontFamily: 'Roboto',
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.02,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding:
-                      EdgeInsets.only(right: width * 0.04, left: width * 0.04),
-                  child: TextField(
-                    controller: _rentonweeklybasis,
-                    decoration: InputDecoration(
-                      hintText: 'Enter Rent on Weekly Basis',
-                      hintStyle: TextStyle(fontSize: 14.0),
-                      contentPadding: const EdgeInsets.only(
-                        left: 5,
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.06,
+                      top: width * 0.024,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Quantity Available",
+                        style: TextStyle(
+                          fontSize: width * 0.045,
+                          fontWeight: FontWeight.w900,
+                          fontFamily: 'Roboto',
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.06,
-                top: width * 0.024,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Month",
-                  style: TextStyle(
-                    fontSize: width * 0.045,
-                    fontWeight: FontWeight.w900,
-                    fontFamily: 'Roboto',
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.02,
-                bottom: width * 0.03,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding:
-                      EdgeInsets.only(right: width * 0.04, left: width * 0.04),
-                  child: TextField(
-                    controller: _rentonmonthlybasis,
-                    decoration: InputDecoration(
-                      hintText: 'Enter Rent on Monthly Basis',
-                      hintStyle: TextStyle(fontSize: 14.0),
-                      contentPadding: const EdgeInsets.only(
-                        left: 5,
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.02,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            right: width * 0.04, left: width * 0.04),
+                        child: TextField(
+                          controller: _quantity,
+                          decoration: InputDecoration(
+                            hintText: 'Enter How Many Machinery You Have',
+                            hintStyle: TextStyle(fontSize: 14.0),
+                            contentPadding: const EdgeInsets.only(
+                              left: 5,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.06,
+                      top: width * 0.024,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Hourly",
+                        style: TextStyle(
+                          fontSize: width * 0.045,
+                          fontWeight: FontWeight.w900,
+                          fontFamily: 'Roboto',
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.02,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            right: width * 0.04, left: width * 0.04),
+                        child: TextField(
+                          controller: _rentonhourlybasis,
+                          decoration: InputDecoration(
+                            hintText: 'Enter Rent on Hourly Basis',
+                            hintStyle: TextStyle(fontSize: 14.0),
+                            contentPadding: const EdgeInsets.only(
+                              left: 5,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.06,
+                      top: width * 0.024,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Day",
+                        style: TextStyle(
+                          fontSize: width * 0.045,
+                          fontWeight: FontWeight.w900,
+                          fontFamily: 'Roboto',
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.02,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            right: width * 0.04, left: width * 0.04),
+                        child: TextField(
+                          controller: _rentondaybasis,
+                          decoration: InputDecoration(
+                            hintText: 'Enter Rent on Day Basis',
+                            hintStyle: TextStyle(fontSize: 14.0),
+                            contentPadding: const EdgeInsets.only(
+                              left: 5,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.06,
+                      top: width * 0.024,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Week",
+                        style: TextStyle(
+                          fontSize: width * 0.045,
+                          fontWeight: FontWeight.w900,
+                          fontFamily: 'Roboto',
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.02,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            right: width * 0.04, left: width * 0.04),
+                        child: TextField(
+                          controller: _rentonweeklybasis,
+                          decoration: InputDecoration(
+                            hintText: 'Enter Rent on Weekly Basis',
+                            hintStyle: TextStyle(fontSize: 14.0),
+                            contentPadding: const EdgeInsets.only(
+                              left: 5,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.06,
+                      top: width * 0.024,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Month",
+                        style: TextStyle(
+                          fontSize: width * 0.045,
+                          fontWeight: FontWeight.w900,
+                          fontFamily: 'Roboto',
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.02,
+                      bottom: width * 0.03,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            right: width * 0.04, left: width * 0.04),
+                        child: TextField(
+                          controller: _rentonmonthlybasis,
+                          decoration: InputDecoration(
+                            hintText: 'Enter Rent on Monthly Basis',
+                            hintStyle: TextStyle(fontSize: 14.0),
+                            contentPadding: const EdgeInsets.only(
+                              left: 5,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
-      ),
     );
   }
 

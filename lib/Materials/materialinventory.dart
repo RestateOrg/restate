@@ -227,71 +227,110 @@ class _MaterialInventoryState extends State<MaterialInventory> {
                                             left: width * 0.02),
                                         child: GestureDetector(
                                             onTap: () async {
-                                              final documentRef =
-                                                  snapshot.reference;
+                                              showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return AlertDialog(
+                                                      title: Text('Delete'),
+                                                      content: Text(
+                                                          'Do You Want to Delete this Item?'),
+                                                      actions: <Widget>[
+                                                        TextButton(
+                                                          child: Text('Cancel'),
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop(); // Dismiss the dialog
+                                                          },
+                                                        ),
+                                                        TextButton(
+                                                          child: Text('Delete'),
+                                                          onPressed: () async {
+                                                            final documentRef =
+                                                                snapshot
+                                                                    .reference;
 
-                                              for (int i = 0;
-                                                  i <
-                                                      (snapshot.data() as Map<
-                                                                  String,
-                                                                  dynamic>)[
-                                                              'Images']
-                                                          .length;
-                                                  i++) {
-                                                firebase_storage
-                                                    .FirebaseStorage.instance
-                                                    .refFromURL((snapshot.data()
-                                                            as Map<String,
-                                                                dynamic>)[
-                                                        'Images'][i])
-                                                    .delete()
-                                                    .then((value) {
-                                                  Query query =
-                                                      CollectionRef.where(
-                                                          'Images',
-                                                          isEqualTo: ((snapshot
-                                                                      .data()
-                                                                  as Map<String,
-                                                                      dynamic>)[
-                                                              'Images']));
-                                                  query.get().then(
-                                                      (QuerySnapshot
-                                                          snapshot) async {
-                                                    if (snapshot
-                                                        .docs.isNotEmpty) {
-                                                      for (DocumentSnapshot document
-                                                          in snapshot.docs) {
-                                                        final documentId =
-                                                            document.reference;
-                                                        await documentId
-                                                            .delete();
-                                                      }
-                                                    } else {
-                                                      print(
-                                                          'No documents found with the matching image URL.');
-                                                    }
+                                                            for (int i = 0;
+                                                                i <
+                                                                    (snapshot.data() as Map<
+                                                                            String,
+                                                                            dynamic>)['Images']
+                                                                        .length;
+                                                                i++) {
+                                                              firebase_storage
+                                                                  .FirebaseStorage
+                                                                  .instance
+                                                                  .refFromURL((snapshot
+                                                                          .data()
+                                                                      as Map<
+                                                                          String,
+                                                                          dynamic>)['Images'][i])
+                                                                  .delete();
+                                                            }
+                                                            Query query = CollectionRef.where(
+                                                                'Images',
+                                                                isEqualTo: ((snapshot
+                                                                            .data()
+                                                                        as Map<
+                                                                            String,
+                                                                            dynamic>)[
+                                                                    'Images']));
+                                                            query.get().then(
+                                                                (QuerySnapshot
+                                                                    snapshot) async {
+                                                              if (snapshot.docs
+                                                                  .isNotEmpty) {
+                                                                for (DocumentSnapshot document
+                                                                    in snapshot
+                                                                        .docs) {
+                                                                  final documentId =
+                                                                      document
+                                                                          .reference;
+                                                                  await documentId
+                                                                      .delete();
+                                                                }
+                                                              } else {
+                                                                print(
+                                                                    'No documents found with the matching image URL.');
+                                                              }
+                                                            });
+
+                                                            await documentRef
+                                                                .delete();
+                                                            ScaffoldMessenger
+                                                                    .of(context)
+                                                                .showSnackBar(
+                                                              SnackBar(
+                                                                content: Text(
+                                                                    'Document deleted!'),
+                                                                duration:
+                                                                    Duration(
+                                                                        seconds:
+                                                                            1),
+                                                              ),
+                                                            );
+                                                            Future.delayed(
+                                                                delay, () {
+                                                              setState(() {
+                                                                collectionRef = firestore
+                                                                    .collection(
+                                                                        'materials')
+                                                                    .doc(
+                                                                        useremail)
+                                                                    .collection(
+                                                                        'items');
+                                                                fetchData();
+                                                              });
+                                                            });
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                          },
+                                                        ),
+                                                      ],
+                                                    );
                                                   });
-                                                });
-                                              }
-                                              await documentRef.delete();
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                SnackBar(
-                                                  content:
-                                                      Text('Document deleted!'),
-                                                  duration:
-                                                      Duration(seconds: 1),
-                                                ),
-                                              );
-                                              Future.delayed(delay, () {
-                                                setState(() {
-                                                  collectionRef = firestore
-                                                      .collection('materials')
-                                                      .doc(useremail)
-                                                      .collection('items');
-                                                  fetchData();
-                                                });
-                                              });
                                             },
                                             child:
                                                 Icon(Icons.delete, size: 20)),

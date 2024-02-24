@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -291,7 +293,6 @@ class _ProductDetailsState extends State<ProductDetails> {
                   children: [
                     Container(
                       color: Colors.white,
-                      height: width * 1.0,
                       child: Column(
                         children: [
                           Row(
@@ -424,15 +425,6 @@ class _ProductDetailsState extends State<ProductDetails> {
                                   child: RichText(
                                     text: TextSpan(
                                       children: [
-                                        TextSpan(
-                                          text: widget.data['brand_name'],
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold,
-                                            fontFamily: 'Roboto',
-                                          ),
-                                        ),
                                         TextSpan(
                                           text: widget.data
                                                   .containsKey('back_hoe_size')
@@ -873,7 +865,10 @@ class _ProductDetailsState extends State<ProductDetails> {
                                                       ),
                                                       Flexible(
                                                         child: ListView.builder(
-                                                          itemCount: 3,
+                                                          itemCount: min(
+                                                              deliverySnapshots
+                                                                  .length,
+                                                              3),
                                                           itemBuilder:
                                                               (context, index) {
                                                             return RadioListTile(
@@ -987,7 +982,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                         children: [
                                           TextSpan(
                                             text:
-                                                '| Delivery By $formattedDate',
+                                                '| Delivered within ${widget.data['delivered_within']}',
                                             style: TextStyle(
                                               fontFamily: 'Roboto',
                                               fontWeight: FontWeight.bold,
@@ -2032,6 +2027,23 @@ class _ProductDetailsState extends State<ProductDetails> {
                                     ),
                                   ),
                                 ),
+                                widget.data['Price_per_unit'] == 'Bag'
+                                    ? Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 8.0, left: 8.0, right: 8.0),
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            'Bag weight : ${widget.data['bag_size']}',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color:
+                                                  Colors.black.withOpacity(0.7),
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                    : Container(),
                               ],
                             ),
                           )),
