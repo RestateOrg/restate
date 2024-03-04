@@ -87,6 +87,28 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
+    - assets/images/foryouMach/
+    - assets/images/machinery/
+    - assets/images/machinery/Construction_site_services/
+    - assets/images/machinery/ConstructionandFinishing/
+    - assets/images/machinery/Cranes/
+    - assets/images/machinery/Drilling_Machinery/
+    - assets/images/machinery/Earth_moving_equipment/
+    - assets/images/machinery/Lifting_Machinery/
+    - assets/images/machinery/Road_Equipment/
+    - assets/images/Materials/
+    - assets/images/Materials/Aggregates/
+    - assets/images/Materials/Bricks/
+    - assets/images/Materials/catagires/
+    - assets/images/Materials/Cement/
+    - assets/images/Materials/Concrete/
+    - assets/images/Materials/Electrical/
+    - assets/images/Materials/for_you_mat/
+    - assets/images/Materials/Plumbing/
+    - assets/images/Materials/Steels/
+
+
+
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

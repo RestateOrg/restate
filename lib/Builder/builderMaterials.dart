@@ -2,8 +2,93 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:restate/Builder/showBuilderMaterial.dart';
+
+// ignore: must_be_immutable, camel_case_types
+class Choose_Materials_Catagories extends StatelessWidget {
+  final List<String> images;
+  final List<String> names;
+  String headerText;
+
+  Choose_Materials_Catagories(
+      {required this.images, required this.names, required this.headerText});
+
+  @override
+  Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(left: width * 0.02, top: width * 0.02),
+          child: Text(
+            headerText,
+            style: TextStyle(
+                fontFamily: 'Roboto',
+                fontSize: 20,
+                fontWeight: FontWeight.bold),
+          ),
+        ),
+        Expanded(
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height - kToolbarHeight,
+            child: GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                crossAxisSpacing: 7.0,
+                mainAxisSpacing: 8.0,
+              ),
+              itemCount: images.length,
+              itemBuilder: (context, index) {
+                return InkWell(
+                  onTap: () {
+                    // Handle tap on each item
+                    print('Tapped on ${names[index]}');
+                  },
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.black,
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            border: Border.all(
+                              color: Colors.amber,
+                              width: 2.0,
+                            ),
+                          ),
+                          child: AspectRatio(
+                            aspectRatio: 8 / 7,
+                            child: ClipRRect(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(10)),
+                              child: Image.asset(
+                                images[index],
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      //SizedBox(height: 5), // Add some spacing between image and text
+                      Text(
+                        names[index],
+                        style: TextStyle(
+                          fontFamily: 'Roboto',
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
 
 class BuilderMaterials extends StatefulWidget {
   const BuilderMaterials({Key? key});
@@ -13,465 +98,385 @@ class BuilderMaterials extends StatefulWidget {
 }
 
 class _BuilderMaterialsState extends State<BuilderMaterials> {
-  List<String> metalImages = [
-    'assets/images/me1.png',
-    'assets/images/m2.png',
-    'assets/images/m3.png',
+  List<String> Materials_Catagories_Names = [
+    'For you',
+    'Aggregates',
+    'Bricks',
+    'Cement',
+    'Concrete',
+    'Electrical',
+    'Plumbing',
+    'Steels',
   ];
 
-  List<String> aggregatesImages = [
-    'assets/images/agg1.png',
-    'assets/images/agg2.png',
-    'assets/images/agg3.png',
-    'assets/images/agg4.png',
-    'assets/images/agg5.png',
+  List<String> Materials_Catagories_Images = [
+    'assets/images/foryouMach/personAvatar.png',
+    'assets/images/Materials/catagires/Aggregates.jpg',
+    'assets/images/Materials/catagires/Bricks_logo.jpg',
+    'assets/images/Materials/catagires/Cement_logo.jpg',
+    'assets/images/Materials/catagires/Concrete_Logo.jpg',
+    'assets/images/Materials/catagires/Electrical_logo.jpg',
+    'assets/images/Materials/catagires/Plumbing_Logo.jpg',
+    'assets/images/Materials/catagires/Steels_logo.jpg',
   ];
 
-  List<String> MasonryImages = [
-    'assets/images/man1.png',
-    'assets/images/man2.png',
-    'assets/images/man3.png',
-    'assets/images/man4.png',
+  List<String> For_You_Materials_Names = [
+    'Sand',
+    'Red Bricks',
+    'Ordinary Portland Cement (OPC)',
+    'Ready-Mix Concrete',
+    'Switches',
+    'Steel Rebars',
+    'PVC Pipes',
   ];
 
-  List<String> plumbingFixturesImages = [
-    'assets/images/pf1.png',
-    'assets/images/pf2.png',
-    'assets/images/pf3.png',
+  List<String> For_You_Materials_Images = [
+    'assets/images/Materials/for_you_mat/Sand.jpg',
+    'assets/images/Materials/for_you_mat/Red Bricks.jpg',
+    'assets/images/Materials/for_you_mat/Ordinary Portland Cement (OPC).jpg',
+    'assets/images/Materials/for_you_mat/Ready-Mix Concrete.jpg',
+    'assets/images/Materials/for_you_mat/Switches.png',
+    'assets/images/Materials/for_you_mat/Steel Rebars.jpg',
+    'assets/images/Materials/for_you_mat/PVC Pipes.jpg',
   ];
 
-  List<String> metalNames = [
-    'steel rebars',
-    'steel frames',
-    'wire mesh',
+  List<String> Aggregates_Names = [
+    'Sand',
+    'Gravel',
+    'Crushed Stone',
   ];
 
-  List<String> aggregatesNames = [
-    'sand',
-    'gravel',
-    'crushed stones',
-    'cement',
-    'concrete',
+  List<String> Aggregates_Images = [
+    'assets/images/Materials/Aggregates/Sand.JPG',
+    'assets/images/Materials/Aggregates/Gravel.jpg',
+    'assets/images/Materials/Aggregates/Crushed Stone.jpg'
   ];
 
-  List<String> masonryNames = [
-    'bricks',
-    'concrete blocks',
-    'cinder blocks',
-    'terracotta',
+  List<String> Bricks_Names = [
+    'Red Bricks',
+    'Concrete Bricks',
+    'Light Weight Bricks',
+    'Paving Bricks',
+    'Fire Bricks',
+    'Engineering Bricks',
   ];
 
-  List<String> plumbingFixturesNames = [
-    'pvc pipes',
-    'valves',
-    'fixtures',
+  List<String> Bricks_Images = [
+    'assets/images/Materials/Bricks/Red Bricks.jpg',
+    'assets/images/Materials/Bricks/Concrete Bricks.jpg',
+    'assets/images/Materials/Bricks/Light Weight Bricks.jpg',
+    'assets/images/Materials/Bricks/Paving Bricks.jpg',
+    'assets/images/Materials/Bricks/Fire Bricks.jpg',
+    'assets/images/Materials/Bricks/Engineering Bricks.jpg',
   ];
 
-  int mtappedIndex = -1;
-  int aggTappedINdex = -1;
-  int MasonryTappedIndex = -1;
-  int plumbingFixturesIndex = -1;
+  List<String> Cement_Names = [
+    'Ordinary Portland Cement (OPC)',
+    'Portland Pozzolona Cement(PPC)',
+    'Rapid Hardening Cement',
+    'Low Heat Cement',
+    'White Cement',
+  ];
+
+  List<String> Cement_Images = [
+    'assets/images/Materials/Cement/Ordinary Portland Cement (OPC).jpg',
+    'assets/images/Materials/Cement/Portland Pozzolona Cement(PPC).jpg',
+    'assets/images/Materials/Cement/Rapid Hardening Cement.jpg',
+    'assets/images/Materials/Cement/Low Heat Cement.jpg',
+    'assets/images/Materials/Cement/White Cement.jpg',
+  ];
+
+  List<String> Concrete_Names = [
+    'Concrete',
+    'Ready-Mix Concrete',
+    'Reinforced Concrete',
+    'Lightweight Concrete',
+    'Quick-Setting Concrete',
+    'Prestressed Concrete',
+  ];
+
+  List<String> Concrete_Images = [
+    'assets/images/Materials/Concrete/Concrete.jpg',
+    'assets/images/Materials/Concrete/Ready-Mix Concrete.jpg',
+    'assets/images/Materials/Concrete/Reinforced Concrete.jpeg',
+    'assets/images/Materials/Concrete/Lightweight Concrete.jpg',
+    'assets/images/Materials/Concrete/Quick-Setting Concrete.jpg',
+    'assets/images/Materials/Concrete/Prestressed Concrete.jpg',
+  ];
+
+  List<String> Electrical_Names = [
+    'PVC Conduit Pipes',
+    'Tube Lights',
+    'Distributions Panels',
+    'Subpanels',
+    'Circuit Breakers',
+    'Switches',
+    'Switch Boards',
+    'THHN Wires',
+    'THWN Wires',
+    'Fans',
+  ];
+
+  List<String> Electrical_Images = [
+    'assets/images/Materials/Electrical/PVC Conduit Pipes.jpg',
+    'assets/images/Materials/Electrical/Tube Lights.jpg',
+    'assets/images/Materials/Electrical/Distributions Panels.jpg',
+    'assets/images/Materials/Electrical/Subpanels.jpg',
+    'assets/images/Materials/Electrical/Circuit Breakers.jpg',
+    'assets/images/Materials/Electrical/Switch.jpg',
+    'assets/images/Materials/Electrical/Switch Boards.jpg',
+    'assets/images/Materials/Electrical/THHN Wires.jpg',
+    'assets/images/Materials/Electrical/THWN Wires.jpg',
+    'assets/images/Materials/Electrical/Fans.jpg',
+  ];
+
+  List<String> Plumbing_Names = [
+    'PVC Pipes',
+    'Water Tanks',
+    'Pumps',
+    'Toilet Basin',
+    'Sinks',
+    'Showers',
+    'Faucets And Taps',
+    'CPVC Pipes',
+    'Plumbing PIpes',
+    'Borewell Pipes',
+    'PVC Elbows',
+    'PVC Tees',
+    'PVC Coupllings',
+    'Valves',
+    'Flanges',
+  ];
+
+  List<String> Plumbing_Images = [
+    'assets/images/Materials/Plumbing/PVC Pipes.jpg',
+    'assets/images/Materials/Plumbing/Water Tanks.jpg',
+    'assets/images/Materials/Plumbing/Pumps.jpg',
+    'assets/images/Materials/Plumbing/Toilet Basin.jpg',
+    'assets/images/Materials/Plumbing/Sinks.jpg',
+    'assets/images/Materials/Plumbing/Showers.jpg',
+    'assets/images/Materials/Plumbing/Faucets And Taps.jpg',
+    'assets/images/Materials/Plumbing/CPVC Pipes.jpg',
+    'assets/images/Materials/Plumbing/Plumbing PIpes.png',
+    'assets/images/Materials/Plumbing/Borewell Pipes.jpg',
+    'assets/images/Materials/Plumbing/PVC Elbows.jpg',
+    'assets/images/Materials/Plumbing/PVC Tees.jpg',
+    'assets/images/Materials/Plumbing/PVC Coupllings.jpg',
+    'assets/images/Materials/Plumbing/Valves.jpg',
+    'assets/images/Materials/Plumbing/Flanges.png',
+  ];
+
+  List<String> Steels_Names = [
+    'Steel Rebars',
+    'Steel Frames',
+    'Steel Mesh',
+  ];
+
+  List<String> Steels_Images = [
+    'assets/images/Materials/Steels/Steel Rebars.jpg',
+    'assets/images/Materials/Steels/Steel Frames.jpg',
+    'assets/images/Materials/Steels/Steel Mesh.jpg',
+  ];
+
+  int choice = -1;
+
+  Widget choose_Materials_Catagories(
+      List<String> images, List<String> names, String headerText) {
+    return Choose_Materials_Catagories(
+      images: images,
+      names: names,
+      headerText: headerText,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+    final height = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: Colors.amber,
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: EdgeInsets.only(left: width * 0.047, top: width * 0.02),
-              child: Container(
-                width: width * 0.92,
-                child: CupertinoSearchTextField(
-                  backgroundColor: Colors.white,
-                  borderRadius: BorderRadius.circular(30),
-                  padding: EdgeInsets.all(10),
-                ),
+      body: Column(
+        children: [
+          Padding(
+            padding: EdgeInsets.only(left: width * 0.047, top: width * 0.02),
+            child: Container(
+              width: width * 0.92,
+              child: CupertinoSearchTextField(
+                backgroundColor: Colors.white,
+                borderRadius: BorderRadius.circular(30),
+                padding: EdgeInsets.all(10),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.only(left: width * 0.03, top: width * 0.03),
+          ),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(top: width * 0.02),
               child: Row(
                 children: [
-                  Text(
-                    'Metals',
-                    style: TextStyle(
-                      fontFamily: 'Roboto',
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
                   Padding(
                     padding: EdgeInsets.only(left: width * 0.02),
-                    child: FaIcon(
-                      FontAwesomeIcons.arrowRightLong,
-                      size: 25,
+                    child: Container(
+                        width: width * 0.35,
+                        decoration: BoxDecoration(
+                          color: Colors.amber,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10),
+                          ),
+                        ),
+                        child: Column(
+                          children: [
+                            Text(
+                              'Catagories',
+                              style: TextStyle(
+                                fontFamily: 'Roboto',
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Expanded(
+                              child: ListView.builder(
+                                itemCount: Materials_Catagories_Names.length,
+                                scrollDirection: Axis.vertical,
+                                itemBuilder: (context, index) {
+                                  return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      InkWell(
+                                        onTap: () {
+                                          setState(() {
+                                            choice = index;
+                                          });
+                                        },
+                                        child: Padding(
+                                          padding: EdgeInsets.all(10),
+                                          child: Container(
+                                            width: width * 0.4,
+                                            height: width * 0.3,
+                                            decoration: BoxDecoration(
+                                              color: Colors.amber,
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10)),
+                                              border: Border.all(
+                                                color: Colors.amber,
+                                                width: 2.0,
+                                              ),
+                                            ),
+                                            child: ClipRRect(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10)),
+                                              child: Image.asset(
+                                                Materials_Catagories_Images[
+                                                    index],
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Align(
+                                        alignment: Alignment.center,
+                                        child: Padding(
+                                          padding: EdgeInsets.only(
+                                              left: width * 0.01),
+                                          child: Text(
+                                            Materials_Catagories_Names[index],
+                                            style: TextStyle(
+                                              fontFamily: 'Roboto',
+                                              fontSize: 10,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Divider(
+                                        color: Colors.black26,
+                                        height: 1,
+                                      ),
+                                    ],
+                                  );
+                                },
+                              ),
+                            ),
+                          ],
+                        )),
+                  ),
+                  Divider(
+                    color: Colors.black12,
+                    height: height * 0.75, // Adjust the height of the Divider
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 0),
+                    child: Container(
+                      width: width * 0.62,
+                      height: height,
+                      decoration: BoxDecoration(
+                        color: Colors.amber,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.circular(10),
+                        ),
+                      ),
+                      child: choice != -1
+                          ? choice == 0
+                              ? choose_Materials_Catagories(
+                                  For_You_Materials_Images,
+                                  For_You_Materials_Names,
+                                  Materials_Catagories_Names[choice])
+                              : choice == 1
+                                  ? choose_Materials_Catagories(
+                                      Aggregates_Images,
+                                      Aggregates_Names,
+                                      Materials_Catagories_Names[choice])
+                                  : choice == 2
+                                      ? choose_Materials_Catagories(
+                                          Bricks_Images,
+                                          Bricks_Names,
+                                          Materials_Catagories_Names[choice])
+                                      : choice == 3
+                                          ? choose_Materials_Catagories(
+                                              Cement_Images,
+                                              Cement_Names,
+                                              Materials_Catagories_Names[
+                                                  choice])
+                                          : choice == 4
+                                              ? choose_Materials_Catagories(
+                                                  Concrete_Images,
+                                                  Concrete_Names,
+                                                  Materials_Catagories_Names[
+                                                      choice])
+                                              : choice == 5
+                                                  ? choose_Materials_Catagories(
+                                                      Electrical_Images,
+                                                      Electrical_Names,
+                                                      Materials_Catagories_Names[
+                                                          choice])
+                                                  : choice == 6
+                                                      ? choose_Materials_Catagories(
+                                                          Plumbing_Images,
+                                                          Plumbing_Names,
+                                                          Materials_Catagories_Names[
+                                                              choice])
+                                                      : choice == 7
+                                                          ? choose_Materials_Catagories(
+                                                              Steels_Images,
+                                                              Steels_Names,
+                                                              Materials_Catagories_Names[
+                                                                  choice])
+                                                          : Container()
+                          : choose_Materials_Catagories(
+                              For_You_Materials_Images,
+                              For_You_Materials_Names,
+                              'For You',
+                            ),
                     ),
                   ),
                 ],
               ),
             ),
-            Padding(
-              padding: EdgeInsets.only(left: width * 0.03, top: width * 0.02),
-              child: SizedBox(
-                height: width * 0.35,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: metalImages.length,
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () {
-                        // Set the tappedIndex when tapped
-                        setState(() {
-                          mtappedIndex = index;
-                        });
-
-                        // Delay the appearance of the transparent container by 1 second
-                        Future.delayed(Duration(milliseconds: 1000), () {
-                          // Reset tappedIndex after the delay
-                          setState(() {
-                            mtappedIndex = -1;
-                          });
-
-                          // Navigate to another screen after the delay
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => BuilderMaterialsDetails(
-                                matCatogary: metalNames[index],
-                              ),
-                            ),
-                          );
-                        });
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.only(right: width * 0.03),
-                        child: Stack(
-                          children: [
-                            Container(
-                              width: width * 0.4,
-                              height: width * 0.35,
-                              child: AspectRatio(
-                                aspectRatio: 4 / 3,
-                                child: Image.asset(
-                                  metalImages[index],
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                            ),
-                            if (mtappedIndex == index)
-                              Positioned.fill(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.black.withOpacity(0.3),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      metalNames[index],
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: width * 0.03, top: width * 0.03),
-              child: Row(
-                children: [
-                  Text(
-                    'Aggregates',
-                    style: TextStyle(
-                      fontFamily: 'Roboto',
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: width * 0.02),
-                    child: FaIcon(
-                      FontAwesomeIcons.arrowRightLong,
-                      size: 25,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: width * 0.03, top: width * 0.02),
-              child: SizedBox(
-                height: width * 0.35,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: aggregatesImages.length,
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () {
-                        setState(() {
-                          aggTappedINdex = index;
-                        });
-
-                        // Delay the appearance of the transparent container by 1 second
-                        Future.delayed(Duration(milliseconds: 1000), () {
-                          setState(() {
-                            aggTappedINdex = -1;
-                          });
-
-                          // Navigate to another screen after the delay
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => BuilderMaterialsDetails(
-                                matCatogary: aggregatesNames[index],
-                              ),
-                            ),
-                          );
-                        });
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.only(right: width * 0.03),
-                        child: Stack(
-                          children: [
-                            Container(
-                              width: width * 0.4,
-                              height: width * 0.35,
-                              child: AspectRatio(
-                                aspectRatio: 4 / 3,
-                                child: Image.asset(
-                                  aggregatesImages[index],
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                            ),
-                            if (aggTappedINdex == index)
-                              Positioned.fill(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.black.withOpacity(0.3),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      aggregatesNames[index],
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: width * 0.03, top: width * 0.03),
-              child: Row(
-                children: [
-                  Text(
-                    'Masonry',
-                    style: TextStyle(
-                      fontFamily: 'Roboto',
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: width * 0.02),
-                    child: FaIcon(
-                      FontAwesomeIcons.arrowRightLong,
-                      size: 25,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: width * 0.03, top: width * 0.02),
-              child: SizedBox(
-                height: width * 0.35,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: MasonryImages.length,
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () {
-                        setState(() {
-                          MasonryTappedIndex = index;
-                        });
-
-                        // Delay the appearance of the transparent container by 1 second
-                        Future.delayed(Duration(milliseconds: 1000), () {
-                          setState(() {
-                            aggTappedINdex = -1;
-                          });
-
-                          // Navigate to another screen after the delay
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => BuilderMaterialsDetails(
-                                matCatogary: masonryNames[index],
-                              ),
-                            ),
-                          );
-                        });
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.only(right: width * 0.03),
-                        child: Stack(
-                          children: [
-                            Container(
-                              width: width * 0.4,
-                              height: width * 0.35,
-                              child: AspectRatio(
-                                aspectRatio: 4 / 3,
-                                child: Image.asset(
-                                  MasonryImages[index],
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                            ),
-                            if (MasonryTappedIndex == index)
-                              Positioned.fill(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.black.withOpacity(0.3),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      masonryNames[index],
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: width * 0.03, top: width * 0.03),
-              child: Row(
-                children: [
-                  Text(
-                    'Plumbing Fixtures',
-                    style: TextStyle(
-                      fontFamily: 'Roboto',
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: width * 0.02),
-                    child: FaIcon(
-                      FontAwesomeIcons.arrowRightLong,
-                      size: 25,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: width * 0.03, top: width * 0.02),
-              child: SizedBox(
-                height: width * 0.35,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: plumbingFixturesImages.length,
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () {
-                        setState(() {
-                          plumbingFixturesIndex = index;
-                        });
-
-                        // Delay the appearance of the transparent container by 1 second
-                        Future.delayed(Duration(milliseconds: 1000), () {
-                          setState(() {
-                            plumbingFixturesIndex = -1;
-                          });
-
-                          // Navigate to another screen after the delay
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => BuilderMaterialsDetails(
-                                matCatogary: plumbingFixturesNames[index],
-                              ),
-                            ),
-                          );
-                        });
-                      },
-                      child: Padding(
-                        padding: EdgeInsets.only(right: width * 0.03),
-                        child: Stack(
-                          children: [
-                            Container(
-                              width: width * 0.4,
-                              height: width * 0.35,
-                              child: AspectRatio(
-                                aspectRatio: 4 / 3,
-                                child: Image.asset(
-                                  plumbingFixturesImages[index],
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                            ),
-                            if (plumbingFixturesIndex == index)
-                              Positioned.fill(
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.black.withOpacity(0.3),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      plumbingFixturesNames[index],
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

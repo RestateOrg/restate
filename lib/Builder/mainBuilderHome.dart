@@ -266,44 +266,39 @@ class _MainBuilderHomeState extends State<MainBuilderHome> {
                   Padding(
                     padding: EdgeInsets.only(top: width * 0.02),
                     child: SizedBox(
-                      height: width * 0.35,
+                      height: width * 0.36,
                       child: ListView.builder(
                         scrollDirection: Axis
                             .horizontal, // Set scroll direction to horizontal
                         itemCount: servImages.length,
                         itemBuilder: (context, index) {
-                          return Container(
-                            margin: EdgeInsets.symmetric(horizontal: 8.0),
-                            width: width * 0.5,
-                            height: width * 0.3,
-                            child: Column(
-                              children: [
-                                InkWell(
-                                  onTap: () {
-                                    showComingSoonDialog(
-                                        context, serviceName[index]);
-                                  },
-                                  child: Container(
-                                    width: width * 0.5,
-                                    height: width * 0.3,
-                                    child: AspectRatio(
-                                      aspectRatio: 4 / 3,
-                                      child: Image.asset(
-                                        servImages[index],
-                                        fit: BoxFit.cover,
-                                      ),
+                          return Column(
+                            children: [
+                              InkWell(
+                                onTap: () {
+                                  showComingSoonDialog(
+                                      context, serviceName[index]);
+                                },
+                                child: Container(
+                                  width: width * 0.5,
+                                  height: width * 0.3,
+                                  child: AspectRatio(
+                                    aspectRatio: 4 / 3,
+                                    child: Image.asset(
+                                      servImages[index],
+                                      fit: BoxFit.cover,
                                     ),
                                   ),
                                 ),
-                                Text(
-                                  serviceName[index],
-                                  style: TextStyle(
-                                    fontFamily: 'Roboto',
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                              ),
+                              Text(
+                                serviceName[index],
+                                style: TextStyle(
+                                  fontFamily: 'Roboto',
+                                  fontWeight: FontWeight.bold,
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           );
                         },
                       ),
