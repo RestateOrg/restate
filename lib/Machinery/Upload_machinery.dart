@@ -225,7 +225,7 @@ class _UploadMachineryState extends State<UploadMachinery> {
               'timestamp': formattedDate,
               'delivered_within': _deliveredwithin.text,
             });
-      uploadData2();
+      await uploadData2();
     } catch (e) {
       _showDocumentIdPopup(
           "All Fields Must Not Be Empty", 'Error Uploading Data');

@@ -41,6 +41,7 @@ class _UploadMaterialState extends State<UploadMaterial> {
   TextEditingController _priceper = TextEditingController();
   TextEditingController _availablequantity = TextEditingController();
   TextEditingController _bagSize = TextEditingController();
+  TextEditingController _deliveredwithin = TextEditingController();
   late List<String> downloadurls;
   String per = 'KG';
   DeliveryOption? _deliveryOption = DeliveryOption.no;
@@ -60,6 +61,8 @@ class _UploadMaterialState extends State<UploadMaterial> {
     _materialname.dispose();
     _priceper.dispose();
     _availablequantity.dispose();
+    _bagSize.dispose();
+    _deliveredwithin.dispose();
     super.dispose();
   }
 
@@ -143,6 +146,7 @@ class _UploadMaterialState extends State<UploadMaterial> {
               'rating_count': 0,
               'bag_size': _bagSize.text,
               'available_quantity': _availablequantity.text,
+              'delivered_within': _deliveredwithin.text,
               'useremail': useremail,
               'timestamp': formattedDate,
             })
@@ -159,6 +163,7 @@ class _UploadMaterialState extends State<UploadMaterial> {
               'Images': downloadurls,
               'status': 'In Stock',
               'available_quantity': _availablequantity.text,
+              'delivered_within': _deliveredwithin.text,
               'rating': 0,
               'rating_count': 0,
               'timestamp': formattedDate,
@@ -196,6 +201,7 @@ class _UploadMaterialState extends State<UploadMaterial> {
               'rating_count': 0,
               'bag_size': _bagSize.text,
               'available_quantity': _availablequantity.text,
+              'delivered_within': _deliveredwithin.text,
               'useremail': useremail,
               'timestamp': formattedDate,
             }).then(
@@ -219,6 +225,7 @@ class _UploadMaterialState extends State<UploadMaterial> {
               'rating': 0,
               'rating_count': 0,
               'available_quantity': _availablequantity.text,
+              'delivered_within': _deliveredwithin.text,
               'useremail': useremail,
               'timestamp': formattedDate,
             }).then(
@@ -977,6 +984,45 @@ class _UploadMaterialState extends State<UploadMaterial> {
                           controller: _zipCode,
                           decoration: InputDecoration(
                             hintText: 'Enter the Zipcode',
+                            hintStyle: TextStyle(fontSize: 14.0),
+                            contentPadding: const EdgeInsets.only(
+                              left: 5,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.06,
+                      top: width * 0.024,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Delivered Within",
+                        style: TextStyle(
+                          fontSize: width * 0.045,
+                          fontWeight: FontWeight.w900,
+                          fontFamily: 'Roboto',
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.02,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            right: width * 0.04, left: width * 0.04),
+                        child: TextField(
+                          controller: _deliveredwithin,
+                          decoration: InputDecoration(
+                            hintText: 'Enter the Days for Delivery',
                             hintStyle: TextStyle(fontSize: 14.0),
                             contentPadding: const EdgeInsets.only(
                               left: 5,

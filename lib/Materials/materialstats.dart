@@ -11,7 +11,7 @@ class _MaterialStatsState extends State<MaterialStats> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text("Material stats"),
+      child: Text("Coming Soon!"),
     );
   }
 }

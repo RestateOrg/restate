@@ -191,7 +191,7 @@ class _MaterialInventoryState extends State<MaterialInventory> {
                                     Flexible(
                                       child: Align(
                                         alignment: AlignmentDirectional(1, 0),
-                                        child: GestureDetector(
+                                        child: InkWell(
                                           onTap: () {
                                             Navigator.push(
                                               context,
@@ -216,7 +216,9 @@ class _MaterialInventoryState extends State<MaterialInventory> {
                                         padding: EdgeInsets.only(
                                             top: width * 0.015,
                                             left: width * 0.02),
-                                        child: Icon(Icons.info, size: 20),
+                                        child: InkWell(
+                                            onTap: () {},
+                                            child: Icon(Icons.info, size: 20)),
                                       ),
                                     ),
                                     Align(
@@ -225,7 +227,7 @@ class _MaterialInventoryState extends State<MaterialInventory> {
                                         padding: EdgeInsets.only(
                                             top: width * 0.015,
                                             left: width * 0.02),
-                                        child: GestureDetector(
+                                        child: InkWell(
                                             onTap: () async {
                                               showDialog(
                                                   context: context,

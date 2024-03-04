@@ -220,7 +220,7 @@ class _ProductDetailsState extends State<ProductDetails> {
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.shopping_bag_outlined),
-              label: 'Buy Now',
+              label: widget.type == "machinery" ? 'Rent Now' : 'Buy Now',
             ),
           ],
           selectedItemColor: Colors.amber[600],
