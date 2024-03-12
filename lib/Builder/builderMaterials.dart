@@ -1,7 +1,9 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:restate/Builder/Searchresults.dart';
 
 // ignore: must_be_immutable, camel_case_types
 class Choose_Materials_Catagories extends StatelessWidget {
@@ -22,6 +24,7 @@ class Choose_Materials_Catagories extends StatelessWidget {
           padding: EdgeInsets.only(left: width * 0.02, top: width * 0.02),
           child: Text(
             headerText,
+            textAlign: TextAlign.center,
             style: TextStyle(
                 fontFamily: 'Roboto',
                 fontSize: 20,
@@ -33,7 +36,7 @@ class Choose_Materials_Catagories extends StatelessWidget {
             height: MediaQuery.of(context).size.height - kToolbarHeight,
             child: GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
+                crossAxisCount: 3,
                 crossAxisSpacing: 7.0,
                 mainAxisSpacing: 8.0,
               ),
@@ -42,14 +45,32 @@ class Choose_Materials_Catagories extends StatelessWidget {
                 return InkWell(
                   onTap: () {
                     // Handle tap on each item
-                    print('Tapped on ${names[index]}');
+                    CollectionReference reference = FirebaseFirestore.instance
+                        .collection('materials_inventory');
+                    Query query = reference
+                        .where(
+                          'Material_type',
+                          isEqualTo: names[index],
+                        )
+                        .where('status', isEqualTo: "In Stock");
+
+                    // Handle tap on each item
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Searchresults(
+                          query: query,
+                          type: "material",
+                          searchkey: names[index],
+                        ),
+                      ),
+                    );
                   },
                   child: Column(
                     children: [
                       Expanded(
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.black,
                             borderRadius: BorderRadius.all(Radius.circular(10)),
                             border: Border.all(
                               color: Colors.amber,
@@ -57,10 +78,10 @@ class Choose_Materials_Catagories extends StatelessWidget {
                             ),
                           ),
                           child: AspectRatio(
-                            aspectRatio: 8 / 7,
+                            aspectRatio: 8 / 8,
                             child: ClipRRect(
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
+                                  BorderRadius.all(Radius.circular(50)),
                               child: Image.asset(
                                 images[index],
                                 fit: BoxFit.cover,
@@ -110,7 +131,7 @@ class _BuilderMaterialsState extends State<BuilderMaterials> {
   ];
 
   List<String> Materials_Catagories_Images = [
-    'assets/images/foryouMach/personAvatar.png',
+    'assets/images/foryouMach/Foryou.jpg',
     'assets/images/Materials/catagires/Aggregates.jpg',
     'assets/images/Materials/catagires/Bricks_logo.jpg',
     'assets/images/Materials/catagires/Cement_logo.jpg',
@@ -316,9 +337,9 @@ class _BuilderMaterialsState extends State<BuilderMaterials> {
                   Padding(
                     padding: EdgeInsets.only(left: width * 0.02),
                     child: Container(
-                        width: width * 0.35,
+                        width: width * 0.20,
                         decoration: BoxDecoration(
-                          color: Colors.amber,
+                          color: const Color.fromARGB(255, 224, 169, 2),
                           borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(10),
                             topRight: Radius.circular(10),
@@ -330,7 +351,7 @@ class _BuilderMaterialsState extends State<BuilderMaterials> {
                               'Catagories',
                               style: TextStyle(
                                 fontFamily: 'Roboto',
-                                fontSize: 20,
+                                fontSize: 13,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -350,14 +371,14 @@ class _BuilderMaterialsState extends State<BuilderMaterials> {
                                           });
                                         },
                                         child: Padding(
-                                          padding: EdgeInsets.all(10),
+                                          padding: EdgeInsets.only(left: 10),
                                           child: Container(
-                                            width: width * 0.4,
-                                            height: width * 0.3,
+                                            width: 60,
+                                            height: 60,
                                             decoration: BoxDecoration(
                                               color: Colors.amber,
                                               borderRadius: BorderRadius.all(
-                                                  Radius.circular(10)),
+                                                  Radius.circular(50)),
                                               border: Border.all(
                                                 color: Colors.amber,
                                                 width: 2.0,
@@ -365,7 +386,7 @@ class _BuilderMaterialsState extends State<BuilderMaterials> {
                                             ),
                                             child: ClipRRect(
                                               borderRadius: BorderRadius.all(
-                                                  Radius.circular(10)),
+                                                  Radius.circular(50)),
                                               child: Image.asset(
                                                 Materials_Catagories_Images[
                                                     index],
@@ -379,7 +400,8 @@ class _BuilderMaterialsState extends State<BuilderMaterials> {
                                         alignment: Alignment.center,
                                         child: Padding(
                                           padding: EdgeInsets.only(
-                                              left: width * 0.01),
+                                              left: width * 0.01,
+                                              bottom: width * 0.02),
                                           child: Text(
                                             Materials_Catagories_Names[index],
                                             style: TextStyle(
@@ -409,15 +431,11 @@ class _BuilderMaterialsState extends State<BuilderMaterials> {
                   Padding(
                     padding: EdgeInsets.only(left: 0),
                     child: Container(
-                      width: width * 0.62,
+                      width: width * 0.77,
                       height: height,
                       decoration: BoxDecoration(
-                        color: Colors.amber,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(10),
-                          topRight: Radius.circular(10),
-                        ),
-                      ),
+                          color: Colors.amber,
+                          borderRadius: BorderRadius.all(Radius.circular(30))),
                       child: choice != -1
                           ? choice == 0
                               ? choose_Materials_Catagories(

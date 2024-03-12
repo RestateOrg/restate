@@ -99,7 +99,10 @@ class _BeginState extends State<Begin> {
       if (userRole == 'Builder') {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const BuilderHomeScreen()),
+          MaterialPageRoute(
+              builder: (context) => const BuilderHomeScreen(
+                    initialSelectedIndex: 0,
+                  )),
         );
       } else if (userRole == 'Machinery') {
         Navigator.pushReplacement(

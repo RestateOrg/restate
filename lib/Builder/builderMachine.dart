@@ -1,16 +1,56 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:restate/Builder/Searchresults.dart';
 
-// ignore: must_be_immutable
-class ChooseMachCat extends StatelessWidget {
+class ChooseMachCat extends StatefulWidget {
   final List<String> images;
   final List<String> names;
-  String headerText;
+  final String headerText;
 
-  ChooseMachCat(
-      {required this.images, required this.names, required this.headerText});
+  ChooseMachCat({
+    required this.images,
+    required this.names,
+    required this.headerText,
+  });
+
+  @override
+  _ChooseMachCatState createState() => _ChooseMachCatState();
+}
+
+class _ChooseMachCatState extends State<ChooseMachCat> {
+  final User? _user = FirebaseAuth.instance.currentUser;
+  String city = '';
+
+  @override
+  void initState() {
+    setState(() {
+      getCity();
+    });
+    super.initState();
+  }
+
+  void getCity() {
+    var userDocument = FirebaseFirestore.instance
+        .collection('builders')
+        .doc(_user?.email)
+        .collection('userinformation')
+        .doc('userinfo')
+        .get();
+    userDocument.then((value) {
+      setState(() {
+        city = value['city'];
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +61,7 @@ class ChooseMachCat extends StatelessWidget {
         Padding(
           padding: EdgeInsets.only(left: width * 0.02, top: width * 0.02),
           child: Text(
-            headerText,
+            widget.headerText,
             style: TextStyle(
                 fontFamily: 'Roboto',
                 fontSize: 20,
@@ -33,37 +73,55 @@ class ChooseMachCat extends StatelessWidget {
             height: MediaQuery.of(context).size.height - kToolbarHeight,
             child: GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 7.0,
-                mainAxisSpacing: 8.0,
+                crossAxisCount: 3,
+                crossAxisSpacing: 0.0,
+                mainAxisSpacing: 30.0,
+                mainAxisExtent: 100,
               ),
-              itemCount: images.length,
+              itemCount: widget.images.length,
               itemBuilder: (context, index) {
                 return InkWell(
                   onTap: () {
+                    CollectionReference reference = FirebaseFirestore.instance
+                        .collection('machinery inventory');
+                    Query query = reference
+                        .where(
+                          'machinery_type',
+                          isEqualTo: widget.names[index],
+                        )
+                        .where('status', isEqualTo: "Available");
+
                     // Handle tap on each item
-                    print('Tapped on ${names[index]}');
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Searchresults(
+                          query: query,
+                          type: "machinery",
+                          searchkey: widget.names[index],
+                        ),
+                      ),
+                    );
                   },
                   child: Column(
                     children: [
                       Expanded(
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.black,
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(90)),
                             border: Border.all(
                               color: Colors.amber,
                               width: 2.0,
                             ),
                           ),
                           child: AspectRatio(
-                            aspectRatio: 8 / 7,
+                            aspectRatio: 5 / 5,
                             child: ClipRRect(
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(10)),
+                                  BorderRadius.all(Radius.circular(90)),
                               child: Image.asset(
-                                images[index],
-                                fit: BoxFit.cover,
+                                widget.images[index],
                               ),
                             ),
                           ),
@@ -71,7 +129,8 @@ class ChooseMachCat extends StatelessWidget {
                       ),
                       //SizedBox(height: 5), // Add some spacing between image and text
                       Text(
-                        names[index],
+                        widget.names[index],
+                        textAlign: TextAlign.center,
                         style: TextStyle(
                           fontFamily: 'Roboto',
                           fontSize: 10,
@@ -110,7 +169,7 @@ class _BuilderMachineState extends State<BuilderMachine> {
   ];
 
   List<String> machCategoriesImages = [
-    'assets/images/foryouMach/personAvatar.png',
+    'assets/images/foryouMach/Foryou.jpg',
     'assets/images/machinery/truckConMIx.png',
     'assets/images/machinery/Construction_site_services_logo.jpg',
     'assets/images/machinery/Crane.jpg',
@@ -342,13 +401,9 @@ class _BuilderMachineState extends State<BuilderMachine> {
                   Padding(
                     padding: EdgeInsets.only(left: width * 0.02),
                     child: Container(
-                        width: width * 0.35,
+                        width: width * 0.20,
                         decoration: BoxDecoration(
-                          color: Colors.amber,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            topRight: Radius.circular(10),
-                          ),
+                          color: const Color.fromARGB(255, 224, 169, 2),
                         ),
                         child: Column(
                           children: [
@@ -356,7 +411,7 @@ class _BuilderMachineState extends State<BuilderMachine> {
                               'Catagories',
                               style: TextStyle(
                                 fontFamily: 'Roboto',
-                                fontSize: 20,
+                                fontSize: 13,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -375,26 +430,28 @@ class _BuilderMachineState extends State<BuilderMachine> {
                                             choice = index;
                                           });
                                         },
-                                        child: Padding(
-                                          padding: EdgeInsets.all(10),
-                                          child: Container(
-                                            width: width * 0.4,
-                                            height: width * 0.3,
-                                            decoration: BoxDecoration(
-                                              color: Colors.amber,
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(10)),
-                                              border: Border.all(
-                                                color: Colors.amber,
-                                                width: 2.0,
+                                        child: Align(
+                                          alignment: Alignment.center,
+                                          child: Padding(
+                                            padding: EdgeInsets.all(0),
+                                            child: Container(
+                                              width: 60,
+                                              height: 60,
+                                              decoration: BoxDecoration(
+                                                color: Colors.white,
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(70)),
+                                                border: Border.all(
+                                                  color: Colors.amber,
+                                                  width: 2.0,
+                                                ),
                                               ),
-                                            ),
-                                            child: ClipRRect(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(10)),
-                                              child: Image.asset(
-                                                machCategoriesImages[index],
-                                                fit: BoxFit.cover,
+                                              child: ClipRRect(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(70)),
+                                                child: Image.asset(
+                                                  machCategoriesImages[index],
+                                                ),
                                               ),
                                             ),
                                           ),
@@ -404,9 +461,13 @@ class _BuilderMachineState extends State<BuilderMachine> {
                                         alignment: Alignment.center,
                                         child: Padding(
                                           padding: EdgeInsets.only(
-                                              left: width * 0.01),
+                                              left: width * 0.01,
+                                              right: width * 0.01,
+                                              top: width * 0.01,
+                                              bottom: width * 0.02),
                                           child: Text(
                                             machCategoriesNames[index],
+                                            textAlign: TextAlign.center,
                                             style: TextStyle(
                                               fontFamily: 'Roboto',
                                               fontSize: 10,
@@ -416,7 +477,8 @@ class _BuilderMachineState extends State<BuilderMachine> {
                                         ),
                                       ),
                                       Divider(
-                                        color: Colors.black26,
+                                        color:
+                                            const Color.fromARGB(21, 0, 0, 0),
                                         height: 1,
                                       ),
                                     ],
@@ -429,12 +491,12 @@ class _BuilderMachineState extends State<BuilderMachine> {
                   ),
                   Divider(
                     color: Colors.black12,
-                    height: height * 0.75, // Adjust the height of the Divider
+                    // Adjust the height of the Divider
                   ),
                   Padding(
                     padding: EdgeInsets.only(left: 0),
                     child: Container(
-                      width: width * 0.62,
+                      width: width * 0.77,
                       height: height,
                       decoration: BoxDecoration(
                         color: Colors.amber,

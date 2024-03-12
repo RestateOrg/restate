@@ -12,7 +12,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:restate/screens/signIn.dart';
 
 class BuilderHomeScreen extends StatefulWidget {
-  const BuilderHomeScreen({Key? key}) : super(key: key);
+  final int initialSelectedIndex;
+  const BuilderHomeScreen({required this.initialSelectedIndex});
 
   @override
   State<BuilderHomeScreen> createState() => _BuilderHomeScreenState();
@@ -31,6 +32,9 @@ class _BuilderHomeScreenState extends State<BuilderHomeScreen> {
   @override
   void initState() {
     super.initState();
+    setState(() {
+      _selectedIndex = widget.initialSelectedIndex;
+    });
     _pageController = PageController(initialPage: _selectedIndex);
   }
 
@@ -114,7 +118,7 @@ class _BuilderHomeScreenState extends State<BuilderHomeScreen> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(right: width * 0.007),
+            padding: EdgeInsets.only(right: 15),
             child: Builder(
               builder: (BuildContext context) {
                 return GestureDetector(
