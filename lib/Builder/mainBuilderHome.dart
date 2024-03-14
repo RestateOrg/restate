@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:restate/Builder/Searchpage.dart';
 
 class CardItem {
   final String image;
@@ -166,16 +167,9 @@ class _MainBuilderHomeState extends State<MainBuilderHome> {
       body: SingleChildScrollView(
         child: Stack(
           children: [
-            Padding(
-              padding: EdgeInsets.only(left: width * 0.047, top: width * 0.02),
-              child: Container(
-                width: width * 0.92,
-                child: CupertinoSearchTextField(
-                  backgroundColor: Colors.white,
-                  borderRadius: BorderRadius.circular(30),
-                  padding: EdgeInsets.all(10),
-                ),
-              ),
+            Align(
+              alignment: Alignment.topCenter,
+              child: searchWidget(width, context),
             ),
             Padding(
               padding: EdgeInsets.only(top: width * 0.15),
@@ -787,6 +781,39 @@ class _MainBuilderHomeState extends State<MainBuilderHome> {
     );
   }
 
+  GestureDetector searchWidget(double width, BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            transitionDuration: Duration(milliseconds: 200),
+            pageBuilder: (_, __, ___) => SearchPage(),
+            transitionsBuilder: (_, animation, __, child) {
+              return FadeTransition(opacity: animation, child: child);
+            },
+          ),
+        );
+      },
+      child: Container(
+        width: width * 0.92,
+        height: 40,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(30),
+        ),
+        child: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Icon(Icons.search, color: Colors.grey),
+            ),
+            Text('Search', style: TextStyle(color: Colors.grey)),
+          ],
+        ),
+      ),
+    );
+  }
   //Null onTap() => null;
 }
 

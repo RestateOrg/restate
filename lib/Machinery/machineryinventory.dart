@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:go_router/go_router.dart';
 import 'package:restate/Machinery/editpage.dart';
+import 'package:restate/Machinery/productinfo.dart';
 
 class MachineryInventory extends StatefulWidget {
   const MachineryInventory({super.key});
@@ -244,7 +246,19 @@ class _MachineryInventoryState extends State<MachineryInventory> {
                                             top: width * 0.015,
                                             left: width * 0.02),
                                         child: InkWell(
-                                            onTap: () {},
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ProductInfo(
+                                                          data: snapshot.data()
+                                                              as Map<String,
+                                                                  dynamic>,
+                                                          type: "machinery"),
+                                                ),
+                                              );
+                                            },
                                             child: Icon(Icons.info, size: 20)),
                                       ),
                                     ),

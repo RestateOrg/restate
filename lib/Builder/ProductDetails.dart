@@ -10,9 +10,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:restate/Builder/Upload_project.dart';
 import 'package:restate/Builder/builderHome.dart';
 import 'package:restate/Builder/Buynow.dart';
-import 'package:restate/Machinery/DeliveryInstruction.dart';
-import 'package:restate/Machinery/Searchpage.dart';
-import 'package:restate/Machinery/Searchresults.dart';
+import 'package:restate/Builder/DeliveryInstruction.dart';
+import 'package:restate/Builder/Searchpage.dart';
+import 'package:restate/Builder/Searchresults.dart';
 import 'package:intl/intl.dart';
 import 'package:restate/Machinery/machinery.dart';
 import 'package:share_plus/share_plus.dart';
@@ -1242,7 +1242,6 @@ class _ProductDetailsState extends State<ProductDetails> {
                   children: [
                     Container(
                       color: Colors.white,
-                      height: width * 1,
                       child: Column(
                         children: [
                           Row(

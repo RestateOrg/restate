@@ -1143,7 +1143,7 @@ class _BuyNowState extends State<BuyNow> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     SizedBox(
-                                      width: width * 0.6,
+                                      width: width * 0.5,
                                       child: Padding(
                                         padding:
                                             const EdgeInsets.only(left: 8.0),

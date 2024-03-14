@@ -32,7 +32,7 @@ class _SearchresultsState extends State<Searchresults> {
   void initState() {
     super.initState();
     firestore
-        .collection(widget.type)
+        .collection('builders')
         .doc(useremail)
         .collection('wishlist')
         .get()
@@ -129,6 +129,8 @@ class _SearchresultsState extends State<Searchresults> {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return Center(child: CircularProgressIndicator());
                       }
+                      if (snapshot.data!.docs.isEmpty)
+                        return Center(child: Text('No results found'));
                       return GridView.builder(
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 1,
@@ -454,6 +456,8 @@ class _SearchresultsState extends State<Searchresults> {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return Center(child: CircularProgressIndicator());
                       }
+                      if (snapshot.data!.docs.isEmpty)
+                        return Center(child: Text('No results found'));
                       return GridView.builder(
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 1,
@@ -548,7 +552,7 @@ class _SearchresultsState extends State<Searchresults> {
                                                           child: Container(
                                                             width: constraints
                                                                     .maxWidth *
-                                                                0.71,
+                                                                0.67,
                                                             child: Text(
                                                               data['Material_name']
                                                                           .length <
