@@ -32,6 +32,7 @@ class _UploadProjectState extends State<UploadProject> {
   TextEditingController _deliveryandpickup = TextEditingController();
   List<List<String>> materialList = [];
   List<List<String>> machineryList = [];
+  List<Map> projectrequirements = [];
   File? _image;
   String? useremail = FirebaseAuth.instance.currentUser?.email;
 
@@ -60,26 +61,27 @@ class _UploadProjectState extends State<UploadProject> {
         'city': locationInfo?['city'],
         'state': locationInfo?['state'],
         'country': locationInfo?['country'],
-        'zipcode': _zipCode.text,
         'siteconditions': _siteconditions.text,
         'deliveryandpickup': _deliveryandpickup.text,
         'imageURl': imageurl,
       });
       // Upload materialList and machineryList to Firestore
       for (List<String> material in materialList) {
-        await projectRef.collection('Project requirements').add({
+        projectrequirements.add({
           'Item Name': material[0],
           'Quantity': material[1],
           'Delivery Date': material[2],
         });
       }
+      // Upload materialList and machineryList to Firestore
       for (List<String> machinery in machineryList) {
-        await projectRef.collection('Project requirements').add({
-          'Machinery Name': machinery[0],
+        projectrequirements.add({
+          'Item Name': machinery[0],
           'Duration': machinery[1],
           'Price Willing to Pay': machinery[2],
         });
       }
+      await projectRef.update({'projectrequirements': projectrequirements});
       uploadData2();
     } catch (e) {
       print('Error uploading data: $e');
@@ -108,27 +110,13 @@ class _UploadProjectState extends State<UploadProject> {
         'city': locationInfo?['city'],
         'state': locationInfo?['state'],
         'country': locationInfo?['country'],
-        'zipcode': _zipCode.text,
         'siteconditions': _siteconditions.text,
         'deliveryandpickup': _deliveryandpickup.text,
         'email': useremail,
         'imageURl': imageurl,
+        'project requirements': projectrequirements,
       });
-      // Upload materialList and machineryList to Firestore
-      for (List<String> material in materialList) {
-        await projectRef.collection('Project requirements').add({
-          'Item Name': material[0],
-          'Quantity': material[1],
-          'Delivery Date': material[2],
-        });
-      }
-      for (List<String> machinery in machineryList) {
-        await projectRef.collection('Project requirements').add({
-          'Machinery Name': machinery[0],
-          'Duration': machinery[1],
-          'Price Willing to Pay': machinery[2],
-        });
-      }
+
       print('Data uploaded successfully!');
     } catch (e) {
       print('Error uploading data: $e');

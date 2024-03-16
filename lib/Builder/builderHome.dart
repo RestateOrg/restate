@@ -1,16 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:restate/Builder/Searchpage.dart';
 import 'package:restate/Builder/Upload_project.dart';
 import 'package:restate/Builder/builderCart.dart';
 import 'package:restate/Builder/builderMachine.dart';
 import 'package:restate/Builder/builderMaterials.dart';
 import 'package:restate/Builder/builderProfile.dart';
 import 'package:restate/Builder/mainBuilderHome.dart';
+import 'package:restate/Utils/Notificatuons.dart';
 import 'package:restate/Utils/hexcolor.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:restate/screens/signIn.dart';
 
 class BuilderHomeScreen extends StatefulWidget {
   final int initialSelectedIndex;
@@ -112,12 +111,19 @@ class _BuilderHomeScreenState extends State<BuilderHomeScreen> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(right: width * 0.03),
-            child: FaIcon(
-              FontAwesomeIcons.solidBell,
-              color: Colors.black,
-            ),
-          ),
+              padding: EdgeInsets.only(right: width * 0.03),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Notifications()),
+                  );
+                },
+                child: FaIcon(
+                  FontAwesomeIcons.solidBell,
+                  color: Colors.black,
+                ),
+              )),
           Padding(
             padding: EdgeInsets.only(right: 15),
             child: Builder(

@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:math';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -312,179 +311,52 @@ class _MainBuilderHomeState extends State<MainBuilderHome> {
                   Padding(
                     padding: EdgeInsets.only(top: width * 0.02),
                     child: SizedBox(
-                      height: width * 0.35,
-                      child: ListView.builder(
-                        scrollDirection: Axis
-                            .horizontal, // Set scroll direction to horizontal
-                        itemCount: min(5, machSnapshots.length),
-                        itemBuilder: (context, index) {
-                          return Card(
-                            margin: EdgeInsets.symmetric(horizontal: 10.0),
-                            child: Container(
-                              width: width * 0.5,
-                              height: width * 0.4,
-                              decoration: BoxDecoration(
-                                // Set the background color as needed
-                                color: Colors.black26,
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(10),
-                                  bottomRight: Radius.circular(10),
-                                ),
+                      height: 210,
+                      child: LayoutBuilder(builder: (context, constraints) {
+                        return ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: min(5, machSnapshots.length),
+                          itemBuilder: (context, index) {
+                            return Card(
+                              margin: EdgeInsets.all(8),
+                              clipBehavior: Clip.antiAlias,
+                              elevation: 2,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5),
                               ),
-                              child: Column(
-                                children: [
-                                  Container(
-                                    width: width * 0.5,
-                                    height: width * 0.22,
-                                    decoration: BoxDecoration(
-                                      // Set the background color as needed
-                                      color: Colors.black26,
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(10),
-                                        topRight: Radius.circular(10),
-                                      ),
-                                    ),
-                                    child: CachedNetworkImage(
-                                      imageUrl: machSnapshots[index]
-                                              ['image_urls'][0] ??
-                                          '',
-                                      placeholder: (context, url) => Center(
-                                        child: CircularProgressIndicator(),
-                                      ),
-                                      errorWidget: (context, url, error) =>
-                                          Icon(Icons.error),
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  Container(
-                                    width: width * 0.5,
-                                    height: width * 0.13,
-                                    decoration: BoxDecoration(
-                                      // Set the background color as needed
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.only(
-                                        bottomLeft: Radius.circular(10),
-                                        bottomRight: Radius.circular(10),
-                                      ),
-                                    ),
-                                    child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Padding(
-                                        padding:
-                                            EdgeInsets.only(left: width * 0.02),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              machSnapshots[index]
-                                                  ['machinery_name'],
-                                              style: TextStyle(
-                                                fontFamily: 'Roboto',
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w700,
-                                              ),
-                                            ),
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  machSnapshots[index]
-                                                      ['machinery_type'],
-                                                  style: TextStyle(
-                                                    fontFamily: 'Roboto',
-                                                    fontSize: 10,
-                                                    color: Colors.black26,
-                                                    fontWeight: FontWeight.w100,
-                                                  ),
-                                                ),
-                                                Padding(
-                                                  padding: EdgeInsets.only(
-                                                      left: width * 0.15),
-                                                  child: Row(
-                                                    children: [
-                                                      FaIcon(
-                                                        FontAwesomeIcons.star,
-                                                        color: Colors.amber,
-                                                        size: 10,
-                                                      ),
-                                                      Text(
-                                                        machSnapshots[index]
-                                                                ['rating']
-                                                            .toString(),
-                                                        style: TextStyle(
-                                                          fontFamily: 'Roboto',
-                                                          fontSize: 10,
-                                                          color: Colors.black,
-                                                          fontWeight:
-                                                              FontWeight.w100,
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            Row(
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    Text(
-                                                      "₹${machSnapshots[index]['hourly']}",
-                                                      style: TextStyle(
-                                                          fontFamily: 'Roboto',
-                                                          fontWeight:
-                                                              FontWeight.w400),
-                                                    ),
-                                                    Text(
-                                                      '/Hourly',
-                                                      style: TextStyle(
-                                                          color: Colors.amber,
-                                                          fontFamily: 'Roboto',
-                                                          fontWeight:
-                                                              FontWeight.w400),
-                                                    ),
-                                                  ],
-                                                ),
-                                                Padding(
-                                                  padding: EdgeInsets.only(
-                                                      left: width * 0.08),
-                                                  child: Row(
-                                                    children: [
-                                                      Text(
-                                                        "₹${machSnapshots[index]['day']}",
-                                                        style: TextStyle(
-                                                            fontFamily:
-                                                                'Roboto',
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w400),
-                                                      ),
-                                                      Text(
-                                                        "/Day",
-                                                        style: TextStyle(
-                                                            color: Colors.amber,
-                                                            fontFamily:
-                                                                'Roboto',
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .w400),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                )
-                                              ],
-                                            )
-                                          ],
+                              child: SizedBox(
+                                width: 200,
+                                child: Column(
+                                  children: [
+                                    Container(
+                                      height: constraints.maxHeight * 0.6,
+                                      width: constraints.maxWidth,
+                                      child: ClipRRect(
+                                        child: AspectRatio(
+                                          aspectRatio: 4 / 3,
+                                          child: CachedNetworkImage(
+                                            imageUrl: (machSnapshots[index]
+                                                        .data()
+                                                    as Map<String, dynamic>)[
+                                                'image_urls'][0],
+                                            // fit: BoxFit.cover,
+                                            placeholder: (context, url) => Center(
+                                                child:
+                                                    CircularProgressIndicator()),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    Icon(Icons.error),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  )
-                                ],
+                                    )
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                      ),
+                            );
+                          },
+                        );
+                      }),
                     ),
                   ),
                   Padding(
