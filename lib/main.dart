@@ -134,9 +134,13 @@ class _BeginState extends State<Begin> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: const Center(
-        child: CircularProgressIndicator(),
-      ),
+          child: Image(
+        image: AssetImage('assets/images/Appicon.png'),
+        width: 100,
+        height: 100,
+      )),
     );
   }
 }

@@ -180,7 +180,7 @@ class _MainBuilderHomeState extends State<MainBuilderHome> {
                 padding: EdgeInsets.only(top: width * 0.15),
                 child: SizedBox(
                   width: double.infinity,
-                  height: width * 0.65,
+                  height: 260,
                   child: PageView.builder(
                     controller: controller,
                     onPageChanged: (index) {
@@ -193,7 +193,7 @@ class _MainBuilderHomeState extends State<MainBuilderHome> {
                       if (builderSnapshots.isNotEmpty) {
                         return Padding(
                           padding: EdgeInsets.symmetric(horizontal: 8.0),
-                          child: SizedBox(
+                          child: Container(
                             width: width * 0.8,
                             child: Card(
                               child: Column(
@@ -230,15 +230,18 @@ class _MainBuilderHomeState extends State<MainBuilderHome> {
                                             fontWeight: FontWeight.w800,
                                           ),
                                         ),
-                                        SizedBox(height: 4),
-                                        Text(
-                                          builderSnapshots[index %
-                                                  builderSnapshots.length]
-                                              ['location'],
-                                          style: TextStyle(
-                                            fontFamily: 'Roboto',
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w600,
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 4.0),
+                                          child: Text(
+                                            builderSnapshots[index %
+                                                    builderSnapshots.length]
+                                                ['location'],
+                                            style: TextStyle(
+                                              fontFamily: 'Roboto',
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w600,
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -680,7 +683,7 @@ class _MainBuilderHomeState extends State<MainBuilderHome> {
                                                                     index][
                                                                 'Material_type'],
                                                         style: TextStyle(
-                                                            fontSize: 14,
+                                                            fontSize: 12,
                                                             fontFamily:
                                                                 'Roboto',
                                                             color: Colors.grey),
@@ -736,7 +739,7 @@ class _MainBuilderHomeState extends State<MainBuilderHome> {
                                                                       index][
                                                                   'Brand_name'],
                                                           style: TextStyle(
-                                                              fontSize: 14,
+                                                              fontSize: 12,
                                                               fontFamily:
                                                                   'Roboto',
                                                               color:
