@@ -14,7 +14,6 @@ import 'package:restate/Builder/DeliveryInstruction.dart';
 import 'package:restate/Builder/Searchpage.dart';
 import 'package:restate/Builder/Searchresults.dart';
 import 'package:intl/intl.dart';
-import 'package:restate/Machinery/machinery.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ProductDetails extends StatefulWidget {

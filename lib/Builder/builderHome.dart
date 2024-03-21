@@ -125,7 +125,7 @@ class _BuilderHomeScreenState extends State<BuilderHomeScreen> {
                 ),
               )),
           Padding(
-            padding: EdgeInsets.only(right: 15),
+            padding: EdgeInsets.only(right: 13),
             child: Builder(
               builder: (BuildContext context) {
                 return GestureDetector(
@@ -274,7 +274,9 @@ class _BuilderHomeScreenState extends State<BuilderHomeScreen> {
           );
         },
       ),
-      endDrawer: CustomDrawer(),
+      endDrawer: CustomDrawer(
+        handleNavigation: handleNavigation,
+      ),
     );
   }
 
@@ -302,6 +304,9 @@ class _BuilderHomeScreenState extends State<BuilderHomeScreen> {
 }
 
 class CustomDrawer extends StatelessWidget {
+  final Function(int) handleNavigation;
+
+  CustomDrawer({required this.handleNavigation});
   // ignore: non_constant_identifier_names
   final User = FirebaseAuth.instance.currentUser;
   Future<String?> getUsername() async {
@@ -421,6 +426,8 @@ class CustomDrawer extends StatelessWidget {
                     ),
                   ),
                   onTap: () {
+                    handleNavigation(
+                        0); // Navigate to the first page (MainBuilderHome)
                     Navigator.pop(context);
                   },
                 ),
@@ -450,6 +457,7 @@ class CustomDrawer extends StatelessWidget {
                     ),
                   ),
                   onTap: () {
+                    handleNavigation(1);
                     Navigator.pop(context);
                   },
                 ),
@@ -472,6 +480,7 @@ class CustomDrawer extends StatelessWidget {
                     ),
                   ),
                   onTap: () {
+                    handleNavigation(2);
                     Navigator.pop(context);
                   },
                 ),
@@ -494,6 +503,7 @@ class CustomDrawer extends StatelessWidget {
                     ),
                   ),
                   onTap: () {
+                    handleNavigation(3);
                     Navigator.pop(context);
                   },
                 ),
