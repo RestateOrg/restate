@@ -62,6 +62,7 @@ class Choose_Materials_Catagories extends StatelessWidget {
                           query: query,
                           type: "material",
                           searchkey: names[index],
+                          index: 1,
                         ),
                       ),
                     );

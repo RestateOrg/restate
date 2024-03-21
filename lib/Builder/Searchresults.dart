@@ -7,16 +7,19 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:restate/Builder/ProductDetails.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:restate/Builder/Searchpage.dart';
 
 class Searchresults extends StatefulWidget {
   final Query query;
   final String type;
   final String searchkey;
+  final int index;
   const Searchresults(
       {Key? key,
       required this.query,
       required this.type,
-      required this.searchkey})
+      required this.searchkey,
+      required this.index})
       : super(key: key);
 
   @override
@@ -58,7 +61,10 @@ class _SearchresultsState extends State<Searchresults> {
       appBar: AppBar(
         title: GestureDetector(
           onTap: () {
-            Navigator.pop(context);
+            widget.index == 0
+                ? Navigator.pop(context)
+                : Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => SearchPage()));
           },
           child: Container(
             width: width * 0.7,

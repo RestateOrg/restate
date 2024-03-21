@@ -160,9 +160,11 @@ class _SearchPageState extends State<SearchPage> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => Searchresults(
-                            query: query,
-                            type: 'machinery',
-                            searchkey: searchList[index]),
+                          query: query,
+                          type: 'machinery',
+                          searchkey: searchList[index],
+                          index: 0,
+                        ),
                       ),
                     );
                   } else {
@@ -185,7 +187,8 @@ class _SearchPageState extends State<SearchPage> {
                         builder: (context) => Searchresults(
                             query: query,
                             type: 'material',
-                            searchkey: searchList[index]),
+                            searchkey: searchList[index],
+                            index: 0),
                       ),
                     );
                   }

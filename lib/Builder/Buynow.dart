@@ -8,6 +8,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:restate/Builder/Upload_project.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:restate/Builder/ordercomplete.dart';
 
 class BuyNow extends StatefulWidget {
   final Map<String, dynamic> data;
@@ -33,11 +34,103 @@ class _BuyNowState extends State<BuyNow> {
   String timeperiod = "Hour";
   int total = 0;
   int discount = 0;
+  bool isLoading = false;
   final firestore = FirebaseFirestore.instance;
   List<String> _quantityValues = [];
   List<String> _durationvalues = [];
   List<String> _timeperiodvalues = ["Hour", "Day", "Week", "Month"];
   Position? _currentUserPosition;
+  Future<void> order() async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    DocumentReference projectRef = firestore
+        .collection('builders')
+        .doc(useremail)
+        .collection('orders')
+        .doc();
+    if (widget.type == 'machinery') {
+      DocumentReference machineryRef = firestore
+          .collection('machinery')
+          .doc(widget.data['useremail'])
+          .collection('orders')
+          .doc();
+      await projectRef.set({
+        'product': widget.data,
+        'quantity': quantity,
+        'time': time,
+        'timeperiod': timeperiod,
+        'total': total,
+        'discount': discount,
+        'location': location,
+        'city': city,
+        'state': state,
+        'name': name,
+        'status': 'pending',
+        'useremail': useremail,
+        'order_name': name,
+        'order_id': projectRef.id,
+        'order_type': 'machinery',
+        'order_date': DateTime.now(),
+      });
+      await machineryRef.set({
+        'product': widget.data,
+        'quantity': quantity,
+        'time': time,
+        'timeperiod': timeperiod,
+        'total': total,
+        'discount': discount,
+        'location': location,
+        'city': city,
+        'state': state,
+        'name': name,
+        'status': 'pending',
+        'useremail': useremail,
+        'order_name': name,
+        'order_id': projectRef.id,
+        'order_type': 'machinery',
+        'order_date': DateTime.now(),
+      });
+    }
+    if (widget.type == 'material') {
+      DocumentReference materialRef = firestore
+          .collection('materials')
+          .doc(widget.data['useremail'])
+          .collection('orders')
+          .doc();
+      await projectRef.set({
+        'product': widget.data,
+        'quantity': quantity,
+        'total': total,
+        'discount': discount,
+        'location': location,
+        'city': city,
+        'state': state,
+        'name': name,
+        'status': 'pending',
+        'useremail': useremail,
+        'order_name': name,
+        'order_id': projectRef.id,
+        'order_type': 'material',
+        'order_date': DateTime.now(),
+      });
+      await materialRef.set({
+        'product': widget.data,
+        'quantity': quantity,
+        'total': total,
+        'discount': discount,
+        'location': location,
+        'city': city,
+        'state': state,
+        'name': name,
+        'status': 'pending',
+        'useremail': useremail,
+        'order_name': name,
+        'order_id': projectRef.id,
+        'order_type': 'material',
+        'order_date': DateTime.now(),
+      });
+    }
+  }
+
   Future _getTheDistance() async {
     bool serviceEnabled;
     LocationPermission permission;
@@ -172,9 +265,11 @@ class _BuyNowState extends State<BuyNow> {
     var width = MediaQuery.of(context).size.width;
 
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Buy Now'),
-        ),
+        appBar: isLoading
+            ? AppBar()
+            : AppBar(
+                title: Text('Buy Now'),
+              ),
         bottomNavigationBar: Container(
           color: Colors.grey[200],
           child: currentStep == 0
@@ -266,9 +361,23 @@ class _BuyNowState extends State<BuyNow> {
                                 height: 50,
                                 color: Colors.amber[600],
                                 child: TextButton(
-                                  onPressed: () {
+                                  onPressed: () async {
                                     setState(() {
-                                      currentStep += 1;
+                                      isLoading =
+                                          true; // Add a boolean variable to track loading state
+                                    });
+
+                                    await order();
+
+                                    setState(() {
+                                      isLoading =
+                                          false; // Set loading state to false after order function is complete
+                                      Navigator.pushReplacement(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => OrderComplete(),
+                                        ),
+                                      );
                                     });
                                   },
                                   child: Text(
@@ -323,60 +432,65 @@ class _BuyNowState extends State<BuyNow> {
                           ],
                         ),
         ),
-        body: Theme(
-          data: Theme.of(context).copyWith(
-              colorScheme: Theme.of(context).colorScheme.copyWith(
-                    primary: Colors.amber[600],
-                  )),
-          child: Stepper(
-            type: StepperType.horizontal,
-            steps: getSteps(width, MediaQuery.of(context).size.height),
-            currentStep: currentStep,
-            onStepContinue: () {
-              setState(() => currentStep <
-                      getSteps(width, MediaQuery.of(context).size.height)
-                              .length -
-                          1
-                  ? currentStep += 1
-                  : print("send data"));
-            },
-            onStepCancel: () {
-              setState(
-                  () => currentStep > 0 ? currentStep -= 1 : print("go back"));
-            },
-            controlsBuilder: (BuildContext context, ControlsDetails details) {
-              return Row(
-                children: <Widget>[
-                  Visibility(
-                    visible: false,
-                    child: Expanded(
-                      child: TextButton(
-                        onPressed: details.onStepCancel,
-                        child: Text('Back'),
-                      ),
-                    ),
-                  ),
-                  Visibility(
-                    visible: false,
-                    child: Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: TextButton(
-                          onPressed: details.onStepContinue,
-                          child: Text(currentStep == 0
-                              ? 'Deliver Here'
-                              : currentStep == 1
-                                  ? 'Next'
-                                  : 'Finish'),
+        body: isLoading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : Theme(
+                data: Theme.of(context).copyWith(
+                    colorScheme: Theme.of(context).colorScheme.copyWith(
+                          primary: Colors.amber[600],
+                        )),
+                child: Stepper(
+                  type: StepperType.horizontal,
+                  steps: getSteps(width, MediaQuery.of(context).size.height),
+                  currentStep: currentStep,
+                  onStepContinue: () {
+                    setState(() => currentStep <
+                            getSteps(width, MediaQuery.of(context).size.height)
+                                    .length -
+                                1
+                        ? currentStep += 1
+                        : print("send data"));
+                  },
+                  onStepCancel: () {
+                    setState(() =>
+                        currentStep > 0 ? currentStep -= 1 : print("go back"));
+                  },
+                  controlsBuilder:
+                      (BuildContext context, ControlsDetails details) {
+                    return Row(
+                      children: <Widget>[
+                        Visibility(
+                          visible: false,
+                          child: Expanded(
+                            child: TextButton(
+                              onPressed: details.onStepCancel,
+                              child: Text('Back'),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
-        ));
+                        Visibility(
+                          visible: false,
+                          child: Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 8.0),
+                              child: TextButton(
+                                onPressed: details.onStepContinue,
+                                child: Text(currentStep == 0
+                                    ? 'Deliver Here'
+                                    : currentStep == 1
+                                        ? 'Next'
+                                        : 'Finish'),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ));
   }
 
   List<Step> getSteps(width, height) => [

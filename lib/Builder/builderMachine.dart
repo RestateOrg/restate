@@ -99,6 +99,7 @@ class _ChooseMachCatState extends State<ChooseMachCat> {
                           query: query,
                           type: "machinery",
                           searchkey: widget.names[index],
+                          index: 1,
                         ),
                       ),
                     );
