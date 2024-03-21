@@ -180,7 +180,7 @@ class _MainBuilderHomeState extends State<MainBuilderHome> {
                 padding: EdgeInsets.only(top: width * 0.15),
                 child: SizedBox(
                   width: double.infinity,
-                  height: 260,
+                  height: width * 0.65,
                   child: PageView.builder(
                     controller: controller,
                     onPageChanged: (index) {
