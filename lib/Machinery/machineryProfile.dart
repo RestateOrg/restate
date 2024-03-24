@@ -77,137 +77,125 @@ class _MachineryProfileState extends State<MachineryProfile> {
       body: Stack(
         children: [
           Container(
-            height: width * 0.95,
-            decoration: BoxDecoration(
-              color: Colors.amber,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  spreadRadius: 1,
-                  blurRadius: 1,
-                  offset: const Offset(0, 5),
-                ),
-              ],
-            ),
-            child: Stack(
-              children: [
-                Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(left: 10, top: 40),
-                      child: GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: Icon(
-                          Icons.arrow_back,
-                          size: 30,
+              height: width * 0.95,
+              decoration: BoxDecoration(
+                color: Colors.amber,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black12,
+                    spreadRadius: 1,
+                    blurRadius: 1,
+                    offset: const Offset(0, 5),
+                  ),
+                ],
+              ),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      Align(
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                              top: width * 0.1, left: width * 0.05),
+                          child: GestureDetector(
+                              onTap: () {
+                                Navigator.pop(context);
+                              },
+                              child: Icon(Icons.arrow_back)),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: width * 0.69,
-                        top: 40,
-                      ),
-                      child: Icon(
-                        Icons.settings,
-                        size: 25,
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 10, top: 40, right: 5),
-                      child: GestureDetector(
-                        onTap: () async {
-                          await handleSignOut(
-                              context); // Call the function from Signout.dart
-                        },
-                        child: FaIcon(
-                          FontAwesomeIcons.doorOpen,
-                          size: 20,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: width * 0.79,
-                        top: width * 0.185,
-                      ),
-                      child: Text(
-                        'Settings',
-                        style: TextStyle(
-                          fontSize: 7,
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: 7,
-                        top: width * 0.185,
-                      ),
-                      child: Text(
-                        'Logout',
-                        style: TextStyle(
-                          fontSize: 7,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-                Column(
-                  children: [
-                    Center(
-                      child: Padding(
-                        padding: EdgeInsets.only(top: 100),
-                        child: Icon(
-                          Icons.account_circle,
-                          size: 130,
-                        ),
-                      ),
-                    ),
-                    Center(
-                      child: Padding(
-                        padding: EdgeInsets.only(),
-                        child: username != null
-                            ? Text(
-                                '$username',
-                                style: TextStyle(
-                                  fontSize: (username != null &&
-                                          username!.length < 20)
-                                      ? 20
-                                      : 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              )
-                            : Text(
-                                "No Name",
-                                style: TextStyle(
-                                    fontSize: 20,
-                                    fontFamily: 'Roboto',
-                                    fontWeight: FontWeight.bold),
-                              ),
-                      ),
-                    ),
-                    Center(
-                      child: Padding(
-                        padding: EdgeInsets.only(),
-                        child: Text(
-                          '$useremail',
-                          style: TextStyle(
-                            fontSize: 15,
+                      Flexible(
+                        child: Align(
+                          alignment: AlignmentDirectional(1, 0),
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                                top: width * 0.1, left: width * 0.02),
+                            child: Column(
+                              children: [
+                                Icon(Icons.settings),
+                                Text(
+                                  'Settings',
+                                  style: TextStyle(fontSize: 7),
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                            top: width * 0.1,
+                            left: width * 0.02,
+                            right: width * 0.02),
+                        child: Column(
+                          children: [
+                            GestureDetector(
+                              onTap: () async {
+                                await handleSignOut(context);
+                              },
+                              child: FaIcon(
+                                FontAwesomeIcons.doorOpen,
+                                size: 22,
+                              ),
+                            ),
+                            Text(
+                              'Logout',
+                              style: TextStyle(fontSize: 7),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      Center(
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 30),
+                          child: Icon(
+                            Icons.account_circle,
+                            size: 130,
+                          ),
+                        ),
+                      ),
+                      Center(
+                        child: Padding(
+                          padding: EdgeInsets.only(),
+                          child: username != null
+                              ? Text(
+                                  '$username',
+                                  style: TextStyle(
+                                    fontSize: (username != null &&
+                                            username!.length < 20)
+                                        ? 20
+                                        : 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                )
+                              : Text(
+                                  "No Name",
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontFamily: 'Roboto',
+                                      fontWeight: FontWeight.bold),
+                                ),
+                        ),
+                      ),
+                      Center(
+                        child: Padding(
+                          padding: EdgeInsets.only(),
+                          child: Text(
+                            '$useremail',
+                            style: TextStyle(
+                              fontSize: 15,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              )),
           Container(
             child: Column(
               children: [
