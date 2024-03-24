@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:restate/Materials/editpage.dart';
+import 'package:restate/Materials/productinfo.dart';
 
 class MaterialInventory extends StatefulWidget {
   const MaterialInventory({super.key});
@@ -217,7 +218,19 @@ class _MaterialInventoryState extends State<MaterialInventory> {
                                             top: width * 0.015,
                                             left: width * 0.02),
                                         child: InkWell(
-                                            onTap: () {},
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ProductInfo(
+                                                          data: snapshot.data()
+                                                              as Map<String,
+                                                                  dynamic>,
+                                                          type: "material"),
+                                                ),
+                                              );
+                                            },
                                             child: Icon(Icons.info, size: 20)),
                                       ),
                                     ),

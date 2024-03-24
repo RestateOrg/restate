@@ -1022,7 +1022,7 @@ class _UploadMaterialState extends State<UploadMaterial> {
                         child: TextField(
                           controller: _deliveredwithin,
                           decoration: InputDecoration(
-                            hintText: 'Enter the Days for Delivery',
+                            hintText: 'Enter the time for Delivery',
                             hintStyle: TextStyle(fontSize: 14.0),
                             contentPadding: const EdgeInsets.only(
                               left: 5,

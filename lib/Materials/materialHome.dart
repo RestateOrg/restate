@@ -154,40 +154,70 @@ class _MaterialHomeState extends State<MaterialHome> {
                                                     ),
                                                   ),
                                                 ),
-                                                Align(
-                                                  alignment:
-                                                      Alignment.centerLeft,
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            left: 8.0),
-                                                    child: Container(
-                                                      width:
-                                                          constraints.maxWidth,
-                                                      child: Text(
-                                                        "${(project[index].data() as Map<String, dynamic>)['project requirements'][0]['Item Name']} + ${(project[index].data() as Map<String, dynamic>)['project requirements'].length - 1} more items"
-                                                                    .length >
-                                                                35
-                                                            ? "${(project[index].data() as Map<String, dynamic>)['project requirements'][0]['Item Name']} + ${(project[index].data() as Map<String, dynamic>)['project requirements'].length - 1} more items"
-                                                                    .substring(
-                                                                        0, 32) +
-                                                                '...'
-                                                            : (project[index].data()
-                                                                                as Map<String, dynamic>)['project requirements']
-                                                                            .length -
-                                                                        1 ==
-                                                                    0
-                                                                ? "${(project[index].data() as Map<String, dynamic>)['project requirements'][0]['Item Name']}"
-                                                                : "${(project[index].data() as Map<String, dynamic>)['project requirements'][0]['Item Name']} + ${(project[index].data() as Map<String, dynamic>)['project requirements'].length - 1} more items",
-                                                        style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontFamily:
-                                                                'Roboto',
-                                                            color: Colors.grey),
+                                                (project[index].data() as Map<
+                                                                    String,
+                                                                    dynamic>)[
+                                                                'project requirements']
+                                                            .length ==
+                                                        0
+                                                    ? Align(
+                                                        alignment: Alignment
+                                                            .centerLeft,
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .only(
+                                                                  left: 8.0),
+                                                          child: Container(
+                                                            width: constraints
+                                                                .maxWidth,
+                                                            child: Text(
+                                                              'No requirements',
+                                                              style: TextStyle(
+                                                                  fontSize: 14,
+                                                                  fontFamily:
+                                                                      'Roboto',
+                                                                  color: Colors
+                                                                      .grey),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      )
+                                                    : Align(
+                                                        alignment: Alignment
+                                                            .centerLeft,
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .only(
+                                                                  left: 8.0),
+                                                          child: Container(
+                                                            width: constraints
+                                                                .maxWidth,
+                                                            child: Text(
+                                                              "${(project[index].data() as Map<String, dynamic>)['project requirements'][0]['Item Name']} + ${(project[index].data() as Map<String, dynamic>)['project requirements'].length - 1} more items"
+                                                                          .length >
+                                                                      35
+                                                                  ? "${(project[index].data() as Map<String, dynamic>)['project requirements'][0]['Item Name']} + ${(project[index].data() as Map<String, dynamic>)['project requirements'].length - 1} more items"
+                                                                          .substring(
+                                                                              0,
+                                                                              32) +
+                                                                      '...'
+                                                                  : (project[index].data() as Map<String, dynamic>)['project requirements'].length -
+                                                                              1 ==
+                                                                          0
+                                                                      ? "${(project[index].data() as Map<String, dynamic>)['project requirements'][0]['Item Name']}"
+                                                                      : "${(project[index].data() as Map<String, dynamic>)['project requirements'][0]['Item Name']} + ${(project[index].data() as Map<String, dynamic>)['project requirements'].length - 1} more items",
+                                                              style: TextStyle(
+                                                                  fontSize: 14,
+                                                                  fontFamily:
+                                                                      'Roboto',
+                                                                  color: Colors
+                                                                      .grey),
+                                                            ),
+                                                          ),
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ),
-                                                ),
                                               ],
                                             ),
                                           ),
