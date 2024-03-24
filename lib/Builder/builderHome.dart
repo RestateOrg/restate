@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:restate/Builder/Upload_project.dart';
+import 'package:restate/Builder/Yourprojects.dart';
 import 'package:restate/Builder/builderCart.dart';
 import 'package:restate/Builder/builderMachine.dart';
 import 'package:restate/Builder/builderMaterials.dart';
@@ -526,7 +527,12 @@ class CustomDrawer extends StatelessWidget {
                     ),
                   ),
                   onTap: () {
-                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => YourProjects(),
+                      ),
+                    );
                   },
                 ),
                 Divider(
