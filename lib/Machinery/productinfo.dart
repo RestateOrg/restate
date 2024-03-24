@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -10,11 +8,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:restate/Builder/Upload_project.dart';
 import 'package:restate/Machinery/Buynow.dart';
 import 'package:restate/Machinery/DeliveryInstruction.dart';
-import 'package:restate/Machinery/Searchpage.dart';
 import 'package:restate/Machinery/Searchresults.dart';
 import 'package:intl/intl.dart';
 import 'package:restate/Machinery/machinery.dart';
-import 'package:share_plus/share_plus.dart';
 
 class ProductInfo extends StatefulWidget {
   final Map<String, dynamic> data;
