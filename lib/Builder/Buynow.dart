@@ -32,6 +32,8 @@ class _BuyNowState extends State<BuyNow> {
   String quantity = "1";
   String time = "1";
   String timeperiod = "Hour";
+  String imageurl = "";
+  String projecttype = "";
   int total = 0;
   int discount = 0;
   bool isLoading = false;
@@ -61,14 +63,16 @@ class _BuyNowState extends State<BuyNow> {
         'total': total,
         'discount': discount,
         'location': location,
+        'projectimage': imageurl,
         'city': city,
         'state': state,
         'name': name,
-        'status': 'pending',
+        'status': 'Pending',
         'useremail': useremail,
         'order_name': name,
         'order_id': projectRef.id,
         'order_type': 'machinery',
+        'projecttype': projecttype,
         'order_date': DateTime.now(),
       });
       await machineryRef.set({
@@ -79,14 +83,16 @@ class _BuyNowState extends State<BuyNow> {
         'total': total,
         'discount': discount,
         'location': location,
+        'projectimage': imageurl,
         'city': city,
         'state': state,
         'name': name,
-        'status': 'pending',
+        'status': 'Pending',
         'useremail': useremail,
         'order_name': name,
         'order_id': projectRef.id,
         'order_type': 'machinery',
+        'projecttype': projecttype,
         'order_date': DateTime.now(),
       });
     }
@@ -102,14 +108,16 @@ class _BuyNowState extends State<BuyNow> {
         'total': total,
         'discount': discount,
         'location': location,
+        'projectimage': imageurl,
         'city': city,
         'state': state,
         'name': name,
-        'status': 'pending',
+        'status': 'Pending',
         'useremail': useremail,
         'order_name': name,
         'order_id': projectRef.id,
         'order_type': 'material',
+        'projecttype': projecttype,
         'order_date': DateTime.now(),
       });
       await materialRef.set({
@@ -118,14 +126,16 @@ class _BuyNowState extends State<BuyNow> {
         'total': total,
         'discount': discount,
         'location': location,
+        'projectimage': imageurl,
         'city': city,
         'state': state,
         'name': name,
-        'status': 'pending',
+        'status': 'Pending',
         'useremail': useremail,
         'order_name': name,
         'order_id': projectRef.id,
         'order_type': 'material',
+        'projecttype': projecttype,
         'order_date': DateTime.now(),
       });
     }
@@ -257,6 +267,8 @@ class _BuyNowState extends State<BuyNow> {
       city = deliverySnapshots[selectedIndex]['city'];
       state = deliverySnapshots[selectedIndex]['state'];
       name = deliverySnapshots[selectedIndex]['projectname'];
+      imageurl = deliverySnapshots[selectedIndex]['imageURl'];
+      projecttype = deliverySnapshots[selectedIndex]['projecttype'];
     });
   }
 
@@ -599,6 +611,9 @@ class _BuyNowState extends State<BuyNow> {
                                 city = deliverySnapshots[index]['city'];
                                 state = deliverySnapshots[index]['state'];
                                 name = deliverySnapshots[index]['projectname'];
+                                imageurl = deliverySnapshots[index]['imageURl'];
+                                projecttype =
+                                    deliverySnapshots[index]['projecttype'];
                               });
                             },
                           );
