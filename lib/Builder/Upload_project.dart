@@ -35,11 +35,68 @@ class _UploadProjectState extends State<UploadProject> {
   List<Map> projectrequirements = [];
   File? _image;
   String? useremail = FirebaseAuth.instance.currentUser?.email;
+  bool _isUploading = false;
+
+  void _showDocumentIdPopup(String documentId, String title) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(documentId),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Retry'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showDocumentIdPopup2(String documentId, String title) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(documentId),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.pop(context);
+              },
+              child: const Text('Continue'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   Future<void> uploadData() async {
     String imageurl = await _getimageUrl();
     Map<String, String>? locationInfo = await getLocationInfo(_zipCode.text);
     try {
+      if (_projectname.text.isEmpty ||
+          _projectdescription.text.isEmpty ||
+          _location.text.isEmpty ||
+          _zipCode.text.isEmpty ||
+          _siteconditions.text.isEmpty ||
+          _deliveryandpickup.text.isEmpty ||
+          _fromdate.text.isEmpty ||
+          _todate.text.isEmpty ||
+          _duration.text.isEmpty ||
+          _pricewilling.text.isEmpty ||
+          _quantity.text.isEmpty ||
+          _deliverydate.text.isEmpty ||
+          _image == null) {
+        throw Exception('Please fill all the fields');
+      }
       // Get a reference to the Firestore database
       FirebaseFirestore firestore = FirebaseFirestore.instance;
       DocumentReference projectRef = firestore
@@ -83,9 +140,10 @@ class _UploadProjectState extends State<UploadProject> {
         });
       }
       await projectRef.update({'projectrequirements': projectrequirements});
-      uploadData2();
+      await uploadData2();
     } catch (e) {
-      print('Error uploading data: $e');
+      _showDocumentIdPopup(
+          "All Fields Must Not Be Empty", 'Error Uploading Data');
     }
   }
 
@@ -117,9 +175,12 @@ class _UploadProjectState extends State<UploadProject> {
         'email': useremail,
         'imageURl': imageurl,
         'project requirements': projectrequirements,
-      });
-
-      print('Data uploaded successfully!');
+      }).then(
+        (value) {
+          _showDocumentIdPopup2("Data Upload Sucessful",
+              "Your Material has been uploaded sucessfully");
+        },
+      );
     } catch (e) {
       print('Error uploading data: $e');
     }
@@ -185,629 +246,659 @@ class _UploadProjectState extends State<UploadProject> {
         ),
         actions: [
           GestureDetector(
-            onTap: () {
-              uploadData();
-              Navigator.pop(context);
+            onTap: () async {
+              setState(() {
+                _isUploading =
+                    true; // Start the upload and show progress indicator
+              });
+              try {
+                await uploadData();
+              } catch (e) {
+                print(e); // Handle or log error
+              } finally {
+                setState(() {
+                  _isUploading =
+                      false; // Hide progress indicator once upload is complete
+                });
+              }
             },
             child: Padding(
               padding: EdgeInsets.only(right: width * 0.06),
-              child: Text("Upload",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontFamily: 'Roboto',
-                    fontSize: width * 0.04,
-                  )),
+              child: Container(
+                height: width * 0.08,
+                width: width * 0.2,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: HexColor('#2A2828'),
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                child: Text("Upload",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'Roboto',
+                      fontSize: width * 0.04,
+                      color: Colors.white,
+                    )),
+              ),
             ),
           )
         ],
         backgroundColor: Colors.amber,
       ),
       backgroundColor: Colors.amber,
-      body: SingleChildScrollView(
-        child: Column(children: [
-          _image != null
-              ? Padding(
-                  padding: EdgeInsets.only(
-                    left: width * 0.04,
-                    top: width * 0.02,
-                    right: width * 0.04,
-                  ),
-                  child: Container(
-                      decoration: BoxDecoration(
-                        color: HexColor('#F2F2F2'),
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      height: width * 0.78,
-                      child: Stack(
-                        children: [
-                          Positioned(
-                              child: Container(
+      body: _isUploading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : SingleChildScrollView(
+              child: Column(children: [
+                _image != null
+                    ? Padding(
+                        padding: EdgeInsets.only(
+                          left: width * 0.04,
+                          top: width * 0.02,
+                          right: width * 0.04,
+                        ),
+                        child: Container(
                             decoration: BoxDecoration(
-                              color: HexColor('#2A2828'),
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(10),
-                                  topRight: Radius.circular(10)),
+                              color: HexColor('#F2F2F2'),
+                              borderRadius: BorderRadius.circular(10.0),
                             ),
-                            height: width * 0.10,
+                            height: width * 0.78,
                             child: Stack(
                               children: [
                                 Positioned(
-                                    top: width * 0.02,
-                                    left: width * 0.03,
-                                    child: Text("Project Photo",
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontFamily: 'Roboto',
-                                            fontWeight: FontWeight.w600))),
-                                Positioned(
-                                    right: width * 0.03,
-                                    top: width * 0.02,
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        _pickImageFromGallery();
-                                      },
-                                      child: Text("Edit",
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: 'Roboto',
-                                              fontWeight: FontWeight.w500)),
-                                    )),
-                              ],
-                            ),
-                          )),
-                          Center(
-                            child: Padding(
-                              padding: EdgeInsets.only(top: width * 0.1),
-                              child: Container(
-                                width: width,
-                                child: Image.file(
-                                  _image!,
-                                  alignment: Alignment.center,
+                                    child: Container(
+                                  decoration: BoxDecoration(
+                                    color: HexColor('#2A2828'),
+                                    borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(10),
+                                        topRight: Radius.circular(10)),
+                                  ),
+                                  height: width * 0.10,
+                                  child: Stack(
+                                    children: [
+                                      Positioned(
+                                          top: width * 0.02,
+                                          left: width * 0.03,
+                                          child: Text("Project Photo",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontFamily: 'Roboto',
+                                                  fontWeight:
+                                                      FontWeight.w600))),
+                                      Positioned(
+                                          right: width * 0.03,
+                                          top: width * 0.02,
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              _pickImageFromGallery();
+                                            },
+                                            child: Text("Edit",
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontFamily: 'Roboto',
+                                                    fontWeight:
+                                                        FontWeight.w500)),
+                                          )),
+                                    ],
+                                  ),
+                                )),
+                                Center(
+                                  child: Padding(
+                                    padding: EdgeInsets.only(top: width * 0.1),
+                                    child: Container(
+                                      width: width,
+                                      child: Image.file(
+                                        _image!,
+                                        alignment: Alignment.center,
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          ),
-                          Positioned(
-                              bottom: width * 0.02,
-                              left: width * 0.02,
-                              child: GestureDetector(
-                                  onTap: () {
-                                    _pickImageFromCamera();
-                                  },
-                                  child: FaIcon(FontAwesomeIcons.camera,
-                                      size: width * 0.06)))
-                        ],
-                      )),
-                )
-              : Padding(
-                  padding: EdgeInsets.only(
-                    left: width * 0.04,
-                    top: width * 0.02,
-                    right: width * 0.04,
-                  ),
-                  child: Container(
-                      decoration: BoxDecoration(
-                        color: HexColor('#F2F2F2'),
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      height: width * 0.78,
-                      child: Stack(
-                        children: [
-                          Positioned(
-                              child: Container(
+                                Positioned(
+                                    bottom: width * 0.02,
+                                    left: width * 0.02,
+                                    child: GestureDetector(
+                                        onTap: () {
+                                          _pickImageFromCamera();
+                                        },
+                                        child: FaIcon(FontAwesomeIcons.camera,
+                                            size: width * 0.06)))
+                              ],
+                            )),
+                      )
+                    : Padding(
+                        padding: EdgeInsets.only(
+                          left: width * 0.04,
+                          top: width * 0.02,
+                          right: width * 0.04,
+                        ),
+                        child: Container(
                             decoration: BoxDecoration(
-                              color: HexColor('#2A2828'),
-                              borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(10),
-                                  topRight: Radius.circular(10)),
+                              color: HexColor('#F2F2F2'),
+                              borderRadius: BorderRadius.circular(10.0),
                             ),
-                            height: width * 0.10,
+                            height: width * 0.78,
                             child: Stack(
                               children: [
                                 Positioned(
-                                    top: width * 0.02,
-                                    left: width * 0.03,
-                                    child: Text("Project Photo",
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontFamily: 'Roboto',
-                                            fontWeight: FontWeight.w600))),
+                                    child: Container(
+                                  decoration: BoxDecoration(
+                                    color: HexColor('#2A2828'),
+                                    borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(10),
+                                        topRight: Radius.circular(10)),
+                                  ),
+                                  height: width * 0.10,
+                                  child: Stack(
+                                    children: [
+                                      Positioned(
+                                          top: width * 0.02,
+                                          left: width * 0.03,
+                                          child: Text("Project Photo",
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontFamily: 'Roboto',
+                                                  fontWeight:
+                                                      FontWeight.w600))),
+                                      Positioned(
+                                          right: width * 0.03,
+                                          top: width * 0.02,
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              _pickImageFromGallery();
+                                            },
+                                            child: Text("Edit",
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontFamily: 'Roboto',
+                                                    fontWeight:
+                                                        FontWeight.w500)),
+                                          )),
+                                    ],
+                                  ),
+                                )),
                                 Positioned(
-                                    right: width * 0.03,
-                                    top: width * 0.02,
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        _pickImageFromGallery();
-                                      },
-                                      child: Text("Edit",
+                                    top: width * 0.35,
+                                    left: width * 0.33,
+                                    child: Column(
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () {
+                                            _pickImageFromGallery();
+                                          },
+                                          child: Image.asset(
+                                            'assets/images/Addphoto2.png',
+                                            width: width * 0.13,
+                                            height: width * 0.13,
+                                          ),
+                                        ),
+                                        Text(
+                                          "Click to Add Photo",
                                           style: TextStyle(
-                                              color: Colors.white,
-                                              fontFamily: 'Roboto',
-                                              fontWeight: FontWeight.w500)),
+                                            fontSize: width * 0.03,
+                                            color: Colors.black38,
+                                          ),
+                                        ),
+                                      ],
                                     )),
+                                Positioned(
+                                    bottom: width * 0.02,
+                                    left: width * 0.02,
+                                    child: GestureDetector(
+                                        onTap: () {
+                                          _pickImageFromCamera();
+                                        },
+                                        child: FaIcon(FontAwesomeIcons.camera,
+                                            size: width * 0.06)))
                               ],
-                            ),
-                          )),
-                          Positioned(
-                              top: width * 0.35,
-                              left: width * 0.33,
-                              child: Column(
-                                children: [
-                                  GestureDetector(
-                                    onTap: () {
-                                      _pickImageFromGallery();
-                                    },
-                                    child: Image.asset(
-                                      'assets/images/Addphoto2.png',
-                                      width: width * 0.13,
-                                      height: width * 0.13,
-                                    ),
-                                  ),
-                                  Text(
-                                    "Click to Add Photo",
-                                    style: TextStyle(
-                                      fontSize: width * 0.03,
-                                      color: Colors.black38,
-                                    ),
-                                  ),
-                                ],
-                              )),
-                          Positioned(
-                              bottom: width * 0.02,
-                              left: width * 0.02,
-                              child: GestureDetector(
-                                  onTap: () {
-                                    _pickImageFromCamera();
-                                  },
-                                  child: FaIcon(FontAwesomeIcons.camera,
-                                      size: width * 0.06)))
-                        ],
-                      )),
-                ),
-          Padding(
-            padding: EdgeInsets.only(
-              left: width * 0.06,
-              top: width * 0.024,
-            ),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Project name",
-                style: TextStyle(
-                  fontSize: width * 0.045,
-                  fontWeight: FontWeight.w900,
-                  fontFamily: 'Roboto',
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(
-              left: width * 0.02,
-            ),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding:
-                    EdgeInsets.only(right: width * 0.04, left: width * 0.04),
-                child: TextField(
-                  controller: _projectname,
-                  decoration: InputDecoration(
-                    hintText: 'Enter the project Name',
-                    hintStyle: TextStyle(fontSize: 14.0),
-                    contentPadding: const EdgeInsets.only(
-                      left: 5,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(
-              left: width * 0.06,
-              top: width * 0.024,
-            ),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Project Description",
-                style: TextStyle(
-                  fontSize: width * 0.045,
-                  fontWeight: FontWeight.w900,
-                  fontFamily: 'Roboto',
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(
-              left: width * 0.02,
-            ),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding:
-                    EdgeInsets.only(right: width * 0.04, left: width * 0.04),
-                child: TextField(
-                  controller: _projectdescription,
-                  decoration: InputDecoration(
-                    hintText: 'Enter the project description',
-                    hintStyle: TextStyle(fontSize: 14.0),
-                    contentPadding: const EdgeInsets.only(
-                      left: 5,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(
-              left: width * 0.06,
-              top: width * 0.024,
-            ),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Location",
-                style: TextStyle(
-                  fontSize: width * 0.045,
-                  fontWeight: FontWeight.w900,
-                  fontFamily: 'Roboto',
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(
-              left: width * 0.02,
-            ),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding:
-                    EdgeInsets.only(right: width * 0.04, left: width * 0.04),
-                child: TextField(
-                  controller: _location,
-                  decoration: InputDecoration(
-                    hintText: 'Enter the project location',
-                    hintStyle: TextStyle(fontSize: 14.0),
-                    contentPadding: const EdgeInsets.only(
-                      left: 5,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(
-              left: width * 0.06,
-              top: width * 0.024,
-            ),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Zipcode",
-                style: TextStyle(
-                  fontSize: width * 0.045,
-                  fontWeight: FontWeight.w900,
-                  fontFamily: 'Roboto',
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(
-              left: width * 0.02,
-            ),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding:
-                    EdgeInsets.only(right: width * 0.04, left: width * 0.04),
-                child: TextField(
-                  controller: _zipCode,
-                  decoration: InputDecoration(
-                    hintText: 'Enter the project Zipcode',
-                    hintStyle: TextStyle(fontSize: 14.0),
-                    contentPadding: const EdgeInsets.only(
-                      left: 5,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(
-              left: width * 0.06,
-              top: width * 0.024,
-            ),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Working Conditions",
-                style: TextStyle(
-                  fontSize: width * 0.045,
-                  fontWeight: FontWeight.w900,
-                  fontFamily: 'Roboto',
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(
-              left: width * 0.02,
-            ),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding:
-                    EdgeInsets.only(right: width * 0.04, left: width * 0.04),
-                child: TextField(
-                  controller: _siteconditions,
-                  decoration: InputDecoration(
-                    hintText: 'Describe about Working conditions',
-                    hintStyle: TextStyle(fontSize: 14.0),
-                    contentPadding: const EdgeInsets.only(
-                      left: 5,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(
-              left: width * 0.06,
-              top: width * 0.024,
-            ),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Delivery and Pickup",
-                style: TextStyle(
-                  fontSize: width * 0.045,
-                  fontWeight: FontWeight.w900,
-                  fontFamily: 'Roboto',
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(
-              left: width * 0.02,
-            ),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding:
-                    EdgeInsets.only(right: width * 0.04, left: width * 0.04),
-                child: TextField(
-                  controller: _deliveryandpickup,
-                  decoration: InputDecoration(
-                    hintText: 'Enter delivery and pickup points',
-                    hintStyle: TextStyle(fontSize: 14.0),
-                    contentPadding: const EdgeInsets.only(
-                      left: 5,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(
-              left: width * 0.06,
-              top: width * 0.024,
-            ),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Timeline",
-                style: TextStyle(
-                  fontSize: width * 0.045,
-                  fontWeight: FontWeight.w900,
-                  fontFamily: 'Roboto',
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(
-              left: width * 0.02,
-            ),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: width * 0.07,
-                        top: width * 0.024,
+                            )),
                       ),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "From",
-                          style: TextStyle(
-                            fontSize: width * 0.038,
-                            fontWeight: FontWeight.w900,
-                            fontFamily: 'Roboto',
-                          ),
-                        ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: width * 0.06,
+                    top: width * 0.024,
+                  ),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Project name",
+                      style: TextStyle(
+                        fontSize: width * 0.045,
+                        fontWeight: FontWeight.w900,
+                        fontFamily: 'Roboto',
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: width * 0.4,
-                        top: width * 0.024,
-                      ),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "To",
-                          style: TextStyle(
-                            fontSize: width * 0.038,
-                            fontWeight: FontWeight.w900,
-                            fontFamily: 'Roboto',
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
                 Padding(
-                    padding: EdgeInsets.only(left: width * 0.03),
-                    child: Row(children: [
-                      Padding(
-                        padding: EdgeInsets.only(left: 10),
-                        child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: Colors.white),
-                          width: 150,
-                          height: 40,
-                          child: Row(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(15),
-                                        bottomLeft: Radius.circular(15)),
-                                    color: Colors.white),
-                                width: 120,
-                                height: 40,
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.only(left: 8, bottom: 4),
-                                  child: TextField(
-                                    readOnly: true,
-                                    controller: _fromdate,
-                                    decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                    ),
-                                    onTap: () {
-                                      _selectDate();
-                                    },
-                                  ),
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  _selectDate();
-                                },
-                                child: FaIcon(
-                                  FontAwesomeIcons.calendarDay,
-                                  size: width * 0.06,
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 7),
-                      Container(
-                        height: 1,
-                        width: 10,
-                        color: Colors.black,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(left: 10),
-                        child: Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: Colors.white),
-                          width: 150,
-                          height: 40,
-                          child: Row(
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(15),
-                                        bottomLeft: Radius.circular(15)),
-                                    color: Colors.white),
-                                width: 120,
-                                height: 40,
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.only(left: 8, bottom: 4),
-                                  child: TextField(
-                                    readOnly: true,
-                                    controller: _todate,
-                                    decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                    ),
-                                    onTap: () {
-                                      _selectDate2();
-                                    },
-                                  ),
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  _selectDate2();
-                                },
-                                child: FaIcon(
-                                  FontAwesomeIcons.calendarDay,
-                                  size: width * 0.06,
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ])),
-                Row(
-                  children: [
-                    Padding(
+                  padding: EdgeInsets.only(
+                    left: width * 0.02,
+                  ),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
                       padding: EdgeInsets.only(
-                        left: width * 0.06,
-                        top: width * 0.024,
-                        bottom: width * 0.05,
-                      ),
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          "Project Requirements",
-                          style: TextStyle(
-                            fontSize: width * 0.045,
-                            fontWeight: FontWeight.w900,
-                            fontFamily: 'Roboto',
+                          right: width * 0.04, left: width * 0.04),
+                      child: TextField(
+                        controller: _projectname,
+                        decoration: InputDecoration(
+                          hintText: 'Enter the project Name',
+                          hintStyle: TextStyle(fontSize: 14.0),
+                          contentPadding: const EdgeInsets.only(
+                            left: 5,
                           ),
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                        left: width * 0.36,
-                        top: width * 0.026,
-                        bottom: width * 0.05,
-                      ),
-                      child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: GestureDetector(
-                            onTap: () {
-                              _showDialog(context);
-                            },
-                            child: Icon(
-                              Icons.add,
-                              size: 27,
-                            ),
-                          )),
-                    ),
-                  ],
+                  ),
                 ),
-              ],
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: width * 0.06,
+                    top: width * 0.024,
+                  ),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Project Description",
+                      style: TextStyle(
+                        fontSize: width * 0.045,
+                        fontWeight: FontWeight.w900,
+                        fontFamily: 'Roboto',
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: width * 0.02,
+                  ),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                          right: width * 0.04, left: width * 0.04),
+                      child: TextField(
+                        controller: _projectdescription,
+                        decoration: InputDecoration(
+                          hintText: 'Enter the project description',
+                          hintStyle: TextStyle(fontSize: 14.0),
+                          contentPadding: const EdgeInsets.only(
+                            left: 5,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: width * 0.06,
+                    top: width * 0.024,
+                  ),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Location",
+                      style: TextStyle(
+                        fontSize: width * 0.045,
+                        fontWeight: FontWeight.w900,
+                        fontFamily: 'Roboto',
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: width * 0.02,
+                  ),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                          right: width * 0.04, left: width * 0.04),
+                      child: TextField(
+                        controller: _location,
+                        decoration: InputDecoration(
+                          hintText: 'Enter the project location',
+                          hintStyle: TextStyle(fontSize: 14.0),
+                          contentPadding: const EdgeInsets.only(
+                            left: 5,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: width * 0.06,
+                    top: width * 0.024,
+                  ),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Zipcode",
+                      style: TextStyle(
+                        fontSize: width * 0.045,
+                        fontWeight: FontWeight.w900,
+                        fontFamily: 'Roboto',
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: width * 0.02,
+                  ),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                          right: width * 0.04, left: width * 0.04),
+                      child: TextField(
+                        controller: _zipCode,
+                        decoration: InputDecoration(
+                          hintText: 'Enter the project Zipcode',
+                          hintStyle: TextStyle(fontSize: 14.0),
+                          contentPadding: const EdgeInsets.only(
+                            left: 5,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: width * 0.06,
+                    top: width * 0.024,
+                  ),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Working Conditions",
+                      style: TextStyle(
+                        fontSize: width * 0.045,
+                        fontWeight: FontWeight.w900,
+                        fontFamily: 'Roboto',
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: width * 0.02,
+                  ),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                          right: width * 0.04, left: width * 0.04),
+                      child: TextField(
+                        controller: _siteconditions,
+                        decoration: InputDecoration(
+                          hintText: 'Describe about Working conditions',
+                          hintStyle: TextStyle(fontSize: 14.0),
+                          contentPadding: const EdgeInsets.only(
+                            left: 5,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: width * 0.06,
+                    top: width * 0.024,
+                  ),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Delivery and Pickup",
+                      style: TextStyle(
+                        fontSize: width * 0.045,
+                        fontWeight: FontWeight.w900,
+                        fontFamily: 'Roboto',
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: width * 0.02,
+                  ),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                          right: width * 0.04, left: width * 0.04),
+                      child: TextField(
+                        controller: _deliveryandpickup,
+                        decoration: InputDecoration(
+                          hintText: 'Enter delivery and pickup points',
+                          hintStyle: TextStyle(fontSize: 14.0),
+                          contentPadding: const EdgeInsets.only(
+                            left: 5,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: width * 0.06,
+                    top: width * 0.024,
+                  ),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Timeline",
+                      style: TextStyle(
+                        fontSize: width * 0.045,
+                        fontWeight: FontWeight.w900,
+                        fontFamily: 'Roboto',
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: width * 0.02,
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(
+                              left: width * 0.07,
+                              top: width * 0.024,
+                            ),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                "From",
+                                style: TextStyle(
+                                  fontSize: width * 0.038,
+                                  fontWeight: FontWeight.w900,
+                                  fontFamily: 'Roboto',
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                              left: width * 0.4,
+                              top: width * 0.024,
+                            ),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                "To",
+                                style: TextStyle(
+                                  fontSize: width * 0.038,
+                                  fontWeight: FontWeight.w900,
+                                  fontFamily: 'Roboto',
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Padding(
+                          padding: EdgeInsets.only(left: width * 0.03),
+                          child: Row(children: [
+                            Padding(
+                              padding: EdgeInsets.only(left: 10),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: Colors.white),
+                                width: 150,
+                                height: 40,
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(15),
+                                              bottomLeft: Radius.circular(15)),
+                                          color: Colors.white),
+                                      width: 120,
+                                      height: 40,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 8, bottom: 4),
+                                        child: TextField(
+                                          readOnly: true,
+                                          controller: _fromdate,
+                                          decoration: InputDecoration(
+                                            border: InputBorder.none,
+                                          ),
+                                          onTap: () {
+                                            _selectDate();
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        _selectDate();
+                                      },
+                                      child: FaIcon(
+                                        FontAwesomeIcons.calendarDay,
+                                        size: width * 0.06,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 7),
+                            Container(
+                              height: 1,
+                              width: 10,
+                              color: Colors.black,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(left: 10),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15),
+                                    color: Colors.white),
+                                width: 150,
+                                height: 40,
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(15),
+                                              bottomLeft: Radius.circular(15)),
+                                          color: Colors.white),
+                                      width: 120,
+                                      height: 40,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 8, bottom: 4),
+                                        child: TextField(
+                                          readOnly: true,
+                                          controller: _todate,
+                                          decoration: InputDecoration(
+                                            border: InputBorder.none,
+                                          ),
+                                          onTap: () {
+                                            _selectDate2();
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        _selectDate2();
+                                      },
+                                      child: FaIcon(
+                                        FontAwesomeIcons.calendarDay,
+                                        size: width * 0.06,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ])),
+                      Row(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(
+                              left: width * 0.06,
+                              top: width * 0.024,
+                              bottom: width * 0.05,
+                            ),
+                            child: Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                "Project Requirements",
+                                style: TextStyle(
+                                  fontSize: width * 0.045,
+                                  fontWeight: FontWeight.w900,
+                                  fontFamily: 'Roboto',
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                              left: width * 0.36,
+                              top: width * 0.026,
+                              bottom: width * 0.05,
+                            ),
+                            child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    _showDialog(context);
+                                  },
+                                  child: Icon(
+                                    Icons.add,
+                                    size: 27,
+                                  ),
+                                )),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                _buildCombinedListView(),
+                _buildCombinedListView2(),
+              ]),
             ),
-          ),
-          _buildCombinedListView(),
-          _buildCombinedListView2(),
-        ]),
-      ),
     );
   }
 

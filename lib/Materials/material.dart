@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:restate/Materials/Upload_material.dart';
+import 'package:restate/Materials/YourRevenue.dart';
 import 'package:restate/Materials/materialHome.dart';
 import 'package:restate/Materials/materialProfile.dart';
 import 'package:restate/Materials/materialinventory.dart';
@@ -404,7 +405,10 @@ class _MaterialsHomeScreenState extends State<MaterialsHomeScreen> {
                       ),
                     ),
                     onTap: () {
-                      Navigator.pop(context);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => YourRevenue()));
                     },
                   ),
                   Divider(

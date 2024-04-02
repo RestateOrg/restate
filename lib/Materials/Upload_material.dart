@@ -42,10 +42,13 @@ class _UploadMaterialState extends State<UploadMaterial> {
   TextEditingController _availablequantity = TextEditingController();
   TextEditingController _bagSize = TextEditingController();
   TextEditingController _deliveredwithin = TextEditingController();
+  TextEditingController _priceOutcity = TextEditingController();
+  TextEditingController _priceIncity = TextEditingController();
   late List<String> downloadurls;
   String per = 'KG';
   DeliveryOption? _deliveryOption = DeliveryOption.no;
   DeliveryOption? _deliveryOutcity = DeliveryOption.no;
+
   bool _isUploading = false;
   @override
   void initState() {
@@ -63,6 +66,8 @@ class _UploadMaterialState extends State<UploadMaterial> {
     _availablequantity.dispose();
     _bagSize.dispose();
     _deliveredwithin.dispose();
+    _priceOutcity.dispose();
+    _priceIncity.dispose();
     super.dispose();
   }
 
@@ -130,26 +135,93 @@ class _UploadMaterialState extends State<UploadMaterial> {
           .collection('items')
           .doc(_materialname.text);
       per == 'Bag'
-          ? projectRef.set({
-              'Material_name': _materialname.text,
-              'Brand_name': brandname,
-              'Material_type': materialtype,
-              'Price_per': _priceper.text,
-              'Price_per_unit': per,
-              'Zipcode': _zipCode.text,
-              'city': locationInfo?['city'],
-              'state': locationInfo?['state'],
-              'country': locationInfo?['country'],
-              'Images': downloadurls,
-              'status': 'In Stock',
-              'rating': 0,
-              'rating_count': 0,
-              'bag_size': _bagSize.text,
-              'available_quantity': _availablequantity.text,
-              'delivered_within': _deliveredwithin.text,
-              'useremail': useremail,
-              'timestamp': formattedDate,
-            })
+          ? _deliveryOption == DeliveryOption.yes
+              ? _deliveryOutcity == DeliveryOption.yes
+                  ? projectRef.set({
+                      'Material_name': _materialname.text,
+                      'Brand_name': brandname,
+                      'Material_type': materialtype,
+                      'Price_per': _priceper.text,
+                      'Price_per_unit': per,
+                      'Zipcode': _zipCode.text,
+                      'city': locationInfo?['city'],
+                      'state': locationInfo?['state'],
+                      'country': locationInfo?['country'],
+                      'Images': downloadurls,
+                      'status': 'In Stock',
+                      'rating': 0,
+                      'rating_count': 0,
+                      'bag_size': _bagSize.text,
+                      'available_quantity': _availablequantity.text,
+                      'delivered_within': _deliveredwithin.text,
+                      'delivery_inside_city': _priceIncity.text,
+                      'delivery_outside_city': _priceOutcity.text,
+                      'useremail': useremail,
+                      'timestamp': formattedDate,
+                    })
+                  : projectRef.set({
+                      'Material_name': _materialname.text,
+                      'Brand_name': brandname,
+                      'Material_type': materialtype,
+                      'Price_per': _priceper.text,
+                      'Price_per_unit': per,
+                      'Zipcode': _zipCode.text,
+                      'city': locationInfo?['city'],
+                      'state': locationInfo?['state'],
+                      'country': locationInfo?['country'],
+                      'Images': downloadurls,
+                      'status': 'In Stock',
+                      'rating': 0,
+                      'rating_count': 0,
+                      'bag_size': _bagSize.text,
+                      'available_quantity': _availablequantity.text,
+                      'delivered_within': _deliveredwithin.text,
+                      'delivery_inside_city': _priceIncity.text,
+                      'useremail': useremail,
+                      'timestamp': formattedDate,
+                    })
+              : _deliveryOutcity == DeliveryOption.yes
+                  ? projectRef.set({
+                      'Material_name': _materialname.text,
+                      'Brand_name': brandname,
+                      'Material_type': materialtype,
+                      'Price_per': _priceper.text,
+                      'Price_per_unit': per,
+                      'Zipcode': _zipCode.text,
+                      'city': locationInfo?['city'],
+                      'state': locationInfo?['state'],
+                      'country': locationInfo?['country'],
+                      'Images': downloadurls,
+                      'status': 'In Stock',
+                      'rating': 0,
+                      'rating_count': 0,
+                      'bag_size': _bagSize.text,
+                      'available_quantity': _availablequantity.text,
+                      'delivered_within': _deliveredwithin.text,
+                      'delivery_outside_city': _priceOutcity.text,
+                      'useremail': useremail,
+                      'timestamp': formattedDate,
+                    })
+                  : projectRef.set({
+                      'Material_name': _materialname.text,
+                      'Brand_name': brandname,
+                      'Material_type': materialtype,
+                      'Price_per': _priceper.text,
+                      'Price_per_unit': per,
+                      'Zipcode': _zipCode.text,
+                      'city': locationInfo?['city'],
+                      'state': locationInfo?['state'],
+                      'country': locationInfo?['country'],
+                      'Images': downloadurls,
+                      'status': 'In Stock',
+                      'rating': 0,
+                      'rating_count': 0,
+                      'bag_size': _bagSize.text,
+                      'available_quantity': _availablequantity.text,
+                      'delivered_within': _deliveredwithin.text,
+                      'useremail': useremail,
+                      'timestamp': formattedDate,
+                    })
           : projectRef.set({
               'Material_name': _materialname.text,
               'Brand_name': brandname,
@@ -1162,6 +1234,52 @@ class _UploadMaterialState extends State<UploadMaterial> {
                                     ),
                                   ),
                                 ],
+                              ),
+                            ),
+                          ],
+                        )
+                      : Container(),
+                  _deliveryOutcity == DeliveryOption.yes
+                      ? Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(
+                                left: width * 0.06,
+                                top: width * 0.010,
+                              ),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  "Price with Delivery Outside The City",
+                                  style: TextStyle(
+                                    fontSize: width * 0.045,
+                                    fontWeight: FontWeight.w900,
+                                    fontFamily: 'Roboto',
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                left: width * 0.02,
+                              ),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                      right: width * 0.04,
+                                      left: width * 0.04,
+                                      bottom: width * 0.02),
+                                  child: TextField(
+                                    decoration: InputDecoration(
+                                      hintText: 'Enter the Price with Delivery',
+                                      hintStyle: TextStyle(fontSize: 14.0),
+                                      contentPadding: const EdgeInsets.only(
+                                        left: 5,
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                           ],

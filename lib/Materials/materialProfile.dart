@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:restate/Materials/Editdetails.dart';
 import 'package:restate/Utils/hexcolor.dart';
 import 'package:restate/Utils/signOut.dart';
 
@@ -16,9 +17,15 @@ class _MaterialsProfileState extends State<MaterialsProfile> {
   final User? _user = FirebaseAuth.instance.currentUser;
   String? username;
   String? useremail = FirebaseAuth.instance.currentUser!.email;
+  late DocumentReference userinfo;
   @override
   void initState() {
     getUsername();
+    userinfo = FirebaseFirestore.instance
+        .collection('materials')
+        .doc(useremail)
+        .collection('userinformation')
+        .doc('userinfo');
     super.initState();
   }
 
@@ -255,10 +262,22 @@ class _MaterialsProfileState extends State<MaterialsProfile> {
                         top: width * 0.02,
                         left: width * 0.02,
                         bottom: width * 0.02),
-                    child: Text(
-                      'Edit Details',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: width * 0.04),
+                    child: InkWell(
+                      onTap: () async {
+                        DocumentSnapshot snapshot = await userinfo.get();
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return EditDetails(
+                            snapshot: snapshot,
+                          );
+                        }));
+                      },
+                      child: Text(
+                        'Edit Details',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: width * 0.04),
+                      ),
                     ),
                   ),
                   Padding(
@@ -266,43 +285,17 @@ class _MaterialsProfileState extends State<MaterialsProfile> {
                           top: width * 0.02,
                           left: width * 0.55,
                           bottom: width * 0.02),
-                      child: FaIcon(FontAwesomeIcons.angleRight)),
-                ]),
-                Divider(
-                  color: Colors.black12,
-                  height: 20,
-                  thickness: 1,
-                  indent: 0,
-                  endIndent: 0,
-                ),
-                Row(children: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                        top: width * 0.02,
-                        left: width * 0.068,
-                        bottom: width * 0.02),
-                    child: FaIcon(
-                      FontAwesomeIcons.solidClock,
-                      size: 20,
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        top: width * 0.02,
-                        left: width * 0.02,
-                        bottom: width * 0.02),
-                    child: Text(
-                      'Order History',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: width * 0.04),
-                    ),
-                  ),
-                  Padding(
-                      padding: EdgeInsets.only(
-                          top: width * 0.02,
-                          left: width * 0.52,
-                          bottom: width * 0.02),
-                      child: FaIcon(FontAwesomeIcons.angleRight)),
+                      child: InkWell(
+                          onTap: () async {
+                            DocumentSnapshot snapshot = await userinfo.get();
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return EditDetails(
+                                snapshot: snapshot,
+                              );
+                            }));
+                          },
+                          child: FaIcon(FontAwesomeIcons.angleRight))),
                 ]),
                 Divider(
                   color: Colors.black12,

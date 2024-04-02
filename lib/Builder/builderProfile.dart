@@ -210,42 +210,6 @@ class _BuilderProfilesState extends State<BuilderProfiles> {
                         left: width * 0.068,
                         bottom: width * 0.02),
                     child: FaIcon(
-                      FontAwesomeIcons.cartShopping,
-                      size: 20,
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(
-                        top: width * 0.02,
-                        left: width * 0.02,
-                        bottom: width * 0.02),
-                    child: Text(
-                      'Your Orders',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: width * 0.04),
-                    ),
-                  ),
-                  Padding(
-                      padding: EdgeInsets.only(
-                          top: width * 0.02,
-                          left: width * 0.543,
-                          bottom: width * 0.02),
-                      child: FaIcon(FontAwesomeIcons.angleRight)),
-                ]),
-                Divider(
-                  color: Colors.black12,
-                  height: 20,
-                  thickness: 1,
-                  indent: 0,
-                  endIndent: 0,
-                ),
-                Row(children: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                        top: width * 0.02,
-                        left: width * 0.068,
-                        bottom: width * 0.02),
-                    child: FaIcon(
                       FontAwesomeIcons.pen,
                       size: 20,
                     ),

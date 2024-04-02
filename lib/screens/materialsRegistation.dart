@@ -128,7 +128,7 @@ class _MaterialRegistrationState extends State<MaterialRegistration> {
         'state': locationInfo?['state'],
         'country': locationInfo?['country'],
         'zipCode': zipCodeController.text,
-        'companyRegistrationNumber': companyRegistrationNumberController.text,
+        'gstNumber': companyRegistrationNumberController.text,
         'aadhaarNumber': aadhaarNumberController.text,
         'gender': selectedGender,
         'acceptedTerms': isChecked,
@@ -524,7 +524,7 @@ class _MaterialRegistrationState extends State<MaterialRegistration> {
                 alignment: Alignment.centerLeft,
                 child: RichText(
                   text: TextSpan(
-                    text: "Aadhaar Number",
+                    text: "GST Number",
                     style: TextStyle(
                       fontSize: width * 0.039,
                       fontFamily: 'Roboto',
@@ -555,7 +555,7 @@ class _MaterialRegistrationState extends State<MaterialRegistration> {
                   child: TextField(
                     controller: aadhaarNumberController,
                     decoration: InputDecoration(
-                      hintText: 'Enter your Aadhaar Number',
+                      hintText: 'Enter your GST Number',
                       fillColor: Colors.white,
                       filled: true,
                       border: OutlineInputBorder(

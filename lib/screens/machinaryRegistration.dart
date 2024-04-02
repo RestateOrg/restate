@@ -128,7 +128,7 @@ class _MachinaryRegistrationState extends State<MachinaryRegistration> {
         'state': locationInfo?['state'],
         'country': locationInfo?['country'],
         'zipCode': zipCodeController.text,
-        'companyRegistrationNumber': companyRegistrationNumberController.text,
+        'gstNumber': companyRegistrationNumberController.text,
         'aadhaarNumber': aadhaarNumberController.text,
         'gender': selectedGender,
         'acceptedTerms': isChecked,

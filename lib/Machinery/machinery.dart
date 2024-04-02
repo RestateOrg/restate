@@ -10,6 +10,7 @@ import 'package:restate/Machinery/machineryorder.dart';
 import 'package:restate/Machinery/machinerystats.dart';
 import 'package:restate/Utils/hexcolor.dart';
 import 'package:restate/screens/signIn.dart';
+import 'package:restate/Machinery/yourRevenue.dart';
 
 class MachinaryHomeScreen extends StatefulWidget {
   final int initialSelectedIndex;
@@ -427,7 +428,12 @@ class _MachinaryHomeScreenState extends State<MachinaryHomeScreen> {
                       ),
                     ),
                     onTap: () {
-                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => YourRevenue(),
+                        ),
+                      );
                     },
                   ),
                   Divider(
