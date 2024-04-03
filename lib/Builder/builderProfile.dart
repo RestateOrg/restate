@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:restate/Builder/Editdetails.dart';
+import 'package:restate/Builder/Yourprojects.dart';
 import 'package:restate/Utils/hexcolor.dart';
 import 'package:restate/Utils/signOut.dart';
 
@@ -185,22 +186,44 @@ class _BuilderProfilesState extends State<BuilderProfiles> {
                     Padding(
                       padding: EdgeInsets.only(
                           left: width * 0.07, bottom: width * 0.03),
-                      child: FaIcon(FontAwesomeIcons.productHunt),
+                      child: InkWell(
+                          onTap: () {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return YourProjects();
+                            }));
+                          },
+                          child: FaIcon(FontAwesomeIcons.productHunt)),
                     ),
                     Padding(
                       padding: EdgeInsets.only(
                           left: width * 0.02, bottom: width * 0.03),
-                      child: Text(
-                        'Your Projects',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: width * 0.04),
+                      child: InkWell(
+                        onTap: () async {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return YourProjects();
+                          }));
+                        },
+                        child: Text(
+                          'Your Projects',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: width * 0.04),
+                        ),
                       ),
                     ),
                     Padding(
                         padding: EdgeInsets.only(
                             left: width * 0.52, bottom: width * 0.03),
-                        child: FaIcon(FontAwesomeIcons.angleRight)),
+                        child: InkWell(
+                            onTap: () {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                return YourProjects();
+                              }));
+                            },
+                            child: FaIcon(FontAwesomeIcons.angleRight))),
                   ]),
                 ),
                 Divider(
@@ -216,9 +239,20 @@ class _BuilderProfilesState extends State<BuilderProfiles> {
                         top: width * 0.02,
                         left: width * 0.068,
                         bottom: width * 0.02),
-                    child: FaIcon(
-                      FontAwesomeIcons.pen,
-                      size: 20,
+                    child: InkWell(
+                      onTap: () async {
+                        DocumentSnapshot snapshot = await userinfo.get();
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return EditDetails(
+                            snapshot: snapshot,
+                          );
+                        }));
+                      },
+                      child: FaIcon(
+                        FontAwesomeIcons.pen,
+                        size: 20,
+                      ),
                     ),
                   ),
                   Padding(

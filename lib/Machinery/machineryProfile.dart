@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:restate/Machinery/Editdetails.dart';
+import 'package:restate/Machinery/machinery.dart';
 import 'package:restate/Utils/hexcolor.dart';
 import 'package:restate/Utils/signOut.dart';
 
@@ -212,22 +213,50 @@ class _MachineryProfileState extends State<MachineryProfile> {
                     Padding(
                       padding: EdgeInsets.only(
                           left: width * 0.07, bottom: width * 0.03),
-                      child: FaIcon(FontAwesomeIcons.box),
+                      child: InkWell(
+                          onTap: () {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return MachinaryHomeScreen(
+                                initialSelectedIndex: 3,
+                              );
+                            }));
+                          },
+                          child: FaIcon(FontAwesomeIcons.box)),
                     ),
                     Padding(
                       padding: EdgeInsets.only(
                           left: width * 0.02, bottom: width * 0.03),
-                      child: Text(
-                        'Your Items',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: width * 0.04),
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return MachinaryHomeScreen(
+                              initialSelectedIndex: 3,
+                            );
+                          }));
+                        },
+                        child: Text(
+                          'Your Items',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: width * 0.04),
+                        ),
                       ),
                     ),
                     Padding(
                         padding: EdgeInsets.only(
                             left: width * 0.57, bottom: width * 0.03),
-                        child: FaIcon(FontAwesomeIcons.angleRight)),
+                        child: InkWell(
+                            onTap: () {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                return MachinaryHomeScreen(
+                                  initialSelectedIndex: 3,
+                                );
+                              }));
+                            },
+                            child: FaIcon(FontAwesomeIcons.angleRight))),
                   ]),
                 ),
                 Divider(
@@ -243,9 +272,19 @@ class _MachineryProfileState extends State<MachineryProfile> {
                         top: width * 0.02,
                         left: width * 0.068,
                         bottom: width * 0.02),
-                    child: FaIcon(
-                      FontAwesomeIcons.cartShopping,
-                      size: 20,
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return MachinaryHomeScreen(
+                            initialSelectedIndex: 1,
+                          );
+                        }));
+                      },
+                      child: FaIcon(
+                        FontAwesomeIcons.cartShopping,
+                        size: 20,
+                      ),
                     ),
                   ),
                   Padding(
@@ -253,10 +292,21 @@ class _MachineryProfileState extends State<MachineryProfile> {
                         top: width * 0.02,
                         left: width * 0.02,
                         bottom: width * 0.02),
-                    child: Text(
-                      'Your Orders',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: width * 0.04),
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return MachinaryHomeScreen(
+                            initialSelectedIndex: 1,
+                          );
+                        }));
+                      },
+                      child: Text(
+                        'Your Orders',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: width * 0.04),
+                      ),
                     ),
                   ),
                   Padding(
@@ -264,7 +314,16 @@ class _MachineryProfileState extends State<MachineryProfile> {
                           top: width * 0.02,
                           left: width * 0.543,
                           bottom: width * 0.02),
-                      child: FaIcon(FontAwesomeIcons.angleRight)),
+                      child: InkWell(
+                          onTap: () {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return MachinaryHomeScreen(
+                                initialSelectedIndex: 1,
+                              );
+                            }));
+                          },
+                          child: FaIcon(FontAwesomeIcons.angleRight))),
                 ]),
                 Divider(
                   color: Colors.black12,

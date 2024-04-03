@@ -34,6 +34,7 @@ class _UploadProjectState extends State<UploadProject> {
   List<List<String>> machineryList = [];
   List<Map> projectrequirements = [];
   File? _image;
+  String? projecttype = 'Commercial';
   String? useremail = FirebaseAuth.instance.currentUser?.email;
   bool _isUploading = false;
 
@@ -113,6 +114,7 @@ class _UploadProjectState extends State<UploadProject> {
         'quantity': _quantity.text,
         'deliverydate': _deliverydate.text,
         'projectname': _projectname.text,
+        'projecttype': projecttype,
         'projectdescription': _projectdescription.text,
         'location': _location.text,
         'city': locationInfo?['city'],
@@ -164,6 +166,7 @@ class _UploadProjectState extends State<UploadProject> {
         'quantity': _quantity.text,
         'deliverydate': _deliverydate.text,
         'projectname': _projectname.text,
+        'projecttype': projecttype,
         'projectdescription': _projectdescription.text,
         'location': _location.text,
         'city': locationInfo?['city'],
@@ -491,6 +494,50 @@ class _UploadProjectState extends State<UploadProject> {
                           ),
                         ),
                       ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: width * 0.06,
+                    top: width * 0.024,
+                  ),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Select Project type",
+                      style: TextStyle(
+                        fontSize: width * 0.045,
+                        fontWeight: FontWeight.w900,
+                        fontFamily: 'Roboto',
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    left: width * 0.06,
+                  ),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: DropdownButton<String>(
+                      value: projecttype,
+                      underline: Container(
+                        height: 1,
+                        color: const Color.fromARGB(114, 0, 0, 0),
+                      ),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          projecttype = newValue!;
+                        });
+                      },
+                      items: <String>['Commercial', 'Residental', 'Other']
+                          .map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
                     ),
                   ),
                 ),

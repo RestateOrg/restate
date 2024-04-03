@@ -12,7 +12,8 @@ import 'package:restate/Materials/materialstats.dart';
 import 'package:restate/Utils/hexcolor.dart';
 
 class MaterialsHomeScreen extends StatefulWidget {
-  const MaterialsHomeScreen({super.key});
+  final int initialSelectedIndex;
+  const MaterialsHomeScreen({super.key, required this.initialSelectedIndex});
 
   @override
   State<MaterialsHomeScreen> createState() => _MaterialsHomeScreenState();
@@ -29,6 +30,11 @@ class _MaterialsHomeScreenState extends State<MaterialsHomeScreen> {
     MaterialInventory()
   ];
   final User = FirebaseAuth.instance.currentUser;
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.initialSelectedIndex;
+  }
 
   Future<String?> getUsername() async {
     String? username;

@@ -182,7 +182,9 @@ class _LoginViewState extends State<LoginView> {
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => MaterialsHomeScreen(),
+                                    builder: (context) => MaterialsHomeScreen(
+                                      initialSelectedIndex: 0,
+                                    ),
                                   ),
                                 );
                               } else if (userRole == 'Machinery') {

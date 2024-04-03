@@ -115,7 +115,10 @@ class _BeginState extends State<Begin> {
       } else if (userRole == 'Material') {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const MaterialsHomeScreen()),
+          MaterialPageRoute(
+              builder: (context) => const MaterialsHomeScreen(
+                    initialSelectedIndex: 0,
+                  )),
         );
       } else {
         Navigator.pushReplacement(
