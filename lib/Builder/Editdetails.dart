@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -25,21 +24,23 @@ class _EditDetailsState extends State<EditDetails> {
   bool imagechanged = false;
   String? useremail = FirebaseAuth.instance.currentUser?.email;
   TextEditingController _zipCode = TextEditingController();
-  TextEditingController _address = TextEditingController();
+  TextEditingController _address1 = TextEditingController();
+  TextEditingController _address2 = TextEditingController();
   TextEditingController _contactNumber = TextEditingController();
   TextEditingController _email = TextEditingController();
   TextEditingController _fullName = TextEditingController();
-  TextEditingController _gstNumber = TextEditingController();
+  TextEditingController licenseNumber = TextEditingController();
   late DocumentReference DocumentRef;
   late List<String> downloadurls;
   late String selectedGender;
   void initState() {
     _zipCode.text = widget.snapshot['zipCode'];
-    _address.text = widget.snapshot['address'];
+    _address1.text = widget.snapshot['addressLine1'];
+    _address2.text = widget.snapshot['addressLine2'];
     _contactNumber.text = widget.snapshot['contactNumber'];
     _email.text = widget.snapshot['email'];
     _fullName.text = widget.snapshot['fullName'];
-    _gstNumber.text = widget.snapshot['gstNumber'];
+    licenseNumber.text = widget.snapshot['licenseNumber'];
     selectedGender = widget.snapshot['gender'];
     if ((widget.snapshot.data() as Map<String, dynamic>)
         .containsKey('profilepicture')) {
@@ -50,7 +51,7 @@ class _EditDetailsState extends State<EditDetails> {
     }
     setState(() {
       DocumentRef = FirebaseFirestore.instance
-          .collection('materials')
+          .collection('builders')
           .doc(useremail)
           .collection('userinformation')
           .doc('userinfo');
@@ -60,11 +61,12 @@ class _EditDetailsState extends State<EditDetails> {
 
   void dispose() {
     _zipCode.dispose();
-    _address.dispose();
+    _address1.dispose();
+    _address2.dispose();
     _contactNumber.dispose();
     _email.dispose();
     _fullName.dispose();
-    _gstNumber.dispose();
+    licenseNumber.dispose();
     super.dispose();
   }
 
@@ -96,14 +98,16 @@ class _EditDetailsState extends State<EditDetails> {
     } else {
       imageurl = await _getimageUrl();
     }
+
     await DocumentRef.update({
       'profilepicture': imageurl,
       'zipCode': _zipCode.text,
-      'address': _address.text,
+      'addressLine1': _address1.text,
+      'addressLine2': _address2.text,
       'contactNumber': _contactNumber.text,
       'email': _email.text,
       'fullName': _fullName.text,
-      'gstNumber': _gstNumber.text,
+      'licenseNumber': licenseNumber.text,
       'city': locationInfo?['city'],
       'state': locationInfo?['state'],
       'country': locationInfo?['country'],
@@ -474,9 +478,6 @@ class _EditDetailsState extends State<EditDetails> {
                                           child: GestureDetector(
                                               onTap: () {
                                                 _pickImageFromCamera();
-                                                setState(() {
-                                                  imagechanged = true;
-                                                });
                                               },
                                               child: FaIcon(
                                                   FontAwesomeIcons.camera,
@@ -610,7 +611,7 @@ class _EditDetailsState extends State<EditDetails> {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "Address",
+                        "Address Line 1",
                         style: TextStyle(
                           fontSize: width * 0.045,
                           fontWeight: FontWeight.w900,
@@ -630,9 +631,49 @@ class _EditDetailsState extends State<EditDetails> {
                         padding: EdgeInsets.only(
                             right: width * 0.04, left: width * 0.04),
                         child: TextField(
-                          controller: _address,
+                          controller: _address1,
                           decoration: InputDecoration(
-                            hintText: 'Enter the Address',
+                            hintText: 'Enter the Address Line 1',
+                            hintStyle: TextStyle(fontSize: 14.0),
+                            contentPadding: const EdgeInsets.only(
+                              left: 5,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.06,
+                      top: width * 0.024,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Address Line 2",
+                        style: TextStyle(
+                          fontSize: width * 0.045,
+                          fontWeight: FontWeight.w900,
+                          fontFamily: 'Roboto',
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.02,
+                      bottom: width * 0.03,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            right: width * 0.04, left: width * 0.04),
+                        child: TextField(
+                          controller: _address2,
+                          decoration: InputDecoration(
+                            hintText: 'Enter the Address Line 2',
                             hintStyle: TextStyle(fontSize: 14.0),
                             contentPadding: const EdgeInsets.only(
                               left: 5,
@@ -690,7 +731,7 @@ class _EditDetailsState extends State<EditDetails> {
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "GST Number",
+                        "License Number",
                         style: TextStyle(
                           fontSize: width * 0.045,
                           fontWeight: FontWeight.w900,
@@ -710,9 +751,9 @@ class _EditDetailsState extends State<EditDetails> {
                         padding: EdgeInsets.only(
                             right: width * 0.04, left: width * 0.04),
                         child: TextField(
-                          controller: _gstNumber,
+                          controller: licenseNumber,
                           decoration: InputDecoration(
-                            hintText: 'Enter the GST Number',
+                            hintText: 'Enter the License Number',
                             hintStyle: TextStyle(fontSize: 14.0),
                             contentPadding: const EdgeInsets.only(
                               left: 5,
