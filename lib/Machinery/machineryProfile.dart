@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:restate/Machinery/Editdetails.dart';
+import 'package:restate/Machinery/help.dart';
 import 'package:restate/Machinery/machinery.dart';
 import 'package:restate/Utils/hexcolor.dart';
 import 'package:restate/Utils/signOut.dart';
@@ -57,7 +58,9 @@ class _MachineryProfileState extends State<MachineryProfile> {
       backgroundColor: Colors.amber,
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          // Handle "Help" button action here
+          Navigator.push(context, MaterialPageRoute(builder: (context) {
+            return HelpSection();
+          }));
         },
         backgroundColor: HexColor('#2A2828'),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
