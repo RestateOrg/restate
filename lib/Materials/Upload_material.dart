@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:restate/Utils/getlocation.dart';
@@ -48,11 +49,12 @@ class _UploadMaterialState extends State<UploadMaterial> {
   String per = 'KG';
   DeliveryOption? _deliveryOption = DeliveryOption.no;
   DeliveryOption? _deliveryOutcity = DeliveryOption.no;
-
+  Position? _currentUserPosition;
   bool _isUploading = false;
   @override
   void initState() {
     super.initState();
+    _getTheDistance();
     create_list();
     create_list2();
   }
@@ -112,6 +114,41 @@ class _UploadMaterialState extends State<UploadMaterial> {
     );
   }
 
+  Future _getTheDistance() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        // Permissions are denied, next time you could try
+        // requesting permissions again (this is also where
+        // Android's shouldShowRequestPermissionRationale
+        // returned true. According to Android guidelines
+        // your App should show an explanatory UI now.
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+    _currentUserPosition = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+  }
+
   Future<void> uploadData() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     Map<String, String>? locationInfo = await getLocationInfo(_zipCode.text);
@@ -152,6 +189,8 @@ class _UploadMaterialState extends State<UploadMaterial> {
                       'rating': 0,
                       'rating_count': 0,
                       'bag_size': _bagSize.text,
+                      'latitude': _currentUserPosition?.latitude,
+                      'longitude': _currentUserPosition?.longitude,
                       'available_quantity': _availablequantity.text,
                       'delivered_within': _deliveredwithin.text,
                       'delivery_inside_city': _priceIncity.text,
@@ -174,6 +213,8 @@ class _UploadMaterialState extends State<UploadMaterial> {
                       'rating': 0,
                       'rating_count': 0,
                       'bag_size': _bagSize.text,
+                      'latitude': _currentUserPosition?.latitude,
+                      'longitude': _currentUserPosition?.longitude,
                       'available_quantity': _availablequantity.text,
                       'delivered_within': _deliveredwithin.text,
                       'delivery_inside_city': _priceIncity.text,
@@ -196,6 +237,8 @@ class _UploadMaterialState extends State<UploadMaterial> {
                       'rating': 0,
                       'rating_count': 0,
                       'bag_size': _bagSize.text,
+                      'latitude': _currentUserPosition?.latitude,
+                      'longitude': _currentUserPosition?.longitude,
                       'available_quantity': _availablequantity.text,
                       'delivered_within': _deliveredwithin.text,
                       'delivery_outside_city': _priceOutcity.text,
@@ -217,6 +260,8 @@ class _UploadMaterialState extends State<UploadMaterial> {
                       'rating': 0,
                       'rating_count': 0,
                       'bag_size': _bagSize.text,
+                      'latitude': _currentUserPosition?.latitude,
+                      'longitude': _currentUserPosition?.longitude,
                       'available_quantity': _availablequantity.text,
                       'delivered_within': _deliveredwithin.text,
                       'useremail': useremail,
@@ -234,6 +279,8 @@ class _UploadMaterialState extends State<UploadMaterial> {
               'country': locationInfo?['country'],
               'Images': downloadurls,
               'status': 'In Stock',
+              'latitude': _currentUserPosition?.latitude,
+              'longitude': _currentUserPosition?.longitude,
               'available_quantity': _availablequantity.text,
               'delivered_within': _deliveredwithin.text,
               'rating': 0,
@@ -257,31 +304,121 @@ class _UploadMaterialState extends State<UploadMaterial> {
     String formattedDate = DateFormat('yyyy-MM-dd').format(dateTime);
     try {
       per == 'Bag'
-          ? projectRef.set({
-              'Material_name': _materialname.text,
-              'Brand_name': brandname,
-              'Material_type': materialtype,
-              'Price_per': _priceper.text,
-              'Price_per_unit': per,
-              'Zipcode': _zipCode.text,
-              'city': locationInfo?['city'],
-              'state': locationInfo?['state'],
-              'country': locationInfo?['country'],
-              'Images': downloadurls,
-              'status': 'In Stock',
-              'rating': 0,
-              'rating_count': 0,
-              'bag_size': _bagSize.text,
-              'available_quantity': _availablequantity.text,
-              'delivered_within': _deliveredwithin.text,
-              'useremail': useremail,
-              'timestamp': formattedDate,
-            }).then(
-              (value) {
-                _showDocumentIdPopup2("Data Upload Sucessful",
-                    "Your Material has been uploaded sucessfully");
-              },
-            )
+          ? _deliveryOption == DeliveryOption.yes
+              ? _deliveryOutcity == DeliveryOption.yes
+                  ? projectRef.set({
+                      'Material_name': _materialname.text,
+                      'Brand_name': brandname,
+                      'Material_type': materialtype,
+                      'Price_per': _priceper.text,
+                      'Price_per_unit': per,
+                      'Zipcode': _zipCode.text,
+                      'city': locationInfo?['city'],
+                      'state': locationInfo?['state'],
+                      'country': locationInfo?['country'],
+                      'Images': downloadurls,
+                      'status': 'In Stock',
+                      'rating': 0,
+                      'rating_count': 0,
+                      'bag_size': _bagSize.text,
+                      'latitude': _currentUserPosition?.latitude,
+                      'longitude': _currentUserPosition?.longitude,
+                      'available_quantity': _availablequantity.text,
+                      'delivered_within': _deliveredwithin.text,
+                      'delivery_inside_city': _priceIncity.text,
+                      'delivery_outside_city': _priceOutcity.text,
+                      'useremail': useremail,
+                      'timestamp': formattedDate,
+                    }).then(
+                      (value) {
+                        _showDocumentIdPopup2("Data Upload Sucessful",
+                            "Your Material has been uploaded sucessfully");
+                      },
+                    )
+                  : projectRef.set({
+                      'Material_name': _materialname.text,
+                      'Brand_name': brandname,
+                      'Material_type': materialtype,
+                      'Price_per': _priceper.text,
+                      'Price_per_unit': per,
+                      'Zipcode': _zipCode.text,
+                      'city': locationInfo?['city'],
+                      'state': locationInfo?['state'],
+                      'country': locationInfo?['country'],
+                      'Images': downloadurls,
+                      'status': 'In Stock',
+                      'rating': 0,
+                      'rating_count': 0,
+                      'bag_size': _bagSize.text,
+                      'latitude': _currentUserPosition?.latitude,
+                      'longitude': _currentUserPosition?.longitude,
+                      'available_quantity': _availablequantity.text,
+                      'delivered_within': _deliveredwithin.text,
+                      'delivery_inside_city': _priceIncity.text,
+                      'useremail': useremail,
+                      'timestamp': formattedDate,
+                    }).then(
+                      (value) {
+                        _showDocumentIdPopup2("Data Upload Sucessful",
+                            "Your Material has been uploaded sucessfully");
+                      },
+                    )
+              : _deliveryOutcity == DeliveryOption.yes
+                  ? projectRef.set({
+                      'Material_name': _materialname.text,
+                      'Brand_name': brandname,
+                      'Material_type': materialtype,
+                      'Price_per': _priceper.text,
+                      'Price_per_unit': per,
+                      'Zipcode': _zipCode.text,
+                      'city': locationInfo?['city'],
+                      'state': locationInfo?['state'],
+                      'country': locationInfo?['country'],
+                      'Images': downloadurls,
+                      'status': 'In Stock',
+                      'rating': 0,
+                      'rating_count': 0,
+                      'bag_size': _bagSize.text,
+                      'latitude': _currentUserPosition?.latitude,
+                      'longitude': _currentUserPosition?.longitude,
+                      'available_quantity': _availablequantity.text,
+                      'delivered_within': _deliveredwithin.text,
+                      'delivery_outside_city': _priceOutcity.text,
+                      'useremail': useremail,
+                      'timestamp': formattedDate,
+                    }).then(
+                      (value) {
+                        _showDocumentIdPopup2("Data Upload Sucessful",
+                            "Your Material has been uploaded sucessfully");
+                      },
+                    )
+                  : projectRef.set({
+                      'Material_name': _materialname.text,
+                      'Brand_name': brandname,
+                      'Material_type': materialtype,
+                      'Price_per': _priceper.text,
+                      'Price_per_unit': per,
+                      'Zipcode': _zipCode.text,
+                      'city': locationInfo?['city'],
+                      'state': locationInfo?['state'],
+                      'country': locationInfo?['country'],
+                      'Images': downloadurls,
+                      'status': 'In Stock',
+                      'rating': 0,
+                      'rating_count': 0,
+                      'bag_size': _bagSize.text,
+                      'latitude': _currentUserPosition?.latitude,
+                      'longitude': _currentUserPosition?.longitude,
+                      'available_quantity': _availablequantity.text,
+                      'delivered_within': _deliveredwithin.text,
+                      'useremail': useremail,
+                      'timestamp': formattedDate,
+                    }).then(
+                      (value) {
+                        _showDocumentIdPopup2("Data Upload Sucessful",
+                            "Your Material has been uploaded sucessfully");
+                      },
+                    )
           : projectRef.set({
               'Material_name': _materialname.text,
               'Brand_name': brandname,
@@ -294,11 +431,12 @@ class _UploadMaterialState extends State<UploadMaterial> {
               'country': locationInfo?['country'],
               'Images': downloadurls,
               'status': 'In Stock',
-              'rating': 0,
-              'rating_count': 0,
+              'latitude': _currentUserPosition?.latitude,
+              'longitude': _currentUserPosition?.longitude,
               'available_quantity': _availablequantity.text,
               'delivered_within': _deliveredwithin.text,
-              'useremail': useremail,
+              'rating': 0,
+              'rating_count': 0,
               'timestamp': formattedDate,
             }).then(
               (value) {
@@ -1179,6 +1317,7 @@ class _UploadMaterialState extends State<UploadMaterial> {
                                   padding: EdgeInsets.only(
                                       right: width * 0.04, left: width * 0.04),
                                   child: TextField(
+                                    controller: _priceIncity,
                                     decoration: InputDecoration(
                                       hintText: 'Enter the Price with Delivery',
                                       hintStyle: TextStyle(fontSize: 14.0),
@@ -1271,6 +1410,7 @@ class _UploadMaterialState extends State<UploadMaterial> {
                                       left: width * 0.04,
                                       bottom: width * 0.02),
                                   child: TextField(
+                                    controller: _priceOutcity,
                                     decoration: InputDecoration(
                                       hintText: 'Enter the Price with Delivery',
                                       hintStyle: TextStyle(fontSize: 14.0),

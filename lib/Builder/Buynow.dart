@@ -24,7 +24,7 @@ class _BuyNowState extends State<BuyNow> {
   String? useremail = FirebaseAuth.instance.currentUser?.email;
   List<QueryDocumentSnapshot> deliverySnapshots = [];
   int selectedIndex = 0;
-  bool _isChecked = true;
+  bool _isChecked = false;
   String location = "";
   String city = "";
   String state = "";
@@ -42,6 +42,12 @@ class _BuyNowState extends State<BuyNow> {
   List<String> _durationvalues = [];
   List<String> _timeperiodvalues = ["Hour", "Day", "Week", "Month"];
   Position? _currentUserPosition;
+  double distanceInMeters = 0;
+  double distanceInKilometers = 0;
+  int deliveryCharges = 0;
+  int inorout = 0;
+  late bool deliveryavailable;
+  late bool deliveryoutsidecity;
   Future<void> order() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     DocumentReference projectRef = firestore
@@ -174,11 +180,28 @@ class _BuyNowState extends State<BuyNow> {
     }
     _currentUserPosition = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high);
+    double userLatitude = _currentUserPosition!.latitude;
+    double userLongitude = _currentUserPosition!.longitude;
+    double givenLatitude = widget.data['latitude'];
+    double givenLongitude = widget.data['longitude'];
+
+    distanceInMeters = await Geolocator.distanceBetween(
+        userLatitude, userLongitude, givenLatitude, givenLongitude);
+    distanceInKilometers = distanceInMeters / 1000;
+    print(distanceInKilometers);
+    if (distanceInKilometers < 10) {
+      inorout = 0;
+    } else {
+      inorout = 1;
+    }
   }
 
   void initState() {
     super.initState();
     getDeliveryAddress();
+    if (widget.type == 'material') {
+      _getTheDistance();
+    }
     if (widget.type == "material") {
       for (int i = 1; i <= int.parse(widget.data['available_quantity']); i++) {
         _quantityValues.add(i.toString());
@@ -248,10 +271,63 @@ class _BuyNowState extends State<BuyNow> {
       setState(() {
         total = int.parse(widget.data['Price_per']);
         total = total * int.parse(quantity);
+        deliveryCharges = 0;
         total += (total * 0.05).toInt();
         discount = (total * 0.1).toInt();
       });
     }
+  }
+
+  void CalculateDeliveryCharges() {
+    setState(() {
+      if (widget.data.containsKey('delivery_inside_city') == false &&
+          widget.data.containsKey('delivery_outside_city') == false) {
+        deliveryavailable = false;
+        deliveryoutsidecity = false;
+      }
+      if (widget.data.containsKey('delivery_inside_city') &&
+          widget.data.containsKey('delivery_outside_city') == false) {
+        deliveryavailable = true;
+        deliveryoutsidecity = false;
+        if (inorout == 0) {
+          deliveryCharges = int.parse(widget.data['delivery_inside_city']) -
+              int.parse(widget.data['Price_per']);
+          deliveryCharges = deliveryCharges * int.parse(quantity);
+          total = int.parse(widget.data['delivery_inside_city']);
+          total = total * int.parse(quantity);
+          total += (total * 0.05).toInt();
+          discount = (total * 0.1).toInt();
+        }
+        if (inorout == 1) {
+          ErrorWidget(
+            "Delivery not available outside city",
+          );
+        }
+      }
+      if (widget.data.containsKey('delivery_outside_city') &&
+          widget.data.containsKey('delivery_inside_city')) {
+        deliveryavailable = true;
+        deliveryoutsidecity = true;
+        if (inorout == 1) {
+          total = int.parse(widget.data['Price_per']);
+          deliveryCharges = int.parse(widget.data['delivery_outside_city']);
+          deliveryCharges *= distanceInKilometers.toInt();
+          total += deliveryCharges;
+          total = total * int.parse(quantity);
+          total += (total * 0.05).toInt();
+          discount = (total * 0.1).toInt();
+        }
+        if (inorout == 0) {
+          total = int.parse(widget.data['delivery_inside_city']);
+          deliveryCharges = int.parse(widget.data['delivery_inside_city']) -
+              int.parse(widget.data['Price_per']);
+          deliveryCharges = deliveryCharges * int.parse(quantity);
+          total = total * int.parse(quantity);
+          total += (total * 0.05).toInt();
+          discount = (total * 0.1).toInt();
+        }
+      }
+    });
   }
 
   Future<void> getDeliveryAddress() async {
@@ -1408,6 +1484,9 @@ class _BuyNowState extends State<BuyNow> {
                           onChanged: (bool? newValue) {
                             setState(() {
                               _isChecked = newValue ?? false;
+                              _isChecked
+                                  ? CalculateDeliveryCharges()
+                                  : assignvalues();
                             });
                           },
                         ),
@@ -1445,7 +1524,9 @@ class _BuyNowState extends State<BuyNow> {
                       children: [
                         Text("Delivery Charges"),
                         Spacer(),
-                        Text("Free")
+                        Text(deliveryCharges == 0
+                            ? "Free"
+                            : "₹ $deliveryCharges")
                       ],
                     ),
                     Divider(),
