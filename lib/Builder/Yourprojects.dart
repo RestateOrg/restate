@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:restate/Builder/projectinfo.dart';
 
 class YourProjects extends StatefulWidget {
   const YourProjects({super.key});
@@ -192,25 +193,25 @@ class _YourProjectsState extends State<YourProjects> {
                                     ),
                                     Flexible(
                                       child: Align(
-                                        alignment: AlignmentDirectional(1, 0),
-                                        child: InkWell(
-                                          onTap: () {},
-                                          child: Icon(
-                                            Icons.edit,
-                                            size: 20,
-                                          ),
+                                        alignment: Alignment.centerRight,
+                                        child: Padding(
+                                          padding: EdgeInsets.only(
+                                              top: width * 0.015,
+                                              left: width * 0.02),
+                                          child: InkWell(
+                                              onTap: () {
+                                                Navigator.push(context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) {
+                                                  return ProjectInfo(
+                                                    data: snapshot.data()
+                                                        as Map<String, dynamic>,
+                                                  );
+                                                }));
+                                              },
+                                              child:
+                                                  Icon(Icons.info, size: 20)),
                                         ),
-                                      ),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.centerRight,
-                                      child: Padding(
-                                        padding: EdgeInsets.only(
-                                            top: width * 0.015,
-                                            left: width * 0.02),
-                                        child: InkWell(
-                                            onTap: () {},
-                                            child: Icon(Icons.info, size: 20)),
                                       ),
                                     ),
                                     Align(
