@@ -116,7 +116,7 @@ class _YourRevenueState extends State<YourRevenue> {
                       ),
                       Spacer(),
                       Text(
-                        ' ₹${revenue / orders.length}',
+                        ' ₹${revenue ~/ orders.length}',
                         style: TextStyle(
                           fontSize: 20,
                           color: Colors.green,

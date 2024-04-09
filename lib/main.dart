@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:restate/Builder/builderHome.dart';
@@ -12,7 +14,27 @@ import 'package:restate/screens/home.dart';
 import 'package:restate/screens/signIn.dart';
 import 'package:go_router/go_router.dart';
 
-void main() {
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
+  //await Firebase.initializeApp();
+
+  print("Handling a background message: ${message.messageId}");
+}
+
+late String? fcmToken;
+final navigatorKey = GlobalKey<NavigatorState>();
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await FirebaseMessaging.instance.setAutoInitEnabled(true);
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print('Got a message whilst in the foreground!');
+    print('Message data: ${message.data}');
+  });
+  fcmToken = await FirebaseMessaging.instance.getToken();
   runApp(const MyApp());
 }
 
@@ -31,7 +53,11 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const Begin(),
+      navigatorKey: navigatorKey,
       routes: {
+        MachinaryHomeScreen.route: (context) => const MachinaryHomeScreen(
+              initialSelectedIndex: 1,
+            ),
         '/Getstarted/': (context) => const GetStarted(),
         '/login/': (context) => const LoginView(),
         '/ChooseUser/': (context) => const ChooseUser(),
@@ -86,6 +112,17 @@ class _BeginState extends State<Begin> {
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
     }
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    NotificationSettings settings = await messaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
   }
 
   Future<void> checkUserAndNavigate() async {
@@ -95,6 +132,21 @@ class _BeginState extends State<Begin> {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
       final email = user.email;
+      var token = await FirebaseFirestore.instance
+          .collection('fcmTokens')
+          .doc(email)
+          .get();
+      if (token.exists) {
+        await FirebaseFirestore.instance
+            .collection('fcmTokens')
+            .doc(email)
+            .update({'token': fcmToken});
+      } else {
+        await FirebaseFirestore.instance
+            .collection('fcmTokens')
+            .doc(email)
+            .set({'token': fcmToken});
+      }
       final userRole = await UserRole.getUserRole(email!);
       if (userRole == 'Builder') {
         Navigator.pushReplacement(

@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
   <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <application
+        android:enableOnBackInvokedCallback="true"
         android:label="Restate"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
@@ -42,6 +43,12 @@
                 <data android:host="49a14df5-e181-438d-81aa-e5f3e5.godaddysites.com"/>
             </intent-filter>
         </activity>
+        <meta-data
+    android:name="firebase_messaging_auto_init_enabled"
+    android:value="false" />
+<meta-data
+    android:name="firebase_analytics_collection_enabled"
+    android:value="false" />
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

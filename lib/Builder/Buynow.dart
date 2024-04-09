@@ -1,5 +1,6 @@
 import 'dart:math';
-
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -37,6 +38,7 @@ class _BuyNowState extends State<BuyNow> {
   int total = 0;
   int discount = 0;
   bool isLoading = false;
+  late String fcm;
   final firestore = FirebaseFirestore.instance;
   List<String> _quantityValues = [];
   List<String> _durationvalues = [];
@@ -145,6 +147,59 @@ class _BuyNowState extends State<BuyNow> {
         'order_date': DateTime.now(),
       });
     }
+    await sendNotificationToSeller(fcm);
+    await notifications();
+  }
+
+  Future<void> notifications() async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    if (widget.type == 'machinery') {
+      DocumentReference projectRef = firestore
+          .collection('machinery')
+          .doc(widget.data['useremail'])
+          .collection('Notifications')
+          .doc();
+      projectRef.set({
+        'notification title': "New Order Received",
+        'notification': "You have Received Order from $name",
+        'timestamp': DateTime.now(),
+      });
+    } else {
+      DocumentReference projectRef = firestore
+          .collection('materials')
+          .doc(widget.data['useremail'])
+          .collection('Notifications')
+          .doc();
+      projectRef.set({
+        'notification title': "New Order Received",
+        'notification': "You have Received Order from $name",
+        'timestamp': DateTime.now(),
+      });
+    }
+  }
+
+  Future<void> sendNotificationToSeller(String sellerToken) async {
+    final url = Uri.parse('https://fcm.googleapis.com/fcm/send');
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization':
+          'key=AAAAAXgFwBw:APA91bGwgMQf4NheYj-SfYBLTWxiUA00k7RgPzC4sRzjMTpH-Yhyvx1ni_v1RHYnyy4XxB3iX1IpB2DUV18DU_tfDypKtF6Prw3RnKUzha4IHGsI6dyuNdCpUv9r8GfbsKgp58KDD-yN', // Replace with your Firebase server key
+    };
+    final payload = {
+      'notification': {
+        'title': 'New Order Received',
+        'body': 'A new order has been placed by a user.',
+      },
+      'to': sellerToken,
+    };
+
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(payload));
+    if (response.statusCode == 200) {
+      print('Notification sent successfully');
+    } else {
+      print('Failed to send notification. Status code: ${response.statusCode}');
+    }
   }
 
   Future _getTheDistance() async {
@@ -188,7 +243,6 @@ class _BuyNowState extends State<BuyNow> {
     distanceInMeters = await Geolocator.distanceBetween(
         userLatitude, userLongitude, givenLatitude, givenLongitude);
     distanceInKilometers = distanceInMeters / 1000;
-    print(distanceInKilometers);
     if (distanceInKilometers < 10) {
       inorout = 0;
     } else {
@@ -199,6 +253,17 @@ class _BuyNowState extends State<BuyNow> {
   void initState() {
     super.initState();
     getDeliveryAddress();
+    firestore
+        .collection('fcmTokens')
+        .doc(widget.data['useremail'])
+        .get()
+        .then((value) {
+      if (value.exists) {
+        setState(() {
+          fcm = value['token'];
+        });
+      }
+    });
     if (widget.type == 'material') {
       _getTheDistance();
     }
