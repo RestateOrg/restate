@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:restate/Machinery/BankDetails.dart';
 import 'package:restate/Machinery/Editdetails.dart';
 import 'package:restate/Machinery/help.dart';
 import 'package:restate/Machinery/machinery.dart';
@@ -20,6 +21,7 @@ class _MachineryProfileState extends State<MachineryProfile> {
   String? username;
   String? useremail = FirebaseAuth.instance.currentUser!.email;
   late DocumentReference userinfo;
+  late DocumentReference bankinfo;
   @override
   void initState() {
     getUsername();
@@ -28,7 +30,40 @@ class _MachineryProfileState extends State<MachineryProfile> {
         .doc(useremail)
         .collection('userinformation')
         .doc('userinfo');
+    _fetchbankDetails();
     super.initState();
+  }
+
+  Future<void> _fetchbankDetails() async {
+    var bankdetails = await FirebaseFirestore.instance
+        .collection('machinery')
+        .doc(useremail)
+        .collection('BankDetails')
+        .doc('bankinfo')
+        .get();
+    if (bankdetails.exists) {
+      setState(() {
+        bankinfo = FirebaseFirestore.instance
+            .collection('machinery')
+            .doc(useremail)
+            .collection('BankDetails')
+            .doc('bankinfo');
+      });
+    } else {
+      setState(() {
+        bankinfo = FirebaseFirestore.instance
+            .collection('machinery')
+            .doc(useremail)
+            .collection('BankDetails')
+            .doc('bankinfo');
+      });
+      await bankinfo.set({
+        'accountHolderName': '',
+        'accountNumber': '',
+        'ifscCode': '',
+        'bankName': '',
+      });
+    }
   }
 
   Future<String?> getUsername() async {
@@ -385,6 +420,59 @@ class _MachineryProfileState extends State<MachineryProfile> {
                             }));
                           },
                           child: FaIcon(FontAwesomeIcons.angleRight))),
+                ]),
+                Divider(
+                  color: Colors.black12,
+                  height: 20,
+                  thickness: 1,
+                  indent: 0,
+                  endIndent: 0,
+                ),
+                Row(children: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                        top: width * 0.02,
+                        left: width * 0.068,
+                        bottom: width * 0.02),
+                    child: FaIcon(
+                      FontAwesomeIcons.moneyBill,
+                      size: 20,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                        top: width * 0.02,
+                        left: width * 0.02,
+                        bottom: width * 0.02),
+                    child: InkWell(
+                      onTap: () async {
+                        DocumentSnapshot bank = await bankinfo.get();
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return BankDetails(snapshot: bank);
+                        }));
+                      },
+                      child: Text(
+                        'Bank Account Details',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: width * 0.04),
+                      ),
+                    ),
+                  ),
+                  Spacer(),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 23.0),
+                    child: InkWell(
+                        onTap: () async {
+                          DocumentSnapshot bank = await bankinfo.get();
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) {
+                            return BankDetails(snapshot: bank);
+                          }));
+                        },
+                        child: FaIcon(FontAwesomeIcons.angleRight)),
+                  ),
                 ]),
                 Divider(
                   color: Colors.black12,

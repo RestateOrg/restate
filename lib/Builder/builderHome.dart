@@ -49,41 +49,43 @@ class _BuilderHomeScreenState extends State<BuilderHomeScreen> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
-      floatingActionButton: Container(
-        width: 100,
-        child: FloatingActionButton(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(40.0),
-          ),
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => UploadProject()),
-            );
-          },
-          child: Row(
-            children: [
-              Padding(
-                padding: EdgeInsets.only(left: width * 0.05),
-                child: Icon(Icons.add),
+      floatingActionButton: _selectedIndex != 3
+          ? Container(
+              width: 100,
+              child: FloatingActionButton(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(40.0),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => UploadProject()),
+                  );
+                },
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(left: width * 0.05),
+                      child: Icon(Icons.add),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        left: width * 0.02,
+                      ),
+                      child: Text(
+                        "New",
+                        style: TextStyle(
+                          fontFamily: 'Roboto',
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                backgroundColor: HexColor('#242424'),
+                foregroundColor: Colors.white,
               ),
-              Padding(
-                padding: EdgeInsets.only(
-                  left: width * 0.02,
-                ),
-                child: Text(
-                  "New",
-                  style: TextStyle(
-                    fontFamily: 'Roboto',
-                  ),
-                ),
-              )
-            ],
-          ),
-          backgroundColor: HexColor('#242424'),
-          foregroundColor: Colors.white,
-        ),
-      ),
+            )
+          : Container(),
       backgroundColor: Colors.amber,
       appBar: AppBar(
         backgroundColor: Colors.amber,

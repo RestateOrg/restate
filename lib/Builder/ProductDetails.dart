@@ -61,16 +61,33 @@ class _ProductDetailsState extends State<ProductDetails> {
           ),
         );
       } else {
-        await firestore
-            .collection('machinery')
-            .doc(useremail)
-            .collection('Cart')
-            .add(widget.data)
-            .then((value) {
-          setState(() {
-            isinCart = true;
+        if (widget.type == 'machinery') {
+          await firestore
+              .collection('builders')
+              .doc(useremail)
+              .collection('Cart')
+              .add({
+            ...widget.data,
+            'type': 'machinery',
+          }).then((value) {
+            setState(() {
+              isinCart = true;
+            });
           });
-        });
+        } else {
+          await firestore
+              .collection('builders')
+              .doc(useremail)
+              .collection('Cart')
+              .add({
+            ...widget.data,
+            'type': 'material',
+          }).then((value) {
+            setState(() {
+              isinCart = true;
+            });
+          });
+        }
         Fluttertoast.showToast(
           msg: 'Added to Cart',
           toastLength: Toast.LENGTH_SHORT,
