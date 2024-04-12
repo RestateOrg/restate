@@ -435,7 +435,7 @@ class _MachineryProfileState extends State<MachineryProfile> {
                         left: width * 0.068,
                         bottom: width * 0.02),
                     child: FaIcon(
-                      FontAwesomeIcons.moneyBill,
+                      FontAwesomeIcons.buildingColumns,
                       size: 20,
                     ),
                   ),

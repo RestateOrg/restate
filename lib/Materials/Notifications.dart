@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:restate/Builder/builderProfile.dart';
 
 class Notifications extends StatefulWidget {
   const Notifications({Key? key}) : super(key: key);
@@ -16,7 +14,6 @@ final useremail = FirebaseAuth.instance.currentUser?.email;
 class _NotificationsState extends State<Notifications> {
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Colors.amber,
       appBar: AppBar(
@@ -39,11 +36,6 @@ class _NotificationsState extends State<Notifications> {
             return ListView.builder(
               itemCount: snapshot.data!.length,
               itemBuilder: (BuildContext context, int index) {
-                // Access data from each DocumentSnapshot correctly
-                String title = snapshot.data![index]['notification title'];
-                String notification = snapshot.data![index]['notification'];
-
-                // Build your notification item widget here
                 return Container(
                   width: MediaQuery.of(context).size.width,
                   margin: EdgeInsets.all(10),

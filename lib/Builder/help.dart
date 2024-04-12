@@ -72,6 +72,36 @@ class _HelpSectionState extends State<HelpSection> {
                           "by clicking on the box icon in the navigation bar in the home screen you will be shown categories of materials available in our application. you can select your desired materials and buy it."),
                 ]),
             Divider(),
+            DropdownMenu(
+                label: Text("What if I miss my Restate order pickup ?"),
+                width: width * 0.95,
+                inputDecorationTheme: InputDecorationTheme(
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+                dropdownMenuEntries: const <DropdownMenuEntry>[
+                  DropdownMenuEntry(
+                      value: 1,
+                      label:
+                          "Do not worry, the delivery agent will try to pick up again on the next working day."),
+                ]),
+            Divider(),
+            DropdownMenu(
+                label: Text("I want to contact the seller?"),
+                width: width * 0.95,
+                inputDecorationTheme: InputDecorationTheme(
+                  border: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+                dropdownMenuEntries: const <DropdownMenuEntry>[
+                  DropdownMenuEntry(
+                      value: 1,
+                      label:
+                          "Restatebuild.com is a marketplace on which third-party sellers sell products to customers.To contact a seller, please send a letter with the below address on the envelope and include product page URL so it can be forwarded to the seller."),
+                ]),
+            Divider(),
           ],
         ));
   }

@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
@@ -28,9 +27,8 @@ class _MachineryOrdersState extends State<MachineryOrders> {
         FirebaseAuth.instance.currentUser?.email ?? ''; // Assign in initState
     collectionRef =
         firestore.collection('machinery').doc(useremail).collection('orders');
-    fetchData(); // Fetch data after initialization
+    fetchData();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Clear the image cache when the page is popped
       CachedNetworkImageProvider('', cacheManager: DefaultCacheManager())
           .evict();
     });

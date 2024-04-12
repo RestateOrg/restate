@@ -435,7 +435,7 @@ class _MaterialsProfileState extends State<MaterialsProfile> {
                         left: width * 0.068,
                         bottom: width * 0.02),
                     child: FaIcon(
-                      FontAwesomeIcons.pen,
+                      FontAwesomeIcons.buildingColumns,
                       size: 20,
                     ),
                   ),

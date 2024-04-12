@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:restate/Machinery/Notifications.dart';
 import 'package:restate/Machinery/Upload_machinery.dart';
 import 'package:restate/Machinery/machineryProfile.dart';
 import 'package:restate/Machinery/machineryhome.dart';
