@@ -92,7 +92,6 @@ class _UploadProjectState extends State<UploadProject> {
           _fromdate.text.isEmpty ||
           _todate.text.isEmpty ||
           _duration.text.isEmpty ||
-          _pricewilling.text.isEmpty ||
           _quantity.text.isEmpty ||
           _deliverydate.text.isEmpty ||
           _image == null) {

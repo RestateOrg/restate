@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:restate/Builder/Searchpage.dart';
 import 'package:restate/Builder/Searchresults.dart';
 
 // ignore: must_be_immutable, camel_case_types
@@ -72,9 +73,10 @@ class Choose_Materials_Catagories extends StatelessWidget {
                       Expanded(
                         child: Container(
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                            color: const Color.fromARGB(255, 214, 214, 214),
+                            borderRadius: BorderRadius.all(Radius.circular(90)),
                             border: Border.all(
-                              color: Colors.amber,
+                              color: Colors.white,
                               width: 2.0,
                             ),
                           ),
@@ -316,18 +318,16 @@ class _BuilderMaterialsState extends State<BuilderMaterials> {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     return Scaffold(
-      backgroundColor: Colors.amber,
+      backgroundColor: Colors.white,
       body: Column(
         children: [
-          Padding(
-            padding: EdgeInsets.only(left: width * 0.047, top: width * 0.02),
-            child: Container(
-              width: width * 0.92,
-              child: CupertinoSearchTextField(
-                backgroundColor: Colors.white,
-                borderRadius: BorderRadius.circular(30),
-                padding: EdgeInsets.all(10),
-              ),
+          Container(
+            color: Colors.amber,
+            width: width,
+            child: Padding(
+              padding:
+                  const EdgeInsets.only(bottom: 8.0, left: 8.0, right: 8.0),
+              child: searchWidget(width, context),
             ),
           ),
           Expanded(
@@ -340,7 +340,7 @@ class _BuilderMaterialsState extends State<BuilderMaterials> {
                     child: Container(
                         width: width * 0.20,
                         decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 224, 169, 2),
+                          color: Color.fromARGB(55, 253, 198, 0),
                           borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(10),
                             topRight: Radius.circular(10),
@@ -377,11 +377,11 @@ class _BuilderMaterialsState extends State<BuilderMaterials> {
                                             width: 60,
                                             height: 60,
                                             decoration: BoxDecoration(
-                                              color: Colors.amber,
+                                              color: Colors.white,
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(50)),
                                               border: Border.all(
-                                                color: Colors.amber,
+                                                color: Colors.white,
                                                 width: 2.0,
                                               ),
                                             ),
@@ -435,7 +435,7 @@ class _BuilderMaterialsState extends State<BuilderMaterials> {
                       width: width * 0.77,
                       height: height,
                       decoration: BoxDecoration(
-                          color: Colors.amber,
+                          color: Colors.white,
                           borderRadius: BorderRadius.all(Radius.circular(30))),
                       child: choice != -1
                           ? choice == 0
@@ -496,6 +496,40 @@ class _BuilderMaterialsState extends State<BuilderMaterials> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  GestureDetector searchWidget(double width, BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          PageRouteBuilder(
+            transitionDuration: Duration(milliseconds: 200),
+            pageBuilder: (_, __, ___) => SearchPage(),
+            transitionsBuilder: (_, animation, __, child) {
+              return FadeTransition(opacity: animation, child: child);
+            },
+          ),
+        );
+      },
+      child: Container(
+        width: width * 0.92,
+        height: 40,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(30),
+        ),
+        child: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Icon(Icons.search, color: Colors.grey),
+            ),
+            Text('Search', style: TextStyle(color: Colors.grey)),
+          ],
+        ),
       ),
     );
   }

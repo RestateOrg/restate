@@ -147,7 +147,7 @@ class _BuilderHomeScreenState extends State<BuilderHomeScreen> {
       ),
       body: PageView(
         controller: _pageController,
-        physics: NeverScrollableScrollPhysics(),
+        physics: AlwaysScrollableScrollPhysics(),
         onPageChanged: (index) {
           handleNavigation(index);
         },
