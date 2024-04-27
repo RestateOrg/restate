@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:restate/Machinery/ProjectDetails.dart';
 import 'package:restate/Machinery/Searchpage.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:restate/Machinery/productinfo.dart';
@@ -93,137 +94,151 @@ class _MachineryHomeState extends State<MachineryHome> {
                                     scrollDirection: Axis.horizontal,
                                     itemCount: min(5, project.length),
                                     itemBuilder: (context, index) {
-                                      return Card(
-                                        margin: EdgeInsets.all(8),
-                                        clipBehavior: Clip.antiAlias,
-                                        elevation: 2,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                        ),
-                                        child: SizedBox(
-                                          width: 150,
-                                          child: Column(
-                                            children: [
-                                              Container(
-                                                height:
-                                                    constraints.maxHeight * 0.6,
-                                                width: constraints.maxWidth,
-                                                child: ClipRRect(
-                                                  child: CachedNetworkImage(
-                                                    imageUrl:
-                                                        (project[index].data()
-                                                                as Map<String,
-                                                                    dynamic>)[
-                                                            'imageURl'],
-                                                    fit: BoxFit.cover,
-                                                    placeholder: (context,
-                                                            url) =>
-                                                        Center(
-                                                            child:
-                                                                CircularProgressIndicator()),
-                                                    errorWidget:
-                                                        (context, url, error) =>
-                                                            Icon(Icons.error),
-                                                  ),
-                                                ),
-                                              ),
-                                              Align(
-                                                alignment: Alignment.centerLeft,
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 8.0),
-                                                  child: Text(
-                                                    (project[index].data()
-                                                                        as Map<String, dynamic>)[
-                                                                    'projectname']
-                                                                .toString()
-                                                                .length >
-                                                            19
-                                                        ? (project[index].data()
-                                                                        as Map<String, dynamic>)[
-                                                                    'projectname']
-                                                                .toString()
-                                                                .substring(
-                                                                    0, 17) +
-                                                            '...'
-                                                        : (project[index].data()
-                                                                as Map<String, dynamic>)[
-                                                            'projectname'],
-                                                    style: TextStyle(
-                                                        fontSize: 16,
-                                                        fontFamily: 'Roboto',
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                ),
-                                              ),
-                                              (project[index].data() as Map<
-                                                                  String,
-                                                                  dynamic>)[
-                                                              'project requirements']
-                                                          .length ==
-                                                      0
-                                                  ? Align(
-                                                      alignment:
-                                                          Alignment.centerLeft,
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                                left: 8.0),
-                                                        child: Container(
-                                                          width: constraints
-                                                              .maxWidth,
-                                                          child: Text(
-                                                            'No requirements',
-                                                            style: TextStyle(
-                                                                fontSize: 14,
-                                                                fontFamily:
-                                                                    'Roboto',
-                                                                color: Colors
-                                                                    .grey),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    )
-                                                  : Align(
-                                                      alignment:
-                                                          Alignment.centerLeft,
-                                                      child: Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(
-                                                                left: 8.0),
-                                                        child: Container(
-                                                          width: constraints
-                                                              .maxWidth,
-                                                          child: Text(
-                                                            "${(project[index].data() as Map<String, dynamic>)['project requirements'][0]['Item Name']} + ${(project[index].data() as Map<String, dynamic>)['project requirements'].length - 1} more items"
-                                                                        .length >
-                                                                    35
-                                                                ? "${(project[index].data() as Map<String, dynamic>)['project requirements'][0]['Item Name']} + ${(project[index].data() as Map<String, dynamic>)['project requirements'].length - 1} more items"
-                                                                        .substring(
-                                                                            0,
-                                                                            32) +
-                                                                    '...'
-                                                                : (project[index].data() as Map<String, dynamic>)['project requirements'].length -
-                                                                            1 ==
-                                                                        0
-                                                                    ? "${(project[index].data() as Map<String, dynamic>)['project requirements'][0]['Item Name']}"
-                                                                    : "${(project[index].data() as Map<String, dynamic>)['project requirements'][0]['Item Name']} + ${(project[index].data() as Map<String, dynamic>)['project requirements'].length - 1} more items",
-                                                            style: TextStyle(
-                                                                fontSize: 14,
-                                                                fontFamily:
-                                                                    'Roboto',
-                                                                color: Colors
-                                                                    .grey),
-                                                          ),
-                                                        ),
-                                                      ),
+                                      return GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ProjectDetails(
+                                                          data: project[index]
+                                                                  .data()
+                                                              as Map<String,
+                                                                  dynamic>)));
+                                        },
+                                        child: Card(
+                                          margin: EdgeInsets.all(8),
+                                          clipBehavior: Clip.antiAlias,
+                                          elevation: 2,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                          ),
+                                          child: SizedBox(
+                                            width: 150,
+                                            child: Column(
+                                              children: [
+                                                Container(
+                                                  height:
+                                                      constraints.maxHeight *
+                                                          0.6,
+                                                  width: constraints.maxWidth,
+                                                  child: ClipRRect(
+                                                    child: CachedNetworkImage(
+                                                      imageUrl:
+                                                          (project[index].data()
+                                                                  as Map<String,
+                                                                      dynamic>)[
+                                                              'imageURl'],
+                                                      fit: BoxFit.cover,
+                                                      placeholder: (context,
+                                                              url) =>
+                                                          Center(
+                                                              child:
+                                                                  CircularProgressIndicator()),
+                                                      errorWidget: (context,
+                                                              url, error) =>
+                                                          Icon(Icons.error),
                                                     ),
-                                            ],
+                                                  ),
+                                                ),
+                                                Align(
+                                                  alignment:
+                                                      Alignment.centerLeft,
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            left: 8.0),
+                                                    child: Text(
+                                                      (project[index].data() as Map<String, dynamic>)[
+                                                                      'projectname']
+                                                                  .toString()
+                                                                  .length >
+                                                              19
+                                                          ? (project[index].data() as Map<String, dynamic>)[
+                                                                      'projectname']
+                                                                  .toString()
+                                                                  .substring(
+                                                                      0, 17) +
+                                                              '...'
+                                                          : (project[index].data()
+                                                                  as Map<String,
+                                                                      dynamic>)[
+                                                              'projectname'],
+                                                      style: TextStyle(
+                                                          fontSize: 16,
+                                                          fontFamily: 'Roboto',
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                  ),
+                                                ),
+                                                (project[index].data() as Map<
+                                                                    String,
+                                                                    dynamic>)[
+                                                                'project requirements']
+                                                            .length ==
+                                                        0
+                                                    ? Align(
+                                                        alignment: Alignment
+                                                            .centerLeft,
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .only(
+                                                                  left: 8.0),
+                                                          child: Container(
+                                                            width: constraints
+                                                                .maxWidth,
+                                                            child: Text(
+                                                              'No requirements',
+                                                              style: TextStyle(
+                                                                  fontSize: 14,
+                                                                  fontFamily:
+                                                                      'Roboto',
+                                                                  color: Colors
+                                                                      .grey),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      )
+                                                    : Align(
+                                                        alignment: Alignment
+                                                            .centerLeft,
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .only(
+                                                                  left: 8.0),
+                                                          child: Container(
+                                                            width: constraints
+                                                                .maxWidth,
+                                                            child: Text(
+                                                              "${(project[index].data() as Map<String, dynamic>)['project requirements'][0]['Item Name']} + ${(project[index].data() as Map<String, dynamic>)['project requirements'].length - 1} more items"
+                                                                          .length >
+                                                                      35
+                                                                  ? "${(project[index].data() as Map<String, dynamic>)['project requirements'][0]['Item Name']} + ${(project[index].data() as Map<String, dynamic>)['project requirements'].length - 1} more items"
+                                                                          .substring(
+                                                                              0,
+                                                                              32) +
+                                                                      '...'
+                                                                  : (project[index].data() as Map<String, dynamic>)['project requirements'].length -
+                                                                              1 ==
+                                                                          0
+                                                                      ? "${(project[index].data() as Map<String, dynamic>)['project requirements'][0]['Item Name']}"
+                                                                      : "${(project[index].data() as Map<String, dynamic>)['project requirements'][0]['Item Name']} + ${(project[index].data() as Map<String, dynamic>)['project requirements'].length - 1} more items",
+                                                              style: TextStyle(
+                                                                  fontSize: 14,
+                                                                  fontFamily:
+                                                                      'Roboto',
+                                                                  color: Colors
+                                                                      .grey),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       );

@@ -65,7 +65,7 @@ class _ProjectDetailsState extends State<ProjectDetails> {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     DocumentReference projectRef = firestore
         .collection('builders')
-        .doc(widget.data['useremail'])
+        .doc(widget.data['email'])
         .collection('Notifications')
         .doc();
     projectRef.set({
