@@ -75,7 +75,8 @@ class _BuyNowState extends State<BuyNow> {
         'city': city,
         'state': state,
         'name': name,
-        'status': 'Pending',
+        'rating given': false,
+        'status': 'Order Not Yet Accepted',
         'useremail': useremail,
         'order_name': name,
         'order_id': projectRef.id,
@@ -120,7 +121,8 @@ class _BuyNowState extends State<BuyNow> {
         'city': city,
         'state': state,
         'name': name,
-        'status': 'Pending',
+        'rating given': false,
+        'status': 'Order Not Yet Accepted',
         'useremail': useremail,
         'order_name': name,
         'order_id': projectRef.id,
@@ -160,7 +162,7 @@ class _BuyNowState extends State<BuyNow> {
           .collection('Notifications')
           .doc();
       projectRef.set({
-        'notification title': "New Order Received",
+        'notification title': "New Order Request Received",
         'notification': "You have Received Order from $name",
         'timestamp': DateTime.now(),
       });
@@ -171,7 +173,7 @@ class _BuyNowState extends State<BuyNow> {
           .collection('Notifications')
           .doc();
       projectRef.set({
-        'notification title': "New Order Received",
+        'notification title': "New Order Request Received",
         'notification': "You have Received Order from $name",
         'timestamp': DateTime.now(),
       });

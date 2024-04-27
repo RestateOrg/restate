@@ -10,8 +10,9 @@ class MaterialStats extends StatefulWidget {
 class _MaterialStatsState extends State<MaterialStats> {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text("Coming Soon!"),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(child: Text("Coming Soon")),
     );
   }
 }

@@ -1355,7 +1355,7 @@ class _BuilderCartState extends State<BuilderCart> {
                             left: 20.0, right: 20, bottom: 8),
                         child: Row(
                           children: [
-                            Text("You will save ₹100 on this order",
+                            Text("You will save ₹ $totaldiscount on this order",
                                 style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold,

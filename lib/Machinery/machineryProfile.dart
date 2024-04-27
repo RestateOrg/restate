@@ -151,46 +151,32 @@ class _MachineryProfileState extends State<MachineryProfile> {
                         ),
                       ),
                       Flexible(
-                        child: Align(
-                          alignment: AlignmentDirectional(1, 0),
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                                top: width * 0.1, left: width * 0.02),
-                            child: Column(
-                              children: [
-                                Icon(Icons.settings),
-                                Text(
-                                  'Settings',
-                                  style: TextStyle(fontSize: 7),
-                                )
-                              ],
-                            ),
+                          child: Align(
+                        alignment: AlignmentDirectional(1, 0),
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                              top: width * 0.1,
+                              left: width * 0.02,
+                              right: width * 0.02),
+                          child: Column(
+                            children: [
+                              GestureDetector(
+                                onTap: () async {
+                                  await handleSignOut(context);
+                                },
+                                child: FaIcon(
+                                  FontAwesomeIcons.doorOpen,
+                                  size: 22,
+                                ),
+                              ),
+                              Text(
+                                'Logout',
+                                style: TextStyle(fontSize: 7),
+                              )
+                            ],
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: width * 0.1,
-                            left: width * 0.02,
-                            right: width * 0.02),
-                        child: Column(
-                          children: [
-                            GestureDetector(
-                              onTap: () async {
-                                await handleSignOut(context);
-                              },
-                              child: FaIcon(
-                                FontAwesomeIcons.doorOpen,
-                                size: 22,
-                              ),
-                            ),
-                            Text(
-                              'Logout',
-                              style: TextStyle(fontSize: 7),
-                            )
-                          ],
-                        ),
-                      ),
+                      ))
                     ],
                   ),
                   Column(

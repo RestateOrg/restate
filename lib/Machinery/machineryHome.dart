@@ -45,8 +45,8 @@ class _MachineryHomeState extends State<MachineryHome> {
                 )),
           ),
           Expanded(
-            child: FutureBuilder<List<DocumentSnapshot>>(
-              future: fetchCategories(), // Your Future<List<String>> function
+            child: StreamBuilder<List<DocumentSnapshot>>(
+              stream: fetchCategories().asStream(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());

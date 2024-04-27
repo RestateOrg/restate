@@ -120,6 +120,8 @@ class _UploadProjectState extends State<UploadProject> {
         'state': locationInfo?['state'],
         'country': locationInfo?['country'],
         'zipCode': _zipCode.text,
+        'status': 'ongoing',
+        'timestamp': DateTime.now(),
         'siteconditions': _siteconditions.text,
         'deliveryandpickup': _deliveryandpickup.text,
         'imageURl': imageurl,
@@ -172,6 +174,8 @@ class _UploadProjectState extends State<UploadProject> {
         'state': locationInfo?['state'],
         'country': locationInfo?['country'],
         'zipCode': _zipCode.text,
+        'status': 'ongoing',
+        'timestamp': DateTime.now(),
         'siteconditions': _siteconditions.text,
         'deliveryandpickup': _deliveryandpickup.text,
         'email': useremail,
@@ -530,7 +534,7 @@ class _UploadProjectState extends State<UploadProject> {
                           projecttype = newValue!;
                         });
                       },
-                      items: <String>['Commercial', 'Residental', 'Other']
+                      items: <String>['Commercial', 'Residential', 'Other']
                           .map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,

@@ -483,7 +483,7 @@ class _MainBuilderHomeState extends State<MainBuilderHome> {
                     width: width,
                     height: width * 0.7,
                     decoration: BoxDecoration(
-                      color: Color.fromRGBO(215, 174, 28, 0.258),
+                      color: Color.fromARGB(55, 253, 198, 0),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -491,6 +491,7 @@ class _MainBuilderHomeState extends State<MainBuilderHome> {
                         Padding(
                           padding: EdgeInsets.only(
                             left: width * 0.02,
+                            top: width * 0.02,
                           ),
                           child: Text(
                             'Machinery',

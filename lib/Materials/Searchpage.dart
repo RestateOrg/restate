@@ -28,7 +28,7 @@ class _SearchPageState extends State<SearchPage> {
 
   void getCity() {
     var userDocument = FirebaseFirestore.instance
-        .collection('machinery')
+        .collection('materials')
         .doc(_user?.email)
         .collection('userinformation')
         .doc('userinfo')

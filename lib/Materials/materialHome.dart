@@ -3,7 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:restate/Machinery/Searchpage.dart';
+import 'package:restate/Materials/Searchpage.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:restate/Materials/productinfo.dart';
 
@@ -31,15 +31,23 @@ class _MaterialHomeState extends State<MaterialHome> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
-        backgroundColor: Colors.amber,
+        backgroundColor: Colors.white,
         body: Column(children: [
           Align(
             alignment: Alignment.topCenter,
-            child: searchWidget(width, context),
+            child: Container(
+              width: width,
+              color: Colors.amber,
+              child: Padding(
+                  padding:
+                      const EdgeInsets.only(bottom: 8.0, left: 8, right: 8),
+                  child: searchWidget(width, context)),
+            ),
           ),
           Expanded(
-            child: FutureBuilder<List<DocumentSnapshot>>(
-              future: fetchCategories(), // Your Future<List<String>> function
+            child: StreamBuilder<List<DocumentSnapshot>>(
+              stream: fetchCategories()
+                  .asStream(), // Your Future<List<String>> function
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
@@ -225,203 +233,206 @@ class _MaterialHomeState extends State<MaterialHome> {
                                 },
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      'Your Orders',
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold),
+                            Container(
+                              color: Color.fromARGB(51, 255, 193, 7),
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            'Your Orders',
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Icon(
+                                            Icons.arrow_forward,
+                                            size: 20,
+                                          )
+                                        ],
+                                      ),
                                     ),
-                                    Icon(
-                                      Icons.arrow_forward,
-                                      size: 20,
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height:
-                                  210, // Dynamic height based on screen size
-                              child: LayoutBuilder(
-                                builder: (context, constraints) {
-                                  // Use constraints to adjust layout dynamically
-                                  return ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: min(5, yourorders.length),
-                                    itemBuilder: (context, index) {
-                                      return Card(
-                                        margin: EdgeInsets.all(8),
-                                        clipBehavior: Clip.antiAlias,
-                                        elevation: 2,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(5),
-                                        ),
-                                        child: SizedBox(
-                                          width: 150,
-                                          child: Column(
-                                            children: [
-                                              Container(
-                                                height:
-                                                    constraints.maxHeight * 0.6,
-                                                width: constraints.maxWidth,
-                                                child: ClipRRect(
-                                                  child: CachedNetworkImage(
-                                                    imageUrl: (yourorders[index]
-                                                                .data()
-                                                            as Map<String,
-                                                                dynamic>)[
-                                                        'projectimage'],
-                                                    fit: BoxFit.cover,
-                                                    placeholder: (context,
-                                                            url) =>
-                                                        Center(
-                                                            child:
-                                                                CircularProgressIndicator()),
-                                                    errorWidget:
-                                                        (context, url, error) =>
-                                                            Icon(Icons.error),
-                                                  ),
-                                                ),
+                                  ),
+                                  SizedBox(
+                                    height:
+                                        210, // Dynamic height based on screen size
+                                    child: LayoutBuilder(
+                                      builder: (context, constraints) {
+                                        // Use constraints to adjust layout dynamically
+                                        return ListView.builder(
+                                          scrollDirection: Axis.horizontal,
+                                          itemCount: min(5, yourorders.length),
+                                          itemBuilder: (context, index) {
+                                            return Card(
+                                              margin: EdgeInsets.all(8),
+                                              clipBehavior: Clip.antiAlias,
+                                              elevation: 2,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(5),
                                               ),
-                                              Align(
-                                                alignment: Alignment.centerLeft,
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 8.0),
-                                                  child: Text(
-                                                    (yourorders[index].data() as Map<String, dynamic>)[
-                                                                    'order_name']
-                                                                .toString()
-                                                                .length >
-                                                            19
-                                                        ? (yourorders[index].data() as Map<
-                                                                        String,
-                                                                        dynamic>)[
-                                                                    'order_name']
-                                                                .toString()
-                                                                .substring(
-                                                                    0, 17) +
-                                                            '...'
-                                                        : (yourorders[index].data()
-                                                            as Map<String,
-                                                                dynamic>)['order_name'],
-                                                    style: TextStyle(
-                                                        fontSize: 16,
-                                                        fontFamily: 'Roboto',
-                                                        fontWeight:
-                                                            FontWeight.bold),
-                                                  ),
-                                                ),
-                                              ),
-                                              Align(
-                                                alignment: Alignment.centerLeft,
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          left: 8.0, top: 5),
-                                                  child: Row(
-                                                    children: [
-                                                      Text(
-                                                        "Status:",
-                                                        style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontFamily:
-                                                                'Roboto',
-                                                            color: Colors.grey),
+                                              child: SizedBox(
+                                                width: 150,
+                                                child: Column(
+                                                  children: [
+                                                    Container(
+                                                      height: constraints
+                                                              .maxHeight *
+                                                          0.6,
+                                                      width:
+                                                          constraints.maxWidth,
+                                                      child: ClipRRect(
+                                                        child:
+                                                            CachedNetworkImage(
+                                                          imageUrl: (yourorders[
+                                                                          index]
+                                                                      .data()
+                                                                  as Map<String,
+                                                                      dynamic>)[
+                                                              'projectimage'],
+                                                          fit: BoxFit.cover,
+                                                          placeholder: (context,
+                                                                  url) =>
+                                                              Center(
+                                                                  child:
+                                                                      CircularProgressIndicator()),
+                                                          errorWidget: (context,
+                                                                  url, error) =>
+                                                              Icon(Icons.error),
+                                                        ),
                                                       ),
-                                                      Spacer(),
-                                                      Padding(
+                                                    ),
+                                                    Align(
+                                                      alignment:
+                                                          Alignment.centerLeft,
+                                                      child: Padding(
                                                         padding:
                                                             const EdgeInsets
                                                                 .only(
-                                                                right: 8.0),
-                                                        child: Container(
-                                                          decoration: BoxDecoration(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          10),
-                                                              color: Colors
-                                                                  .black12),
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .all(2.0),
-                                                            child: Row(
-                                                              children: [
-                                                                Container(
-                                                                  width: 7,
-                                                                  height: 7,
-                                                                  decoration: BoxDecoration(
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              10),
-                                                                      color: (yourorders[index].data() as Map<String, dynamic>)['status'] ==
-                                                                              'Completed'
-                                                                          ? Colors
-                                                                              .green
-                                                                          : Colors
-                                                                              .red),
-                                                                ),
-                                                                Padding(
+                                                                left: 8.0),
+                                                        child: Text(
+                                                          (yourorders[index].data() as Map<String, dynamic>)['order_name']
+                                                                      .toString()
+                                                                      .length >
+                                                                  19
+                                                              ? (yourorders[index].data()
+                                                                              as Map<String, dynamic>)[
+                                                                          'order_name']
+                                                                      .toString()
+                                                                      .substring(
+                                                                          0, 17) +
+                                                                  '...'
+                                                              : (yourorders[index]
+                                                                          .data()
+                                                                      as Map<
+                                                                          String,
+                                                                          dynamic>)[
+                                                                  'order_name'],
+                                                          style: TextStyle(
+                                                              fontSize: 16,
+                                                              fontFamily:
+                                                                  'Roboto',
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Align(
+                                                      alignment:
+                                                          Alignment.centerLeft,
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(
+                                                                left: 8.0,
+                                                                top: 5),
+                                                        child: Row(
+                                                          children: [
+                                                            Text(
+                                                              "Status:",
+                                                              style: TextStyle(
+                                                                  fontSize: 14,
+                                                                  fontFamily:
+                                                                      'Roboto',
+                                                                  color: Colors
+                                                                      .grey),
+                                                            ),
+                                                            Spacer(),
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .only(
+                                                                      right:
+                                                                          8.0),
+                                                              child: Container(
+                                                                decoration: BoxDecoration(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            10),
+                                                                    color: Colors
+                                                                        .black12),
+                                                                child: Padding(
                                                                   padding:
                                                                       const EdgeInsets
                                                                           .all(
                                                                           2.0),
-                                                                  child:
+                                                                  child: Row(
+                                                                    children: [
                                                                       Container(
-                                                                    child: Text(
-                                                                      (yourorders[index]
-                                                                              .data()
-                                                                          as Map<
-                                                                              String,
-                                                                              dynamic>)['status'],
-                                                                      style:
-                                                                          TextStyle(
-                                                                        fontSize:
-                                                                            10,
-                                                                        fontFamily:
-                                                                            'Roboto',
-                                                                        color: (yourorders[index].data() as Map<String, dynamic>)['status'] ==
-                                                                                'Completed'
-                                                                            ? const Color.fromARGB(
-                                                                                255,
-                                                                                11,
-                                                                                72,
-                                                                                13)
-                                                                            : const Color.fromARGB(
-                                                                                255,
-                                                                                131,
-                                                                                35,
-                                                                                28),
+                                                                        width:
+                                                                            7,
+                                                                        height:
+                                                                            7,
+                                                                        decoration: BoxDecoration(
+                                                                            borderRadius: BorderRadius.circular(
+                                                                                10),
+                                                                            color: (yourorders[index].data() as Map<String, dynamic>)['status'] == 'Completed'
+                                                                                ? Colors.green
+                                                                                : Colors.red),
                                                                       ),
-                                                                    ),
+                                                                      Padding(
+                                                                        padding: const EdgeInsets
+                                                                            .all(
+                                                                            2.0),
+                                                                        child:
+                                                                            Container(
+                                                                          child:
+                                                                              Text(
+                                                                            (yourorders[index].data()
+                                                                                as Map<String, dynamic>)['status'],
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontSize: 10,
+                                                                              fontFamily: 'Roboto',
+                                                                              color: (yourorders[index].data() as Map<String, dynamic>)['status'] == 'Completed' ? const Color.fromARGB(255, 11, 72, 13) : const Color.fromARGB(255, 131, 35, 28),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                    ],
                                                                   ),
                                                                 ),
-                                                              ],
+                                                              ),
                                                             ),
-                                                          ),
+                                                          ],
                                                         ),
                                                       ),
-                                                    ],
-                                                  ),
+                                                    ),
+                                                  ],
                                                 ),
                                               ),
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                  );
-                                },
+                                            );
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                             Padding(

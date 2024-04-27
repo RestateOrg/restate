@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:restate/Builder/Editdetails.dart';
 import 'package:restate/Builder/Yourprojects.dart';
 import 'package:restate/Builder/help.dart';
+import 'package:restate/Builder/orders.dart';
 import 'package:restate/Utils/hexcolor.dart';
 import 'package:restate/Utils/signOut.dart';
 
@@ -120,42 +121,29 @@ class _BuilderProfilesState extends State<BuilderProfiles> {
                           alignment: AlignmentDirectional(1, 0),
                           child: Padding(
                             padding: EdgeInsets.only(
-                                top: width * 0.1, left: width * 0.02),
+                                top: width * 0.1,
+                                left: width * 0.02,
+                                right: width * 0.02),
                             child: Column(
                               children: [
-                                Icon(Icons.settings),
+                                GestureDetector(
+                                  onTap: () async {
+                                    await handleSignOut(context);
+                                  },
+                                  child: FaIcon(
+                                    FontAwesomeIcons.doorOpen,
+                                    size: 23,
+                                  ),
+                                ),
                                 Text(
-                                  'Settings',
+                                  'Logout',
                                   style: TextStyle(fontSize: 7),
                                 )
                               ],
                             ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: width * 0.1,
-                            left: width * 0.02,
-                            right: width * 0.02),
-                        child: Column(
-                          children: [
-                            GestureDetector(
-                              onTap: () async {
-                                await handleSignOut(context);
-                              },
-                              child: FaIcon(
-                                FontAwesomeIcons.doorOpen,
-                                size: 23,
-                              ),
-                            ),
-                            Text(
-                              'Logout',
-                              style: TextStyle(fontSize: 7),
-                            )
-                          ],
-                        ),
-                      ),
+                      )
                     ],
                   ),
                   Column(
@@ -338,9 +326,17 @@ class _BuilderProfilesState extends State<BuilderProfiles> {
                         top: width * 0.02,
                         left: width * 0.068,
                         bottom: width * 0.02),
-                    child: FaIcon(
-                      FontAwesomeIcons.solidClock,
-                      size: 20,
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return Orders();
+                        }));
+                      },
+                      child: FaIcon(
+                        FontAwesomeIcons.solidClock,
+                        size: 20,
+                      ),
                     ),
                   ),
                   Padding(
@@ -348,10 +344,19 @@ class _BuilderProfilesState extends State<BuilderProfiles> {
                         top: width * 0.02,
                         left: width * 0.02,
                         bottom: width * 0.02),
-                    child: Text(
-                      'Order History',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: width * 0.04),
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.push(context,
+                            MaterialPageRoute(builder: (context) {
+                          return Orders();
+                        }));
+                      },
+                      child: Text(
+                        'Order History',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: width * 0.04),
+                      ),
                     ),
                   ),
                   Padding(
@@ -359,7 +364,14 @@ class _BuilderProfilesState extends State<BuilderProfiles> {
                           top: width * 0.02,
                           left: width * 0.52,
                           bottom: width * 0.02),
-                      child: FaIcon(FontAwesomeIcons.angleRight)),
+                      child: InkWell(
+                          onTap: () {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                              return Orders();
+                            }));
+                          },
+                          child: FaIcon(FontAwesomeIcons.angleRight))),
                 ]),
                 Divider(
                   color: Colors.black12,

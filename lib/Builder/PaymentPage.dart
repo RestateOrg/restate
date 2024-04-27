@@ -47,6 +47,7 @@ class PaymentPage extends StatefulWidget {
 
 class _PaymentPageState extends State<PaymentPage> {
   String? useremail = FirebaseAuth.instance.currentUser?.email;
+  bool isLoading = false;
   @override
   void initState() {
     print(widget.items);
@@ -81,9 +82,10 @@ class _PaymentPageState extends State<PaymentPage> {
           'projectimage': widget.projectimage,
           'city': widget.city,
           'state': widget.state,
-          'status': 'Pending',
+          'status': 'Order Not Yet Accepted',
           'useremail': useremail,
           'name': widget.name,
+          'rating given': false,
           'order_name': widget.name,
           'order_id': projectRef.id,
           'order_type': 'machinery',
@@ -127,7 +129,8 @@ class _PaymentPageState extends State<PaymentPage> {
           'city': widget.city,
           'state': widget.state,
           'name': widget.name,
-          'status': 'Pending',
+          'rating given': false,
+          'status': 'Order Not Yet Accepted',
           'useremail': useremail,
           'order_name': widget.name,
           'order_id': projectRef.id,
@@ -155,6 +158,18 @@ class _PaymentPageState extends State<PaymentPage> {
         });
       }
     }
+    await deleteCollection();
+  }
+
+  Future<void> deleteCollection() async {
+    final firestore = FirebaseFirestore.instance;
+    CollectionReference collectionRef =
+        firestore.collection('builders').doc(useremail).collection('Cart');
+    QuerySnapshot querySnapshot = await collectionRef.get();
+
+    for (DocumentSnapshot documentSnapshot in querySnapshot.docs) {
+      await documentSnapshot.reference.delete();
+    }
   }
 
   Widget build(BuildContext context) {
@@ -165,10 +180,23 @@ class _PaymentPageState extends State<PaymentPage> {
       ),
       bottomNavigationBar: GestureDetector(
         onTap: () async {
+          setState(() {
+            isLoading = true; // Add a boolean variable to track loading state
+          });
+
           await storedata();
-          Navigator.pop(context);
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => OrderComplete()));
+
+          setState(() {
+            isLoading = false;
+            Navigator.pop(
+                context); // Set loading state to false after order function is complete
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => OrderComplete(),
+              ),
+            );
+          });
         },
         child: Container(
           height: 70,

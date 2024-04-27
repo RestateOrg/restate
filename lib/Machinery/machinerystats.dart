@@ -10,8 +10,11 @@ class MachineryStats extends StatefulWidget {
 class _MachineryStatsState extends State<MachineryStats> {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text("Coming Soon..."),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Text("Coming Soon..."),
+      ),
     );
   }
 }
