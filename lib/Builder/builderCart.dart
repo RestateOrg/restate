@@ -7,6 +7,7 @@ import 'package:restate/Builder/PaymentPage.dart';
 import 'package:restate/Builder/Searchresults.dart';
 import 'package:restate/Builder/deliveryaddress.dart';
 import 'package:restate/Utils/hexcolor.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 class BuilderCart extends StatefulWidget {
   const BuilderCart({Key? key}) : super(key: key);
@@ -42,6 +43,12 @@ class _BuilderCartState extends State<BuilderCart> {
     super.initState();
     getDeliveryAddress();
     waittime();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    DefaultCacheManager().emptyCache();
   }
 
   void waittime() async {

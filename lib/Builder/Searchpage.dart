@@ -58,6 +58,7 @@ class _SearchPageState extends State<SearchPage> {
     }).then((value) {
       setState(() {
         items.addAll(machinery);
+        searchList = items;
       });
     }).catchError((error) {
       // Handle errors here
@@ -76,6 +77,7 @@ class _SearchPageState extends State<SearchPage> {
     }).then((value) {
       setState(() {
         items.addAll(materials);
+        searchList = items;
       });
     }).then((value) {
       FocusScope.of(context).requestFocus(_searchFocusNode);
@@ -108,7 +110,7 @@ class _SearchPageState extends State<SearchPage> {
               onChanged: (context) {
                 setState(() {
                   if (context.isEmpty) {
-                    searchList = [];
+                    searchList = items;
                   } else {
                     searchList = items
                         .where((element) => element

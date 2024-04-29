@@ -95,7 +95,6 @@ class _ProductInfoState extends State<ProductInfo> {
                             child: CachedNetworkImage(
                               imageUrl: widget.data['Images']
                                   [index % widget.data['Images'].length],
-                              fit: BoxFit.cover,
                             ),
                           );
                         },

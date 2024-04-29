@@ -125,6 +125,7 @@ class _MachineryHomeState extends State<MachineryHome> {
                                                   width: constraints.maxWidth,
                                                   child: ClipRRect(
                                                     child: CachedNetworkImage(
+                                                      key: UniqueKey(),
                                                       imageUrl:
                                                           (project[index].data()
                                                                   as Map<String,
@@ -302,6 +303,7 @@ class _MachineryHomeState extends State<MachineryHome> {
                                                       child: ClipRRect(
                                                         child:
                                                             CachedNetworkImage(
+                                                          key: UniqueKey(),
                                                           imageUrl: (yourorders[
                                                                           index]
                                                                       .data()
@@ -511,6 +513,7 @@ class _MachineryHomeState extends State<MachineryHome> {
                                                   width: constraints.maxWidth,
                                                   child: ClipRRect(
                                                     child: CachedNetworkImage(
+                                                      key: UniqueKey(),
                                                       imageUrl:
                                                           (inventory[index]
                                                                       .data()

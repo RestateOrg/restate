@@ -69,7 +69,7 @@ class _PaymentPageState extends State<PaymentPage> {
         DocumentReference machineryRef = firestore
             .collection('machinery')
             .doc(item['useremail'])
-            .collection('orders')
+            .collection('order requests')
             .doc();
         await projectRef.set({
           'product': item,
@@ -117,7 +117,7 @@ class _PaymentPageState extends State<PaymentPage> {
         DocumentReference materialRef = firestore
             .collection('materials')
             .doc(item['useremail'])
-            .collection('orders')
+            .collection('order requests')
             .doc();
         await projectRef.set({
           'product': item,

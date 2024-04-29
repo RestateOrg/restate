@@ -7,6 +7,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:restate/Builder/ProductDetails.dart';
 import 'package:restate/Builder/Searchpage.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:restate/Utils/find_Image_DImentions.dart';
 
 class MainBuilderHome extends StatefulWidget {
@@ -52,6 +53,7 @@ class _MainBuilderHomeState extends State<MainBuilderHome> {
   @override
   void dispose() {
     super.dispose();
+    DefaultCacheManager().emptyCache();
     timer.cancel();
   }
 

@@ -61,7 +61,7 @@ class _BuyNowState extends State<BuyNow> {
       DocumentReference machineryRef = firestore
           .collection('machinery')
           .doc(widget.data['useremail'])
-          .collection('orders')
+          .collection('order requests')
           .doc();
       await projectRef.set({
         'product': widget.data,
@@ -109,7 +109,7 @@ class _BuyNowState extends State<BuyNow> {
       DocumentReference materialRef = firestore
           .collection('materials')
           .doc(widget.data['useremail'])
-          .collection('orders')
+          .collection('order requests')
           .doc();
       await projectRef.set({
         'product': widget.data,
@@ -1615,14 +1615,6 @@ class _BuyNowState extends State<BuyNow> {
                       "You will save ₹ $discount on this order",
                       style: TextStyle(
                           color: Colors.green, fontWeight: FontWeight.bold),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 50),
-                      child: Text(
-                        "Total Amount: ₹ $total",
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
                     ),
                   ],
                 ),

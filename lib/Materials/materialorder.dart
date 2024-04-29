@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:restate/Materials/OrdersRequest.dart';
 
 class MaterialOrder extends StatefulWidget {
   @override
@@ -40,12 +41,72 @@ class _MaterialOrderState extends State<MaterialOrder> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: filteredSnapshots.isEmpty
-          ? Center(
-              child: Text(
-                'No Orders Found',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.black.withOpacity(0.5),
+          ? RefreshIndicator(
+              onRefresh: () async {
+                Future.delayed(delay, () {
+                  setState(() {
+                    collectionRef = firestore
+                        .collection('materials')
+                        .doc(useremail)
+                        .collection('orders');
+                    fetchData();
+                  });
+                });
+              },
+              child: SingleChildScrollView(
+                child: Container(
+                  height: MediaQuery.of(context).size.height,
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Align(
+                              alignment: Alignment.centerLeft,
+                              child: Padding(
+                                padding: EdgeInsets.only(left: width * 0.03),
+                                child: Text(
+                                  "Your Orders",
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              )),
+                          Flexible(
+                              child: Align(
+                                  alignment: AlignmentDirectional(0.9, 0),
+                                  child: InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  OrderRequest()));
+                                    },
+                                    child: Text(
+                                      "Requests",
+                                      style: TextStyle(
+                                          fontSize: 16, color: Colors.blue),
+                                    ),
+                                  )))
+                        ],
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 300.0),
+                        child: Center(
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              'No Orders Found',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.black.withOpacity(0.5),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             )
@@ -90,16 +151,36 @@ class _MaterialOrderState extends State<MaterialOrder> {
                     ),
                   ),
                 ),
-                Align(
-                    alignment: Alignment.centerLeft,
-                    child: Padding(
-                      padding: EdgeInsets.only(left: width * 0.03),
-                      child: Text(
-                        "Your Orders",
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                    )),
+                Row(
+                  children: [
+                    Align(
+                        alignment: Alignment.centerLeft,
+                        child: Padding(
+                          padding: EdgeInsets.only(left: width * 0.03),
+                          child: Text(
+                            "Your Orders",
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                        )),
+                    Flexible(
+                        child: Align(
+                            alignment: AlignmentDirectional(0.9, 0),
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => OrderRequest()));
+                              },
+                              child: Text(
+                                "Requests",
+                                style:
+                                    TextStyle(fontSize: 16, color: Colors.blue),
+                              ),
+                            )))
+                  ],
+                ),
                 Expanded(
                   child: RefreshIndicator(
                     onRefresh: () async {
@@ -154,6 +235,7 @@ class _MaterialOrderState extends State<MaterialOrder> {
                                       child: CachedNetworkImage(
                                         imageUrl: (snapshot.data() as Map<
                                             String, dynamic>)['projectimage'],
+                                        key: UniqueKey(),
                                         placeholder: (context, url) => Center(
                                           child: CircularProgressIndicator(
                                             valueColor: AlwaysStoppedAnimation<
@@ -168,7 +250,7 @@ class _MaterialOrderState extends State<MaterialOrder> {
                                               MainAxisAlignment.center,
                                           children: [
                                             Icon(Icons.error),
-                                            Text('Error loading image'),
+                                            Text("$error"),
                                           ],
                                         )),
                                       ),

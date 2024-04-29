@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:restate/Machinery/OrdersRequest.dart';
 
 class MachineryOrders extends StatefulWidget {
   const MachineryOrders({super.key});
@@ -79,15 +80,35 @@ class _MachineryOrdersState extends State<MachineryOrders> {
               ),
             ),
           ),
-          Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: EdgeInsets.only(left: width * 0.03),
-                child: Text(
-                  "Your Orders",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-              )),
+          Row(
+            children: [
+              Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: EdgeInsets.only(left: width * 0.03),
+                    child: Text(
+                      "Your Orders",
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                  )),
+              Flexible(
+                  child: Align(
+                      alignment: AlignmentDirectional(0.9, 0),
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => OrderRequest()));
+                        },
+                        child: Text(
+                          "Requests",
+                          style: TextStyle(fontSize: 16, color: Colors.blue),
+                        ),
+                      )))
+            ],
+          ),
           Expanded(
             child: RefreshIndicator(
               onRefresh: () async {
