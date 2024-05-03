@@ -57,7 +57,7 @@ class _SearchresultsState extends State<Searchresults> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor: Colors.amber,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: GestureDetector(
           onTap: () {

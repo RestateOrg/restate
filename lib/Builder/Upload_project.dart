@@ -291,7 +291,7 @@ class _UploadProjectState extends State<UploadProject> {
         ],
         backgroundColor: Colors.amber,
       ),
-      backgroundColor: Colors.amber,
+      backgroundColor: Colors.white,
       body: _isUploading
           ? Center(
               child: CircularProgressIndicator(),
@@ -307,7 +307,7 @@ class _UploadProjectState extends State<UploadProject> {
                         ),
                         child: Container(
                             decoration: BoxDecoration(
-                              color: HexColor('#F2F2F2'),
+                              color: Color.fromARGB(255, 255, 249, 222),
                               borderRadius: BorderRadius.circular(10.0),
                             ),
                             height: width * 0.78,
@@ -382,7 +382,7 @@ class _UploadProjectState extends State<UploadProject> {
                         ),
                         child: Container(
                             decoration: BoxDecoration(
-                              color: HexColor('#F2F2F2'),
+                              color: Color.fromARGB(255, 255, 249, 222),
                               borderRadius: BorderRadius.circular(10.0),
                             ),
                             height: width * 0.78,
@@ -808,7 +808,8 @@ class _UploadProjectState extends State<UploadProject> {
                               child: Container(
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(15),
-                                    color: Colors.white),
+                                    color: const Color.fromARGB(
+                                        255, 245, 245, 245)),
                                 width: 150,
                                 height: 40,
                                 child: Row(
@@ -818,7 +819,8 @@ class _UploadProjectState extends State<UploadProject> {
                                           borderRadius: BorderRadius.only(
                                               topLeft: Radius.circular(15),
                                               bottomLeft: Radius.circular(15)),
-                                          color: Colors.white),
+                                          color: const Color.fromARGB(
+                                              255, 245, 245, 245)),
                                       width: 120,
                                       height: 40,
                                       child: Padding(
@@ -860,7 +862,8 @@ class _UploadProjectState extends State<UploadProject> {
                               child: Container(
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(15),
-                                    color: Colors.white),
+                                    color: const Color.fromARGB(
+                                        255, 245, 245, 245)),
                                 width: 150,
                                 height: 40,
                                 child: Row(
@@ -870,7 +873,8 @@ class _UploadProjectState extends State<UploadProject> {
                                           borderRadius: BorderRadius.only(
                                               topLeft: Radius.circular(15),
                                               bottomLeft: Radius.circular(15)),
-                                          color: Colors.white),
+                                          color: const Color.fromARGB(
+                                              255, 245, 245, 245)),
                                       width: 120,
                                       height: 40,
                                       child: Padding(

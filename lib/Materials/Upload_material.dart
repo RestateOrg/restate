@@ -567,7 +567,7 @@ class _UploadMaterialState extends State<UploadMaterial> {
         ],
         backgroundColor: Colors.amber,
       ),
-      backgroundColor: Colors.amber,
+      backgroundColor: Colors.white,
       body: _isUploading
           ? Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
@@ -582,7 +582,7 @@ class _UploadMaterialState extends State<UploadMaterial> {
                           ),
                           child: Container(
                               decoration: BoxDecoration(
-                                color: HexColor('#F2F2F2'),
+                                color: Color.fromARGB(255, 255, 249, 222),
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                               height: width * 0.78,
@@ -670,7 +670,7 @@ class _UploadMaterialState extends State<UploadMaterial> {
                           ),
                           child: Container(
                               decoration: BoxDecoration(
-                                color: HexColor('#F2F2F2'),
+                                color: Color.fromARGB(255, 255, 249, 222),
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                               height: width * 0.78,

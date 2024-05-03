@@ -1,7 +1,10 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:restate/Builder/ordercomplete.dart';
+import 'package:restate/Builder/upipayment.dart';
 
 class PaymentPage extends StatefulWidget {
   final List<DocumentSnapshot> items;
@@ -48,6 +51,7 @@ class PaymentPage extends StatefulWidget {
 class _PaymentPageState extends State<PaymentPage> {
   String? useremail = FirebaseAuth.instance.currentUser?.email;
   bool isLoading = false;
+  String paymentMethod = 'upi';
   @override
   void initState() {
     print(widget.items);
@@ -157,8 +161,62 @@ class _PaymentPageState extends State<PaymentPage> {
           'order_date': DateTime.now(),
         });
       }
+      await notifications(item);
     }
     await deleteCollection();
+  }
+
+  Future<void> notifications(Map<String, dynamic> item) async {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    DocumentSnapshot snapshot =
+        await firestore.collection('fcmTokens').doc(item['useremail']).get();
+    String sellerToken = snapshot['token'];
+    await sendNotificationToSeller(sellerToken);
+    if (item['type'] == 'machinery') {
+      FirebaseFirestore.instance
+          .collection('machinery')
+          .doc(item['useremail'])
+          .collection('notifications')
+          .add({
+        'title': 'New Order Received',
+        'body': 'A new order has been placed by a user.',
+        'date': DateTime.now(),
+      });
+    } else {
+      FirebaseFirestore.instance
+          .collection('materials')
+          .doc(item['useremail'])
+          .collection('notifications')
+          .add({
+        'title': 'New Order Received',
+        'body': 'A new order has been placed by a user.',
+        'date': DateTime.now(),
+      });
+    }
+  }
+
+  Future<void> sendNotificationToSeller(String sellerToken) async {
+    final url = Uri.parse('https://fcm.googleapis.com/fcm/send');
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization':
+          'key=AAAAAXgFwBw:APA91bGwgMQf4NheYj-SfYBLTWxiUA00k7RgPzC4sRzjMTpH-Yhyvx1ni_v1RHYnyy4XxB3iX1IpB2DUV18DU_tfDypKtF6Prw3RnKUzha4IHGsI6dyuNdCpUv9r8GfbsKgp58KDD-yN', // Replace with your Firebase server key
+    };
+    final payload = {
+      'notification': {
+        'title': 'New Order Received',
+        'body': 'A new order has been placed by a user.',
+      },
+      'to': sellerToken,
+    };
+
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(payload));
+    if (response.statusCode == 200) {
+      print('Notification sent successfully');
+    } else {
+      print('Failed to send notification. Status code: ${response.statusCode}');
+    }
   }
 
   Future<void> deleteCollection() async {
@@ -173,30 +231,221 @@ class _PaymentPageState extends State<PaymentPage> {
   }
 
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.amber,
         title: const Text('Payment Page'),
       ),
+      body: isLoading == true
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : SingleChildScrollView(
+              child: Column(children: [
+                Container(
+                  margin: EdgeInsets.only(bottom: 8),
+                  width: width,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                  ),
+                  child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              width: width,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(children: [
+                                  Radio(
+                                    value: 'upi',
+                                    groupValue: paymentMethod,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        paymentMethod = value!;
+                                      });
+                                    },
+                                  ),
+                                  Padding(
+                                      padding: EdgeInsets.only(left: 8),
+                                      child: Text(
+                                        "Pay With UPI",
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      )),
+                                  Spacer(),
+                                  Image.asset(
+                                    'assets/images/upi.png',
+                                    height: 50,
+                                    width: 50,
+                                  ),
+                                ]),
+                              ),
+                            )),
+                        Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              width: width,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Row(children: [
+                                  Radio(
+                                    value: 'card',
+                                    groupValue: paymentMethod,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        paymentMethod = value!;
+                                      });
+                                    },
+                                  ),
+                                  Padding(
+                                      padding: EdgeInsets.only(left: 8),
+                                      child: Text(
+                                        "Card Payment",
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      )),
+                                  Spacer(),
+                                  Icon(Icons.payment, size: 40),
+                                ]),
+                              ),
+                            )),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              top: 300, left: 8, right: 8),
+                          child: Text("Price Summary",
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              )),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 20.0, right: 20, bottom: 8),
+                          child: Row(
+                            children: [
+                              Text("Price", style: TextStyle()),
+                              Spacer(),
+                              Text(
+                                  "₹ ${widget.totalamount + widget.totaldiscount}",
+                                  style: TextStyle()),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 20.0, right: 20, bottom: 8),
+                          child: Row(
+                            children: [
+                              Text("Delivery Charges", style: TextStyle()),
+                              Spacer(),
+                              Text("₹ ${widget.totaldelivery}",
+                                  style: TextStyle()),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 20.0, right: 20, bottom: 8),
+                          child: Row(
+                            children: [
+                              Text("Discount", style: TextStyle()),
+                              Spacer(),
+                              Text("₹ ${widget.totaldiscount}",
+                                  style: TextStyle()),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(left: 20.0, right: 20.0),
+                          child: Divider(),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                            left: 20.0,
+                            right: 20,
+                          ),
+                          child: Row(
+                            children: [
+                              Text("Total Amount",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  )),
+                              Spacer(),
+                              Text("₹ ${widget.totalamount}",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                  )),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(left: 20.0, right: 20.0),
+                          child: Divider(),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 20.0, right: 20, bottom: 8),
+                          child: Row(
+                            children: [
+                              Text(
+                                  "You will save ₹ ${widget.totaldiscount} on this order",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.green,
+                                  )),
+                            ],
+                          ),
+                        ),
+                      ]),
+                )
+              ]),
+            ),
       bottomNavigationBar: GestureDetector(
         onTap: () async {
-          setState(() {
-            isLoading = true; // Add a boolean variable to track loading state
-          });
+          String result = 'failed';
+          if (paymentMethod == 'upi') {
+            result = await upi();
+          }
+          if (result == 'success') {
+            setState(() {
+              isLoading = true; // Add a boolean variable to track loading state
+            });
 
-          await storedata();
+            await storedata();
 
-          setState(() {
-            isLoading = false;
-            Navigator.pop(
-                context); // Set loading state to false after order function is complete
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => OrderComplete(),
-              ),
-            );
-          });
+            setState(() {
+              isLoading = false;
+              Navigator.pop(
+                  context); // Set loading state to false after order function is complete
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => OrderComplete(),
+                ),
+              );
+            });
+          }
         },
         child: Container(
           height: 70,
@@ -207,5 +456,16 @@ class _PaymentPageState extends State<PaymentPage> {
         ),
       ),
     );
+  }
+
+  Future<String> upi() async {
+    String result = await Navigator.push(context, MaterialPageRoute(
+      builder: (context) {
+        return UpiPayment(
+          amount: widget.totalamount.toInt(),
+        );
+      },
+    ));
+    return result;
   }
 }

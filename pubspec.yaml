@@ -58,6 +58,9 @@ dependencies:
   firebase_messaging: ^14.7.19
   timelines: ^0.1.0
   timeline_tile: ^2.0.0
+  upi_india: ^3.0.1
+  phonepe_payment_sdk: ^2.0.1
+  crypto: ^3.0.3
   
 
 dev_dependencies:
