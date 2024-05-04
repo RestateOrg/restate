@@ -849,6 +849,7 @@ class _BuyNowState extends State<BuyNow> {
                             Row(
                               children: [
                                 CachedNetworkImage(
+                                  key: UniqueKey(),
                                   imageUrl: widget.data['image_urls'][0],
                                   height: 100,
                                   width: 100,
@@ -1405,6 +1406,7 @@ class _BuyNowState extends State<BuyNow> {
                             Row(
                               children: [
                                 CachedNetworkImage(
+                                  key: UniqueKey(),
                                   imageUrl: widget.data['Images'][0],
                                   height: 100,
                                   width: 100,

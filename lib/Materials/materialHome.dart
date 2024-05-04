@@ -126,6 +126,7 @@ class _MaterialHomeState extends State<MaterialHome> {
                                                   width: constraints.maxWidth,
                                                   child: ClipRRect(
                                                     child: CachedNetworkImage(
+                                                      key: UniqueKey(),
                                                       imageUrl:
                                                           (project[index].data()
                                                                   as Map<String,
@@ -303,6 +304,7 @@ class _MaterialHomeState extends State<MaterialHome> {
                                                       child: ClipRRect(
                                                         child:
                                                             CachedNetworkImage(
+                                                          key: UniqueKey(),
                                                           imageUrl: (yourorders[
                                                                           index]
                                                                       .data()
@@ -513,6 +515,7 @@ class _MaterialHomeState extends State<MaterialHome> {
                                                   width: constraints.maxWidth,
                                                   child: ClipRRect(
                                                     child: CachedNetworkImage(
+                                                      key: UniqueKey(),
                                                       imageUrl:
                                                           (inventory[index]
                                                                       .data()

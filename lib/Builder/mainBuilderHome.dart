@@ -554,6 +554,7 @@ class _MainBuilderHomeState extends State<MainBuilderHome> {
                                                       child: ClipRRect(
                                                         child:
                                                             CachedNetworkImage(
+                                                          key: UniqueKey(),
                                                           imageUrl: image,
                                                           fit: ((machinery_image_width[
                                                                           index] >
@@ -797,6 +798,7 @@ class _MainBuilderHomeState extends State<MainBuilderHome> {
                                                   width: constraints.maxWidth,
                                                   child: ClipRRect(
                                                     child: CachedNetworkImage(
+                                                      key: UniqueKey(),
                                                       imageUrl:
                                                           materialSnapshots[
                                                                   index]
@@ -1016,6 +1018,7 @@ class _MainBuilderHomeState extends State<MainBuilderHome> {
                     child: CircularProgressIndicator(),
                   )
                 : CachedNetworkImage(
+                    key: UniqueKey(),
                     imageUrl: image,
                     fit: (imgWidth > imgHeight) || (imgHeight == imgWidth)
                         ? BoxFit.cover

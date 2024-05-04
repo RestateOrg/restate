@@ -93,6 +93,7 @@ class _ProductInfoState extends State<ProductInfo> {
                           return SizedBox(
                             width: double.infinity,
                             child: CachedNetworkImage(
+                              key: UniqueKey(),
                               imageUrl: widget.data['Images']
                                   [index % widget.data['Images'].length],
                             ),

@@ -46,25 +46,25 @@ class _PhonepePaymentState extends State<PhonepePayment> {
 
   void startTransaction() {
     PhonePePaymentSdk.startTransaction(body, callback, checksum, packageName)
-        .then((response) => {
-              setState(() {
-                if (response != null) {
-                  String status = response['status'].toString();
-                  String error = response['error'].toString();
-                  if (status == 'SUCCESS') {
-                    result = "Flow Completed - Status: Success!";
-                  } else {
-                    result =
-                        "Flow Completed - Status: $status and Error: $error";
-                  }
-                } else {
-                  result = "Flow Incomplete";
-                }
-              })
-            })
-        .catchError((error) {
-      // handleError(error)
-      return <dynamic>{};
+        .then((response) {
+      setState(() {
+        if (response != null) {
+          String status = response['status'].toString();
+          String error = response['error'].toString();
+          if (status == 'SUCCESS') {
+            result = "Flow Completed - Status: Success!";
+          } else {
+            result = "Flow Completed - Status: $status and Error: $error";
+          }
+        } else {
+          result = "Flow Incomplete";
+        }
+      });
+    }).catchError((error) {
+      // Handle error here, e.g., handleError(error);
+      setState(() {
+        result = "Error occurred during transaction: $error";
+      });
     });
   }
 
@@ -79,7 +79,7 @@ class _PhonepePaymentState extends State<PhonepePayment> {
       "merchantId": merchantId,
       "merchantTransactionId": "MT7850590068188104",
       "merchantUserId": "MUID123",
-      "amount": 10000,
+      "amount": 1,
       "callbackUrl": callback,
       "mobileNumber": "9494741081",
       "paymentInstrument": {"type": "PAY_PAGE"}

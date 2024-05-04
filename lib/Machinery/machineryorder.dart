@@ -161,6 +161,7 @@ class _MachineryOrdersState extends State<MachineryOrders> {
                                   color: Colors.black12,
                                 ),
                                 child: CachedNetworkImage(
+                                  key: UniqueKey(),
                                   imageUrl: (snapshot.data()
                                       as Map<String, dynamic>)['projectimage'],
                                   placeholder: (context, url) => Center(

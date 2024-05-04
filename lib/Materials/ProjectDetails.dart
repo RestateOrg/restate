@@ -135,6 +135,7 @@ class _ProjectDetailsState extends State<ProjectDetails> {
                       child: SizedBox(
                         width: double.infinity,
                         child: CachedNetworkImage(
+                          key: UniqueKey(),
                           imageUrl: widget.data['imageURl'],
                           fit: BoxFit.cover,
                         ),

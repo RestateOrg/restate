@@ -70,6 +70,7 @@ class _OrdersState extends State<Orders> {
                                             width: 100,
                                             height: 100,
                                             child: CachedNetworkImage(
+                                                key: UniqueKey(),
                                                 imageUrl: item?["product"]
                                                     ["image_urls"][0]),
                                           ),
@@ -113,6 +114,7 @@ class _OrdersState extends State<Orders> {
                                             width: 100,
                                             height: 100,
                                             child: CachedNetworkImage(
+                                                key: UniqueKey(),
                                                 imageUrl: item?["product"]
                                                     ["Images"][0]),
                                           ),

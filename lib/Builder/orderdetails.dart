@@ -234,6 +234,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                   width: 100,
                                   height: 100,
                                   child: CachedNetworkImage(
+                                      key: UniqueKey(),
                                       imageUrl: widget.order?["product"]
                                           ["image_urls"][0]),
                                 ),
@@ -311,6 +312,7 @@ class _OrderDetailsState extends State<OrderDetails> {
                                   width: 100,
                                   height: 100,
                                   child: CachedNetworkImage(
+                                      key: UniqueKey(),
                                       imageUrl: widget.order?["product"]
                                           ["Images"][0]),
                                 ),

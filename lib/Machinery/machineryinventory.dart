@@ -159,6 +159,7 @@ class _MachineryInventoryState extends State<MachineryInventory> {
                                     color: Colors.black12,
                                   ),
                                   child: CachedNetworkImage(
+                                    key: UniqueKey(),
                                     imageUrl: (snapshot.data() as Map<String,
                                         dynamic>)['image_urls'][0],
                                     placeholder: (context, url) => Center(

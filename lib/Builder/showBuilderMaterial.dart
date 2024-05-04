@@ -182,6 +182,7 @@ class _BuilderMaterialsDetailsState extends State<BuilderMaterialsDetails> {
                                           ),
                                         ),
                                         child: CachedNetworkImage(
+                                          key: UniqueKey(),
                                           imageUrl: materialSnapshots[index]
                                                   ['Images'][0] ??
                                               '',

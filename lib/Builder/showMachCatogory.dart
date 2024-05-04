@@ -179,6 +179,7 @@ class _ShowMachCatogoryState extends State<ShowMachCatogory> {
                                           ),
                                         ),
                                         child: CachedNetworkImage(
+                                          key: UniqueKey(),
                                           imageUrl: machSnapshots[index]
                                                   ['image_urls'][0] ??
                                               '',

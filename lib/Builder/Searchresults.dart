@@ -188,6 +188,7 @@ class _SearchresultsState extends State<Searchresults> {
                                             ),
                                             child: ClipRRect(
                                               child: CachedNetworkImage(
+                                                key: UniqueKey(),
                                                 imageUrl: data['image_urls'][0],
                                                 width: constraints.maxWidth,
                                                 height: 100,
@@ -517,6 +518,7 @@ class _SearchresultsState extends State<Searchresults> {
                                             ),
                                             child: ClipRRect(
                                               child: CachedNetworkImage(
+                                                key: UniqueKey(),
                                                 imageUrl: data['Images'][0],
                                                 width: constraints.maxWidth,
                                                 height: 100,

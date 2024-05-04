@@ -407,6 +407,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 return SizedBox(
                                   width: double.infinity,
                                   child: CachedNetworkImage(
+                                    key: UniqueKey(),
                                     imageUrl: widget.data['image_urls'][index %
                                         widget.data['image_urls'].length],
                                     fit: BoxFit.cover,
@@ -1346,6 +1347,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 return SizedBox(
                                   width: double.infinity,
                                   child: CachedNetworkImage(
+                                    key: UniqueKey(),
                                     imageUrl: widget.data['Images']
                                         [index % widget.data['Images'].length],
                                     fit: BoxFit.cover,
