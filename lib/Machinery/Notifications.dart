@@ -15,7 +15,7 @@ class _NotificationsState extends State<Notifications> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.amber,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.amber,
         title: Text("Notifications"),
@@ -41,7 +41,7 @@ class _NotificationsState extends State<Notifications> {
                   margin: EdgeInsets.all(10),
                   padding: EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: Color.fromARGB(70, 255, 255, 255),
+                    color: Color.fromARGB(134, 255, 187, 14),
                   ),
                   child: Column(children: [
                     Align(

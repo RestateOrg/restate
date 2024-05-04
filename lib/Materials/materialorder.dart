@@ -58,6 +58,46 @@ class _MaterialOrderState extends State<MaterialOrder> {
                   height: MediaQuery.of(context).size.height,
                   child: Column(
                     children: [
+                      Container(
+                        color: Colors.amber,
+                        width: width,
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              bottom: 8.0, left: 8.0, right: 8.0),
+                          child: Container(
+                            width: width * 0.92,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: Colors.black.withOpacity(0.2)),
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: CupertinoSearchTextField(
+                              backgroundColor: Colors.white,
+                              borderRadius: BorderRadius.circular(30),
+                              padding: EdgeInsets.all(10),
+                              onChanged: (value) {
+                                setState(() {
+                                  if (value.isEmpty) {
+                                    // If the search query is empty, show all items
+                                    filteredSnapshots =
+                                        allSnapshots; // Use the normal list
+                                  } else {
+                                    // filter the list based on Material_type
+                                    filteredSnapshots = allSnapshots
+                                        .where((element) => (element.data()
+                                                    as Map<String, dynamic>)[
+                                                'order_name']
+                                            .toString()
+                                            .toLowerCase()
+                                            .contains(value.toLowerCase()))
+                                        .toList();
+                                  }
+                                });
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
                       Row(
                         children: [
                           Align(

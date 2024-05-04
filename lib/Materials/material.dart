@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:restate/Materials/Notifications.dart';
 import 'package:restate/Materials/Upload_material.dart';
 import 'package:restate/Materials/YourRevenue.dart';
 import 'package:restate/Materials/materialHome.dart';
@@ -23,6 +24,7 @@ class _MaterialsHomeScreenState extends State<MaterialsHomeScreen> {
   int _selectedIndex = 0;
   double selectedIconScale = 1.2;
   double unselectedIconScale = 1.0;
+  late PageController _pageController;
   final screens = [
     MaterialHome(),
     MaterialOrder(),
@@ -33,6 +35,7 @@ class _MaterialsHomeScreenState extends State<MaterialsHomeScreen> {
   @override
   void initState() {
     super.initState();
+    _pageController = PageController(initialPage: _selectedIndex);
     _selectedIndex = widget.initialSelectedIndex;
   }
 
@@ -95,16 +98,75 @@ class _MaterialsHomeScreenState extends State<MaterialsHomeScreen> {
       appBar: AppBar(
         backgroundColor: Colors.amber,
         automaticallyImplyLeading: false,
-        leading: IconButton(
-          icon: Icon(Icons.account_circle, size: 35),
-          onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => MaterialsProfile()));
-          },
-        ),
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: width * 0.73),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MaterialsProfile(),
+                  ),
+                );
+              },
+              child: CircleAvatar(
+                radius: 15,
+                backgroundColor: Colors.black,
+                child: Icon(
+                  Icons.person,
+                  color: Colors.amber,
+                  size: 25,
+                ),
+              ),
+            ),
+          ),
+          Padding(
+              padding: EdgeInsets.only(right: width * 0.03),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Notifications()),
+                  );
+                },
+                child: FaIcon(
+                  FontAwesomeIcons.solidBell,
+                  color: Colors.black,
+                ),
+              )),
+          Padding(
+            padding: EdgeInsets.only(right: 13),
+            child: Builder(
+              builder: (BuildContext context) {
+                return GestureDetector(
+                  onTap: () {
+                    Scaffold.of(context).openEndDrawer();
+                  },
+                  child: FaIcon(
+                    FontAwesomeIcons.bars,
+                    color: Colors.black,
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
       backgroundColor: Colors.amber,
-      body: screens[_selectedIndex],
+      body: PageView(
+        controller: _pageController,
+        physics: AlwaysScrollableScrollPhysics(),
+        onPageChanged: (index) {
+          handleNavigation(index);
+        },
+        children: [
+          MaterialHome(),
+          MaterialOrder(),
+          MaterialStats(),
+          MaterialInventory(),
+        ],
+      ),
       bottomNavigationBar: BottomNavigationBar(
         selectedLabelStyle: TextStyle(fontSize: 0),
         unselectedLabelStyle: TextStyle(fontSize: 0),
@@ -116,7 +178,7 @@ class _MaterialsHomeScreenState extends State<MaterialsHomeScreen> {
             icon: Padding(
               padding: EdgeInsets.symmetric(horizontal: 2.0, vertical: 4.0),
               child: GestureDetector(
-                onTap: () => setState(() => _selectedIndex = 0),
+                onTap: () => setState(() => handleNavigation(0)),
                 child: AnimatedContainer(
                   duration: Duration(milliseconds: 100),
                   transform: Matrix4.identity()
@@ -142,7 +204,7 @@ class _MaterialsHomeScreenState extends State<MaterialsHomeScreen> {
             icon: Padding(
               padding: EdgeInsets.symmetric(horizontal: 2.0, vertical: 4.0),
               child: GestureDetector(
-                onTap: () => setState(() => _selectedIndex = 1),
+                onTap: () => setState(() => handleNavigation(1)),
                 child: AnimatedContainer(
                   duration: Duration(milliseconds: 100),
                   transform: Matrix4.identity()
@@ -168,7 +230,7 @@ class _MaterialsHomeScreenState extends State<MaterialsHomeScreen> {
             icon: Padding(
               padding: EdgeInsets.symmetric(horizontal: 2.0, vertical: 4.0),
               child: GestureDetector(
-                onTap: () => setState(() => _selectedIndex = 2),
+                onTap: () => setState(() => handleNavigation(2)),
                 child: AnimatedContainer(
                   duration: Duration(milliseconds: 100),
                   transform: Matrix4.identity()
@@ -194,7 +256,7 @@ class _MaterialsHomeScreenState extends State<MaterialsHomeScreen> {
             icon: Padding(
               padding: EdgeInsets.symmetric(horizontal: 2.0, vertical: 4.0),
               child: GestureDetector(
-                onTap: () => setState(() => _selectedIndex = 3),
+                onTap: () => setState(() => handleNavigation(3)),
                 child: AnimatedContainer(
                   duration: Duration(milliseconds: 100),
                   transform: Matrix4.identity()
@@ -312,7 +374,7 @@ class _MaterialsHomeScreenState extends State<MaterialsHomeScreen> {
                     ),
                     onTap: () {
                       setState(() {
-                        _selectedIndex = 0;
+                        handleNavigation(0);
                       });
                       Navigator.pop(context);
                     },
@@ -337,7 +399,7 @@ class _MaterialsHomeScreenState extends State<MaterialsHomeScreen> {
                     ),
                     onTap: () {
                       setState(() {
-                        _selectedIndex = 1;
+                        handleNavigation(1);
                       });
                       Navigator.pop(context);
                     },
@@ -362,7 +424,7 @@ class _MaterialsHomeScreenState extends State<MaterialsHomeScreen> {
                     ),
                     onTap: () {
                       setState(() {
-                        _selectedIndex = 2;
+                        handleNavigation(2);
                       });
                       Navigator.pop(context);
                     },
@@ -387,7 +449,7 @@ class _MaterialsHomeScreenState extends State<MaterialsHomeScreen> {
                     ),
                     onTap: () {
                       setState(() {
-                        _selectedIndex = 3;
+                        handleNavigation(3);
                       });
                       Navigator.pop(context);
                     },
@@ -452,5 +514,27 @@ class _MaterialsHomeScreenState extends State<MaterialsHomeScreen> {
         ),
       ),
     );
+  }
+
+  void handleNavigation(int index) {
+    setState(() {
+      _selectedIndex = index;
+      switch (index) {
+        case 0:
+          _pageController.jumpToPage(0);
+          break;
+        case 1:
+          _pageController.jumpToPage(1);
+          break;
+        case 2:
+          _pageController.jumpToPage(2);
+          break;
+        case 3:
+          _pageController.jumpToPage(3);
+          break;
+        default:
+          break;
+      }
+    });
   }
 }
