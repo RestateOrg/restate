@@ -184,7 +184,7 @@ class _UploadProjectState extends State<UploadProject> {
       }).then(
         (value) {
           _showDocumentIdPopup2("Data Upload Sucessful",
-              "Your Material has been uploaded sucessfully");
+              "Your Project has been uploaded sucessfully");
         },
       );
     } catch (e) {
@@ -1171,7 +1171,7 @@ class _UploadProjectState extends State<UploadProject> {
 
   Widget _buildListItem(List<String> item) {
     return Card(
-      color: Colors.black12,
+      color: Color.fromARGB(255, 255, 229, 152),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5), // Add rounded corners
       ),
@@ -1194,7 +1194,7 @@ class _UploadProjectState extends State<UploadProject> {
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Text('$label: $value',
           style: TextStyle(
-            color: Colors.white,
+            color: Colors.black,
             fontWeight: FontWeight.w500,
             fontSize: 14,
           )),
@@ -1215,7 +1215,7 @@ class _UploadProjectState extends State<UploadProject> {
 
   Widget _buildListItem2(List<String> item) {
     return Card(
-      color: Colors.black12,
+      color: Color.fromARGB(255, 255, 229, 152),
       margin: EdgeInsets.only(left: 10, right: 10, bottom: 8),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(5), // Add rounded corners

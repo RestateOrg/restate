@@ -229,109 +229,104 @@ class _MainBuilderHomeState extends State<MainBuilderHome> {
                 children: [
                   Container(
                     width: width,
-                    height: MediaQuery.of(context).size.height * 0.35,
                     color: Colors.amber,
-                    child: Column(
-                      children: [
-                        Align(
-                          alignment: Alignment.topCenter,
-                          child: searchWidget(width, context),
-                        ),
-                        Divider(
-                          color: Colors.amber,
-                        ),
-                        Container(
-                          child: Stack(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(top: width * 0),
-                                child: Container(
-                                  color: Colors.amber,
-                                  width: double.infinity,
-                                  height: width * 0.55,
-                                  child: builderSnapshots.isEmpty
-                                      ? Center(
-                                          child: CircularProgressIndicator(),
-                                        )
-                                      : builder_image_height.length !=
-                                              builderSnapshots.length
-                                          ? Center(
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            )
-                                          : PageView.builder(
-                                              controller: _pageController,
-                                              itemCount:
-                                                  builderSnapshots.length,
-                                              onPageChanged: (value) {
-                                                setState(() {
-                                                  currentIndex = value;
-                                                });
-                                              },
-                                              itemBuilder: (context, index) {
-                                                if (builderSnapshots.isEmpty) {
-                                                  return Center(
-                                                    child:
-                                                        CircularProgressIndicator(),
-                                                  );
-                                                }
-
-                                                final imageUrl =
-                                                    builderSnapshots[index %
-                                                            builderSnapshots
-                                                                .length]
-                                                        ['imageURl'];
-                                                final h =
-                                                    builder_image_height[index];
-                                                final w =
-                                                    builder_image_width[index];
-
-                                                return _buildImageItem(
-                                                  context,
-                                                  imageUrl,
-                                                  h,
-                                                  w,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Align(
+                        alignment: Alignment.topCenter,
+                        child: searchWidget(width, context),
+                      ),
+                    ),
+                  ),
+                  Column(
+                    children: [
+                      Container(
+                        child: Stack(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(top: 0),
+                              child: Container(
+                                color: Colors.white,
+                                width: double.infinity,
+                                height: width * 0.55,
+                                child: builderSnapshots.isEmpty
+                                    ? Center(
+                                        child: Text("No Projects Yet"),
+                                      )
+                                    : builder_image_height.length !=
+                                            builderSnapshots.length
+                                        ? Center(
+                                            child: CircularProgressIndicator(),
+                                          )
+                                        : PageView.builder(
+                                            controller: _pageController,
+                                            itemCount: builderSnapshots.length,
+                                            onPageChanged: (value) {
+                                              setState(() {
+                                                currentIndex = value;
+                                              });
+                                            },
+                                            itemBuilder: (context, index) {
+                                              if (builderSnapshots.isEmpty) {
+                                                return Center(
+                                                  child:
+                                                      CircularProgressIndicator(),
                                                 );
-                                              },
-                                            ),
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(top: width * 0.57),
-                                child: Container(
-                                  color: Colors.transparent,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: List<Widget>.generate(
-                                      builderSnapshots.length,
-                                      (index) => Padding(
-                                        padding: EdgeInsets.all(8.0),
-                                        child: InkWell(
-                                          onTap: () {
-                                            _pageController.animateToPage(index,
-                                                duration:
-                                                    Duration(microseconds: 300),
-                                                curve: Curves.easeIn);
-                                          },
-                                          child: CircleAvatar(
-                                            radius: 4,
-                                            backgroundColor:
-                                                currentIndex == index
-                                                    ? Colors.white
-                                                    : Colors.black,
-                                            // foregroundColor: Colors.black,
+                                              }
+
+                                              final imageUrl = builderSnapshots[
+                                                  index %
+                                                      builderSnapshots
+                                                          .length]['imageURl'];
+                                              final h =
+                                                  builder_image_height[index];
+                                              final w =
+                                                  builder_image_width[index];
+
+                                              return _buildImageItem(
+                                                context,
+                                                imageUrl,
+                                                h,
+                                                w,
+                                              );
+                                            },
                                           ),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(top: width * 0.57),
+                              child: Container(
+                                color: Colors.transparent,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: List<Widget>.generate(
+                                    builderSnapshots.length,
+                                    (index) => Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: InkWell(
+                                        onTap: () {
+                                          _pageController.animateToPage(index,
+                                              duration:
+                                                  Duration(microseconds: 300),
+                                              curve: Curves.easeIn);
+                                        },
+                                        child: CircleAvatar(
+                                          radius: 4,
+                                          backgroundColor: currentIndex == index
+                                              ? Colors.amber
+                                              : Colors.black,
+                                          // foregroundColor: Colors.black,
                                         ),
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                   Divider(
                     color: Colors.white,

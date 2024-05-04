@@ -6,6 +6,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:restate/Builder/PaymentPage.dart';
 import 'package:restate/Builder/Searchresults.dart';
 import 'package:restate/Builder/deliveryaddress.dart';
+import 'package:restate/Builder/phonepesdk.dart';
 import 'package:restate/Utils/hexcolor.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
@@ -218,24 +219,7 @@ class _BuilderCartState extends State<BuilderCart> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => PaymentPage(
-                    items: items,
-                    totalamount: totalamount,
-                    totaldiscount: totaldiscount,
-                    totaldelivery: totaldelivery,
-                    location: location,
-                    city: city,
-                    state: state,
-                    name: name,
-                    projectimage: projectimage,
-                    quantity: _quantity,
-                    timeperiod: timeperiod,
-                    time: time,
-                    projecttype: projecttype,
-                    price: _price,
-                    discount: _discount,
-                    delivery: _delivery,
-                  ),
+                  builder: (context) => PhonepePayment(),
                 ),
               );
             },

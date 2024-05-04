@@ -185,101 +185,111 @@ class _OrderRequestState extends State<OrderRequest> {
                             itemCount: orderRequests?.length,
                             itemBuilder: (context, index) {
                               final orderRequest = orderRequests?[index];
-                              return ListTile(
-                                title: Container(
-                                  padding: EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.grey.withOpacity(0.5),
-                                        spreadRadius: 1,
-                                        blurRadius: 3,
-                                        offset: Offset(0, 1),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            'Product: ${orderRequest?['product']['machinery_name']}',
-                                            style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          Text(
-                                            'Quantity: ${orderRequest?['quantity']}',
-                                            style: TextStyle(fontSize: 16),
-                                          ),
-                                          Text(
-                                            'Price: ₹${orderRequest?['total']}',
-                                            style: TextStyle(fontSize: 16),
-                                          ),
-                                        ],
-                                      ),
-                                      Flexible(
-                                          child: Align(
-                                        alignment: AlignmentDirectional(0.9, 0),
-                                        child: Container(
-                                          height: 40,
-                                          width: 40,
-                                          decoration: BoxDecoration(
-                                            color: Colors.amber,
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: Center(
-                                            child: IconButton(
-                                              icon: Icon(
-                                                Icons.close,
-                                                color: Colors.red,
-                                              ),
-                                              onPressed: () {
-                                                // Add code to accept order request
-                                              },
-                                            ),
-                                          ),
-                                        ),
-                                      )),
-                                      Container(
-                                        height: 40,
-                                        width: 40,
+                              return orderRequests?.length != 0
+                                  ? ListTile(
+                                      title: Container(
+                                        padding: EdgeInsets.all(10),
                                         decoration: BoxDecoration(
-                                          color: Colors.amber,
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: Center(
-                                          child: IconButton(
-                                            icon: Icon(
-                                              Icons.check,
-                                              color: Colors.green,
+                                          color: Colors.white,
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color:
+                                                  Colors.grey.withOpacity(0.5),
+                                              spreadRadius: 1,
+                                              blurRadius: 3,
+                                              offset: Offset(0, 1),
                                             ),
-                                            onPressed: () async {
-                                              setState(() {
-                                                _isUploading =
-                                                    true; // Start the upload and show progress indicator
-                                              });
-                                              try {
-                                                await orderaccept(index);
-                                              } catch (e) {
-                                                print(e); // Handle or log error
-                                              } finally {
-                                                setState(() {
-                                                  _isUploading =
-                                                      false; // Hide progress indicator once upload is complete
-                                                });
-                                              }
-                                            },
-                                          ),
+                                          ],
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  'Product: ${orderRequest?['product']['machinery_name']}',
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                Text(
+                                                  'Quantity: ${orderRequest?['quantity']}',
+                                                  style:
+                                                      TextStyle(fontSize: 16),
+                                                ),
+                                                Text(
+                                                  'Price: ₹${orderRequest?['total']}',
+                                                  style:
+                                                      TextStyle(fontSize: 16),
+                                                ),
+                                              ],
+                                            ),
+                                            Flexible(
+                                                child: Align(
+                                              alignment:
+                                                  AlignmentDirectional(0.9, 0),
+                                              child: Container(
+                                                height: 40,
+                                                width: 40,
+                                                decoration: BoxDecoration(
+                                                  color: Colors.amber,
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: Center(
+                                                  child: IconButton(
+                                                    icon: Icon(
+                                                      Icons.close,
+                                                      color: Colors.red,
+                                                    ),
+                                                    onPressed: () {
+                                                      // Add code to accept order request
+                                                    },
+                                                  ),
+                                                ),
+                                              ),
+                                            )),
+                                            Container(
+                                              height: 40,
+                                              width: 40,
+                                              decoration: BoxDecoration(
+                                                color: Colors.amber,
+                                                shape: BoxShape.circle,
+                                              ),
+                                              child: Center(
+                                                child: IconButton(
+                                                  icon: Icon(
+                                                    Icons.check,
+                                                    color: Colors.green,
+                                                  ),
+                                                  onPressed: () async {
+                                                    setState(() {
+                                                      _isUploading =
+                                                          true; // Start the upload and show progress indicator
+                                                    });
+                                                    try {
+                                                      await orderaccept(index);
+                                                    } catch (e) {
+                                                      print(
+                                                          e); // Handle or log error
+                                                    } finally {
+                                                      setState(() {
+                                                        _isUploading =
+                                                            false; // Hide progress indicator once upload is complete
+                                                      });
+                                                    }
+                                                  },
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                    ],
-                                  ),
-                                ),
-                              );
+                                    )
+                                  : Center(
+                                      child: Text("No Requests"),
+                                    );
                             },
                           ),
                         ),
