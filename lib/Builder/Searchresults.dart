@@ -192,7 +192,6 @@ class _SearchresultsState extends State<Searchresults> {
                                                 imageUrl: data['image_urls'][0],
                                                 width: constraints.maxWidth,
                                                 height: 100,
-                                                fit: BoxFit.cover,
                                                 placeholder: (context, url) =>
                                                     Center(
                                                         child:
@@ -522,7 +521,6 @@ class _SearchresultsState extends State<Searchresults> {
                                                 imageUrl: data['Images'][0],
                                                 width: constraints.maxWidth,
                                                 height: 100,
-                                                fit: BoxFit.cover,
                                                 placeholder: (context, url) =>
                                                     Center(
                                                         child:

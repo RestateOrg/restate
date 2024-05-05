@@ -46,24 +46,26 @@ class _PhonepePaymentState extends State<PhonepePayment> {
 
   void startTransaction() {
     PhonePePaymentSdk.startTransaction(body, callback, checksum, packageName)
-        .then((response) {
-      setState(() {
-        if (response != null) {
-          String status = response['status'].toString();
-          String error = response['error'].toString();
-          if (status == 'SUCCESS') {
-            result = "Flow Completed - Status: Success!";
-          } else {
-            result = "Flow Completed - Status: $status and Error: $error";
-          }
-        } else {
-          result = "Flow Incomplete";
-        }
-      });
-    }).catchError((error) {
-      // Handle error here, e.g., handleError(error);
+        .then((response) => {
+              setState(() {
+                if (response != null) {
+                  String status = response['status'].toString();
+                  String error = response['error'].toString();
+                  if (status == 'SUCCESS') {
+                    result = "Flow Completed - Status: Success!";
+                  } else {
+                    result =
+                        "Flow Completed - Status: $status and Error: $error";
+                  }
+                } else {
+                  result = "Flow Incomplete";
+                }
+              })
+            })
+        .catchError((error) {
       setState(() {
         result = "Error occurred during transaction: $error";
+        print(result);
       });
     });
   }
@@ -77,7 +79,7 @@ class _PhonepePaymentState extends State<PhonepePayment> {
   getChecksum() {
     final reqData = {
       "merchantId": merchantId,
-      "merchantTransactionId": "MT7850590068188104",
+      "merchantTransactionId": "t_5255",
       "merchantUserId": "MUID123",
       "amount": 1,
       "callbackUrl": callback,
@@ -85,8 +87,10 @@ class _PhonepePaymentState extends State<PhonepePayment> {
       "paymentInstrument": {"type": "PAY_PAGE"}
     };
     String base64body = base64.encode(utf8.encode(json.encode(reqData)));
+    print(base64body);
     checksum =
         '${sha256.convert(utf8.encode(base64body + apiEndPoint + saltKey)).toString()}###$saltIndex';
+    print(checksum);
     return base64body;
   }
 
@@ -102,6 +106,8 @@ class _PhonepePaymentState extends State<PhonepePayment> {
                 child: ElevatedButton(
               child: Text("Pay Now"),
               onPressed: () {
+                print("checksum:$checksum");
+                print(body);
                 startTransaction();
               },
             )),

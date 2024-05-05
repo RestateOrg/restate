@@ -325,8 +325,8 @@ class _BuilderCartState extends State<BuilderCart> {
               ),
               Container(
                 height: 300,
-                child: FutureBuilder<List<DocumentSnapshot>>(
-                  future: _fetchProducts(),
+                child: StreamBuilder<List<DocumentSnapshot>>(
+                  stream: _fetchProducts().asStream(),
                   builder: (BuildContext context,
                       AsyncSnapshot<List<DocumentSnapshot>> snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
@@ -453,6 +453,7 @@ class _BuilderCartState extends State<BuilderCart> {
                                         width: 100,
                                         height: 100,
                                         child: CachedNetworkImage(
+                                          key: UniqueKey(),
                                           imageUrl: snapshot.data![index]
                                               ['image_urls'][0],
                                         ),
@@ -1094,6 +1095,7 @@ class _BuilderCartState extends State<BuilderCart> {
                                         width: 100,
                                         height: 100,
                                         child: CachedNetworkImage(
+                                            key: UniqueKey(),
                                             imageUrl: snapshot.data![index]
                                                 ['Images'][0]),
                                       ),

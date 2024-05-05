@@ -27,7 +27,7 @@ class _OrderRequestState extends State<OrderRequest> {
         .doc(useremail)
         .collection('order requests')
         .doc(orderRequest.id)
-        .update({'status': 'Order Accepted'});
+        .update({'orderstatus': 'Order Accepted'});
     final snapshot1 = await firestore
         .collection('machinery')
         .doc(useremail)
@@ -39,6 +39,20 @@ class _OrderRequestState extends State<OrderRequest> {
         .doc(useremail)
         .collection('orders')
         .add(orderRequest1.data());
+    final builderemail = orderRequest1['useremail'];
+    final snapshot2 = await firestore
+        .collection('builders')
+        .doc(builderemail)
+        .collection('orders')
+        .where('order_id', isEqualTo: orderRequest1['order_id'])
+        .get();
+    final orderRequest2 = snapshot2.docs[0];
+    await firestore
+        .collection('builders')
+        .doc(builderemail)
+        .collection('orders')
+        .doc(orderRequest2.id)
+        .update({'status': 'Order Accepted'});
     await getfcm(index);
     await sendNotificationToSeller(fcm);
     await notifications(index);

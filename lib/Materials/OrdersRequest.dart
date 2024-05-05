@@ -13,7 +13,9 @@ class OrderRequest extends StatefulWidget {
 
 class _OrderRequestState extends State<OrderRequest> {
   bool _isUploading = false;
+
   Future<void> orderaccept(int index) async {
+    print(1);
     final firestore = FirebaseFirestore.instance;
     final useremail = FirebaseAuth.instance.currentUser?.email;
     final snapshot = await firestore
@@ -22,20 +24,22 @@ class _OrderRequestState extends State<OrderRequest> {
         .collection('order requests')
         .get();
     final orderRequest = snapshot.docs[index];
+    print(2);
     await firestore
         .collection('materials')
         .doc(useremail)
         .collection('order requests')
         .doc(orderRequest.id)
-        .update({'status': 'Order Accepted'});
+        .update({'orderstatus': 'Order Accepted'});
     final snapshot1 = await firestore
-        .collection('machinery')
+        .collection('materials')
         .doc(useremail)
         .collection('order requests')
         .get();
     final orderRequest1 = snapshot1.docs[index];
+    print(3);
     await firestore
-        .collection('machinery')
+        .collection('materials')
         .doc(useremail)
         .collection('orders')
         .add(orderRequest1.data());
@@ -43,6 +47,7 @@ class _OrderRequestState extends State<OrderRequest> {
     await sendNotificationToSeller(fcm);
     await notifications(index);
     await updatestock(index);
+    print(4);
     await firestore
         .collection('materials')
         .doc(useremail)
@@ -165,129 +170,134 @@ class _OrderRequestState extends State<OrderRequest> {
         title: Text('Order Requests'),
         backgroundColor: Colors.amber,
       ),
-      body: Column(children: [
-        StreamBuilder(
-          stream: getRequests().asStream(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              final orderRequests = snapshot.data;
-              return Expanded(
-                child: Container(
-                  child: RefreshIndicator(
-                    onRefresh: () async {
-                      setState(() {});
-                    },
-                    child: ListView.builder(
-                      itemCount: orderRequests?.length,
-                      itemBuilder: (context, index) {
-                        final orderRequest = orderRequests?[index];
-                        return ListTile(
-                          title: Container(
-                            padding: EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 1,
-                                  blurRadius: 3,
-                                  offset: Offset(0, 1),
-                                ),
-                              ],
-                            ),
-                            child: Row(
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Product: ${orderRequest?['product']['Material_name']}',
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Text(
-                                      'Quantity: ${orderRequest?['quantity']}',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                    Text(
-                                      'Price: ₹${orderRequest?['total']}',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ],
-                                ),
-                                Flexible(
-                                    child: Align(
-                                  alignment: AlignmentDirectional(0.9, 0),
-                                  child: Container(
-                                    height: 40,
-                                    width: 40,
-                                    decoration: BoxDecoration(
-                                      color: Colors.amber,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Center(
-                                      child: IconButton(
-                                        icon: Icon(
-                                          Icons.close,
-                                          color: Colors.red,
-                                        ),
-                                        onPressed: () {
-                                          // Add code to accept order request
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                )),
-                                Container(
-                                  height: 40,
-                                  width: 40,
+      body: _isUploading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : Column(children: [
+              StreamBuilder(
+                stream: getRequests().asStream(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    final orderRequests = snapshot.data;
+                    return Expanded(
+                      child: Container(
+                        child: RefreshIndicator(
+                          onRefresh: () async {
+                            setState(() {});
+                          },
+                          child: ListView.builder(
+                            itemCount: orderRequests?.length,
+                            itemBuilder: (context, index) {
+                              final orderRequest = orderRequests?[index];
+                              return ListTile(
+                                title: Container(
+                                  padding: EdgeInsets.all(10),
                                   decoration: BoxDecoration(
-                                    color: Colors.amber,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Center(
-                                    child: IconButton(
-                                      icon: Icon(
-                                        Icons.check,
-                                        color: Colors.green,
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.grey.withOpacity(0.5),
+                                        spreadRadius: 1,
+                                        blurRadius: 3,
+                                        offset: Offset(0, 1),
                                       ),
-                                      onPressed: () async {
-                                        setState(() {
-                                          _isUploading =
-                                              true; // Start the upload and show progress indicator
-                                        });
-                                        try {
-                                          await orderaccept(index);
-                                        } catch (e) {
-                                          print(e); // Handle or log error
-                                        } finally {
-                                          setState(() {
-                                            _isUploading =
-                                                false; // Hide progress indicator once upload is complete
-                                          });
-                                        }
-                                      },
-                                    ),
+                                    ],
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Product: ${orderRequest?['product']['Material_name']}',
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Text(
+                                            'Quantity: ${orderRequest?['quantity']}',
+                                            style: TextStyle(fontSize: 16),
+                                          ),
+                                          Text(
+                                            'Price: ₹${orderRequest?['total']}',
+                                            style: TextStyle(fontSize: 16),
+                                          ),
+                                        ],
+                                      ),
+                                      Flexible(
+                                          child: Align(
+                                        alignment: AlignmentDirectional(0.9, 0),
+                                        child: Container(
+                                          height: 40,
+                                          width: 40,
+                                          decoration: BoxDecoration(
+                                            color: Colors.amber,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Center(
+                                            child: IconButton(
+                                              icon: Icon(
+                                                Icons.close,
+                                                color: Colors.red,
+                                              ),
+                                              onPressed: () {
+                                                // Add code to accept order request
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                      )),
+                                      Container(
+                                        height: 40,
+                                        width: 40,
+                                        decoration: BoxDecoration(
+                                          color: Colors.amber,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Center(
+                                          child: IconButton(
+                                            icon: Icon(
+                                              Icons.check,
+                                              color: Colors.green,
+                                            ),
+                                            onPressed: () async {
+                                              setState(() {
+                                                _isUploading =
+                                                    true; // Start the upload and show progress indicator
+                                              });
+                                              try {
+                                                await orderaccept(index);
+                                              } catch (e) {
+                                                print(e); // Handle or log error
+                                              } finally {
+                                                setState(() {
+                                                  _isUploading =
+                                                      false; // Hide progress indicator once upload is complete
+                                                });
+                                              }
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ],
-                            ),
+                              );
+                            },
                           ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              );
-            } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            } else {
-              return Center(child: CircularProgressIndicator());
-            }
-          },
-        )
-      ]),
+                        ),
+                      ),
+                    );
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                },
+              )
+            ]),
     );
   }
 

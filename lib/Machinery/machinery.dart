@@ -69,7 +69,7 @@ class _MachinaryHomeScreenState extends State<MachinaryHomeScreen> {
         automaticallyImplyLeading: false,
         actions: [
           Padding(
-            padding: EdgeInsets.only(right: width * 0.73),
+            padding: EdgeInsets.only(left: 10),
             child: GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -90,8 +90,9 @@ class _MachinaryHomeScreenState extends State<MachinaryHomeScreen> {
               ),
             ),
           ),
+          Spacer(),
           Padding(
-              padding: EdgeInsets.only(right: width * 0.03),
+              padding: EdgeInsets.only(right: 10),
               child: GestureDetector(
                 onTap: () {
                   Navigator.push(

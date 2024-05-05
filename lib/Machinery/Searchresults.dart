@@ -165,7 +165,6 @@ class _SearchresultsState extends State<Searchresults> {
                                           imageUrl: data['imageURl'],
                                           width: constraints.maxWidth,
                                           height: 100,
-                                          fit: BoxFit.cover,
                                           placeholder: (context, url) => Center(
                                               child:
                                                   CircularProgressIndicator()),

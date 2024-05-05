@@ -28,31 +28,31 @@ class Timeline extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isOrderAccepted = order?['status'] == 'Order Accepted';
-    bool isOrderShipped = order?['status'] == 'Order Shipped';
+    bool isOrderShipped = order?['status'] == 'Out For Delivery';
     bool isOrderDelivered = order?['status'] == 'Order Delivered';
     return Column(
       children: <Widget>[
         TimelineItem(
           title: 'Order Requested',
-          subTitle: _formatTimestamp(order?['order_date']),
+          subTitle: '',
           isActive: true,
           isCompleted: true,
         ),
         TimelineItem(
           title: 'Order Accepted',
-          subTitle: 'April 21, 2024',
+          subTitle: '',
           isActive: isOrderAccepted || isOrderShipped || isOrderDelivered,
           isCompleted: isOrderAccepted || isOrderShipped || isOrderDelivered,
         ),
         TimelineItem(
-          title: 'Order Shipped',
-          subTitle: 'April 22, 2024',
+          title: 'Out For Delivery',
+          subTitle: '',
           isActive: isOrderShipped || isOrderDelivered,
           isCompleted: isOrderShipped || isOrderDelivered,
         ),
         TimelineItem(
           title: 'Order Delivered',
-          subTitle: 'April 23, 2024',
+          subTitle: '',
           isActive: isOrderDelivered,
           isCompleted: isOrderDelivered,
         ),

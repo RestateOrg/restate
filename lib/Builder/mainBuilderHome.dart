@@ -507,7 +507,7 @@ class _MainBuilderHomeState extends State<MainBuilderHome> {
                                 ),
                               )
                             : Padding(
-                                padding: EdgeInsets.only(top: width * 0.02),
+                                padding: EdgeInsets.only(top: 0),
                                 child: SizedBox(
                                   height: 210,
                                   child: LayoutBuilder(

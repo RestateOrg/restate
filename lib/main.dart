@@ -116,7 +116,7 @@ class _BeginState extends State<Begin> {
 
     NotificationSettings settings = await messaging.requestPermission(
       alert: true,
-      announcement: false,
+      announcement: true,
       badge: true,
       carPlay: false,
       criticalAlert: false,

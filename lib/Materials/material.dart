@@ -100,7 +100,7 @@ class _MaterialsHomeScreenState extends State<MaterialsHomeScreen> {
         automaticallyImplyLeading: false,
         actions: [
           Padding(
-            padding: EdgeInsets.only(right: width * 0.73),
+            padding: EdgeInsets.only(left: 10),
             child: GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -121,8 +121,9 @@ class _MaterialsHomeScreenState extends State<MaterialsHomeScreen> {
               ),
             ),
           ),
+          Spacer(),
           Padding(
-              padding: EdgeInsets.only(right: width * 0.03),
+              padding: EdgeInsets.only(right: 10),
               child: GestureDetector(
                 onTap: () {
                   Navigator.push(
