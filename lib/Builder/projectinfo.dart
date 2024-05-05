@@ -42,7 +42,8 @@ class _ProjectInfoState extends State<ProjectInfo> {
                 color: Colors.white,
                 child: Column(
                   children: [
-                    SizedBox(
+                    Container(
+                      color: Colors.black12,
                       height: 300,
                       width: width,
                       child: SizedBox(
@@ -50,7 +51,6 @@ class _ProjectInfoState extends State<ProjectInfo> {
                         child: CachedNetworkImage(
                           key: UniqueKey(),
                           imageUrl: widget.data['imageURl'],
-                          fit: BoxFit.cover,
                         ),
                       ),
                     ),

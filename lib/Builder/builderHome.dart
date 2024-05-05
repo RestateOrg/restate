@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:restate/Builder/Notifications.dart';
 import 'package:restate/Builder/Upload_project.dart';
 import 'package:restate/Builder/Yourprojects.dart';
 import 'package:restate/Builder/builderCart.dart';
@@ -8,7 +9,6 @@ import 'package:restate/Builder/builderMachine.dart';
 import 'package:restate/Builder/builderMaterials.dart';
 import 'package:restate/Builder/builderProfile.dart';
 import 'package:restate/Builder/mainBuilderHome.dart';
-import 'package:restate/Utils/Notificatuons.dart';
 import 'package:restate/Utils/hexcolor.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 

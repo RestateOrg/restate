@@ -133,7 +133,7 @@ class _MaterialHomeState extends State<MaterialHome> {
                                                                   as Map<String,
                                                                       dynamic>)[
                                                               'imageURl'],
-                                                      fit: BoxFit.cover,
+                                                     
                                                       placeholder: (context,
                                                               url) =>
                                                           Center(
@@ -342,8 +342,7 @@ class _MaterialHomeState extends State<MaterialHome> {
                                                                       as Map<
                                                                           String,
                                                                           dynamic>)['projectimage'],
-                                                                  fit: BoxFit
-                                                                      .cover,
+                                                                
                                                                   placeholder: (context,
                                                                           url) =>
                                                                       Center(

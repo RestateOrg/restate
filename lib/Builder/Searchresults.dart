@@ -168,7 +168,7 @@ class _SearchresultsState extends State<Searchresults> {
                               child: Card(
                                 elevation: 2,
                                 clipBehavior: Clip.antiAliasWithSaveLayer,
-                                color: Colors.amber,
+                                color: Colors.grey[100],
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(0),
                                 ),
@@ -184,7 +184,7 @@ class _SearchresultsState extends State<Searchresults> {
                                             height:
                                                 constraints.maxHeight * 0.65,
                                             decoration: BoxDecoration(
-                                              color: Colors.white,
+                                              color: Colors.black12,
                                             ),
                                             child: ClipRRect(
                                               child: CachedNetworkImage(
@@ -210,7 +210,7 @@ class _SearchresultsState extends State<Searchresults> {
                                               height:
                                                   constraints.maxHeight * 0.35,
                                               decoration: BoxDecoration(
-                                                color: Colors.white,
+                                                color: Colors.grey[100],
                                               ),
                                               child: Column(
                                                 children: [
@@ -497,7 +497,7 @@ class _SearchresultsState extends State<Searchresults> {
                               child: Card(
                                 elevation: 2,
                                 clipBehavior: Clip.antiAliasWithSaveLayer,
-                                color: Colors.amber,
+                                color: Colors.grey[100],
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(0),
                                 ),
@@ -513,7 +513,7 @@ class _SearchresultsState extends State<Searchresults> {
                                             height:
                                                 constraints.maxHeight * 0.73,
                                             decoration: BoxDecoration(
-                                              color: Colors.white,
+                                              color: Colors.black12,
                                             ),
                                             child: ClipRRect(
                                               child: CachedNetworkImage(
@@ -539,7 +539,7 @@ class _SearchresultsState extends State<Searchresults> {
                                               height:
                                                   constraints.maxHeight * 0.27,
                                               decoration: BoxDecoration(
-                                                color: Colors.white,
+                                                color: Colors.grey[100],
                                               ),
                                               child: Column(
                                                 children: [

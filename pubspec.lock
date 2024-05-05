@@ -358,6 +358,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.3.1"
+  flutter_cashfree_pg_sdk:
+    dependency: "direct main"
+    description:
+      name: flutter_cashfree_pg_sdk
+      sha256: "8ab789912066e94a97e5dfbe4e9470c36595758431c64972b67046a15ad9f706"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.2+32"
   flutter_launcher_icons:
     dependency: "direct dev"
     description:
