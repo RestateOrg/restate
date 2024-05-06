@@ -1,6 +1,4 @@
-import 'dart:async';
 import 'dart:convert';
-
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:phonepe_payment_sdk/phonepe_payment_sdk.dart';
@@ -13,7 +11,7 @@ class PhonepePayment extends StatefulWidget {
 }
 
 class _PhonepePaymentState extends State<PhonepePayment> {
-  late String environmentValue;
+  String environmentValue = "SANDBOX";
   String appId = '';
   String merchantId = 'PGTESTPAYUAT';
   bool enableLogging = true;
@@ -29,7 +27,6 @@ class _PhonepePaymentState extends State<PhonepePayment> {
 
   @override
   void initState() {
-    environmentValue = 'SANDBOX';
     initPayment();
     super.initState();
   }
@@ -42,7 +39,6 @@ class _PhonepePaymentState extends State<PhonepePayment> {
       });
     }).catchError((error) {
       handleError(error);
-      return <dynamic>{};
     });
   }
 

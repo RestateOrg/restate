@@ -12,7 +12,6 @@ import 'package:restate/firebase_options.dart';
 import 'package:restate/screens/chooseUserType.dart';
 import 'package:restate/screens/home.dart';
 import 'package:restate/screens/signIn.dart';
-import 'package:go_router/go_router.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -114,6 +113,7 @@ class _BeginState extends State<Begin> {
     }
     FirebaseMessaging messaging = FirebaseMessaging.instance;
 
+    // ignore: unused_local_variable
     NotificationSettings settings = await messaging.requestPermission(
       alert: true,
       announcement: true,

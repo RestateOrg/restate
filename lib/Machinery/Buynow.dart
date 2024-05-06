@@ -33,6 +33,8 @@ class _BuyNowState extends State<BuyNow> {
   List<String> _quantityValues = [];
   List<String> _durationvalues = [];
   List<String> _timeperiodvalues = ["Hour", "Day", "Week", "Month"];
+
+  // ignore: unused_field
   Position? _currentUserPosition;
   Future _getTheDistance() async {
     bool serviceEnabled;
