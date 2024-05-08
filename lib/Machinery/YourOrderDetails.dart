@@ -273,7 +273,6 @@ class _YourOrdersDetailsState extends State<YourOrdersDetails> {
                           querySnapshot.docs.forEach((doc) {
                             doc.reference.update({
                               "orderstatus": 'Out For Delivery',
-                              "status": "Completed"
                             });
                           });
                         });
@@ -302,6 +301,7 @@ class _YourOrdersDetailsState extends State<YourOrdersDetails> {
                           querySnapshot.docs.forEach((doc) {
                             doc.reference.update({
                               "orderstatus": 'Order Delivered',
+                              "status": "Completed"
                             });
                           });
                         });

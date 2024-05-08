@@ -69,7 +69,7 @@ class _MainBuilderHomeState extends State<MainBuilderHome> {
                 ),
               ),
               Container(
-                  color: Colors.black12,
+                  color: const Color.fromARGB(12, 0, 0, 0),
                   height: width * 0.55,
                   width: width,
                   child: StreamBuilder(
@@ -481,7 +481,7 @@ class _MainBuilderHomeState extends State<MainBuilderHome> {
               Align(
                 alignment: Alignment.topLeft,
                 child: Padding(
-                  padding: EdgeInsets.only(top: width * 0.05),
+                  padding: EdgeInsets.only(top: width * 0.05, left: 8),
                   child: Text(
                     'Materials',
                     style: TextStyle(
