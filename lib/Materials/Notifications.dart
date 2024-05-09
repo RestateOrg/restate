@@ -15,7 +15,7 @@ class _NotificationsState extends State<Notifications> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.amber,
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.amber,
         title: Text("Notifications"),
@@ -38,10 +38,10 @@ class _NotificationsState extends State<Notifications> {
               itemBuilder: (BuildContext context, int index) {
                 return Container(
                   width: MediaQuery.of(context).size.width,
-                  margin: EdgeInsets.all(10),
+                  margin: EdgeInsets.only(bottom: 10),
                   padding: EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: Color.fromARGB(70, 255, 255, 255),
+                    color: Color.fromARGB(70, 255, 224, 69),
                   ),
                   child: Column(children: [
                     Align(
@@ -71,6 +71,8 @@ class _NotificationsState extends State<Notifications> {
         .collection('materials')
         .doc(useremail)
         .collection("Notifications")
+        .orderBy('timestamp', descending: true)
+        .limit(5)
         .get();
     return querySnapshot.docs;
   }

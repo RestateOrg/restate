@@ -168,7 +168,7 @@ class _EditPageState extends State<EditPage> {
                     top: 8,
                     bottom: 8,
                   ),
-                  child: Text("Save",
+                  child: Text("Update",
                       style: TextStyle(
                         fontWeight: FontWeight.w600,
                         fontFamily: 'Roboto',

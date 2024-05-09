@@ -916,7 +916,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                                                   zipcode = deliverySnapshots[
                                                                           index]
                                                                       [
-                                                                      'zipcode'];
+                                                                      'zipCode'];
                                                                   location = deliverySnapshots[
                                                                           index]
                                                                       [
@@ -1755,7 +1755,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                                                   zipcode = deliverySnapshots[
                                                                           index]
                                                                       [
-                                                                      'zipcode'];
+                                                                      'Zipcode'];
                                                                   location = deliverySnapshots[
                                                                           index]
                                                                       [

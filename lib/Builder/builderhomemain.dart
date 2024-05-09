@@ -583,11 +583,11 @@ class _MainBuilderHomeState extends State<MainBuilderHome> {
                                                                 'Material_type']
                                                             .toString()
                                                             .length >
-                                                        19
+                                                        15
                                                     ? materialSnapshots[index][
                                                                 'Material_type']
                                                             .toString()
-                                                            .substring(0, 17) +
+                                                            .substring(0, 15) +
                                                         '...'
                                                     : materialSnapshots[index]
                                                         ['Material_type'],
@@ -629,12 +629,12 @@ class _MainBuilderHomeState extends State<MainBuilderHome> {
                                                                   ['Brand_name']
                                                               .toString()
                                                               .length >
-                                                          19
+                                                          10
                                                       ? materialSnapshots[index]
                                                                   ['Brand_name']
                                                               .toString()
                                                               .substring(
-                                                                  0, 17) +
+                                                                  0, 10) +
                                                           '...'
                                                       : materialSnapshots[index]
                                                           ['Brand_name'],

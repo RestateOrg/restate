@@ -17,6 +17,7 @@ class _EditPageState extends State<EditPage> {
   List<XFile>? images = [];
   List<String> items = [];
   List<String> brand = [];
+  bool isLoading = false;
   final List<String> _dropdownValues = [
     'KG',
     'Piece',
@@ -112,6 +113,9 @@ class _EditPageState extends State<EditPage> {
         actions: [
           GestureDetector(
             onTap: () {
+              setState(() {
+                isLoading = true;
+              });
               FirebaseFirestore.instance
                   .collection('materials')
                   .doc(useremail)
@@ -137,6 +141,7 @@ class _EditPageState extends State<EditPage> {
                       'Price_per_unit': per,
                       'Zipcode': _zipCode.text,
                     }).then((value) {
+                      isLoading = false;
                       Navigator.pop(context);
                     });
                   });
@@ -145,462 +150,483 @@ class _EditPageState extends State<EditPage> {
             },
             child: Padding(
               padding: EdgeInsets.only(right: width * 0.06),
-              child: Text("Save",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontFamily: 'Roboto',
-                    fontSize: width * 0.04,
-                  )),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: HexColor('#2A2828'),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    left: 16,
+                    right: 16,
+                    top: 8,
+                    bottom: 8,
+                  ),
+                  child: Text("Update",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        fontFamily: 'Roboto',
+                        fontSize: width * 0.04,
+                        color: Colors.white,
+                      )),
+                ),
+              ),
             ),
           )
         ],
         backgroundColor: Colors.amber,
       ),
-      backgroundColor: Colors.amber,
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.04,
-                top: width * 0.02,
-                right: width * 0.04,
-              ),
-              child: Container(
-                  decoration: BoxDecoration(
-                    color: HexColor('#F2F2F2'),
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  height: width * 0.78,
-                  child: Stack(
-                    children: [
-                      Positioned(
-                          child: Container(
+      backgroundColor: Colors.white,
+      body: isLoading == true
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.04,
+                      top: width * 0.02,
+                      right: width * 0.04,
+                    ),
+                    child: Container(
                         decoration: BoxDecoration(
-                          color: HexColor('#2A2828'),
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(10),
-                              topRight: Radius.circular(10)),
+                          color: Color.fromARGB(255, 255, 249, 222),
+                          borderRadius: BorderRadius.circular(10.0),
                         ),
-                        height: width * 0.10,
+                        height: width * 0.78,
                         child: Stack(
                           children: [
                             Positioned(
-                                top: width * 0.02,
-                                left: width * 0.03,
-                                child: Text("Material Photo",
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontFamily: 'Roboto',
-                                        fontWeight: FontWeight.w600))),
+                                child: Container(
+                              decoration: BoxDecoration(
+                                color: HexColor('#2A2828'),
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(10),
+                                    topRight: Radius.circular(10)),
+                              ),
+                              height: width * 0.10,
+                              child: Stack(
+                                children: [
+                                  Positioned(
+                                      top: width * 0.02,
+                                      left: width * 0.03,
+                                      child: Text("Material Photo",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontFamily: 'Roboto',
+                                              fontWeight: FontWeight.w600))),
+                                ],
+                              ),
+                            )),
+                            Padding(
+                              padding: EdgeInsets.only(top: width * 0.1),
+                              child: Container(
+                                child: Center(
+                                    child: PageView.builder(
+                                        itemCount:
+                                            widget.snapshot['Images'].length,
+                                        itemBuilder: (context, index) {
+                                          return Container(
+                                              child: Image.network(widget
+                                                  .snapshot['Images'][index]));
+                                        })),
+                              ),
+                            ),
                           ],
-                        ),
-                      )),
-                      Padding(
-                        padding: EdgeInsets.only(top: width * 0.1),
-                        child: Container(
-                          child: Center(
-                              child: PageView.builder(
-                                  itemCount: widget.snapshot['Images'].length,
-                                  itemBuilder: (context, index) {
-                                    return Container(
-                                        child: Image.network(
-                                            widget.snapshot['Images'][index]));
-                                  })),
-                        ),
-                      ),
-                    ],
-                  )),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.06,
-                top: width * 0.024,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Material name",
-                  style: TextStyle(
-                    fontSize: width * 0.045,
-                    fontWeight: FontWeight.w900,
-                    fontFamily: 'Roboto',
+                        )),
                   ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.02,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding:
-                      EdgeInsets.only(right: width * 0.04, left: width * 0.04),
-                  child: TextField(
-                    controller: _materialname,
-                    decoration: InputDecoration(
-                      hintText: 'Enter the materials Name',
-                      hintStyle: TextStyle(fontSize: 14.0),
-                      contentPadding: const EdgeInsets.only(
-                        left: 5,
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.06,
+                      top: width * 0.024,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Material name",
+                        style: TextStyle(
+                          fontSize: width * 0.045,
+                          fontWeight: FontWeight.w900,
+                          fontFamily: 'Roboto',
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.06,
-                top: width * 0.024,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Brand name",
-                  style: TextStyle(
-                    fontSize: width * 0.045,
-                    fontWeight: FontWeight.w900,
-                    fontFamily: 'Roboto',
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.02,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding:
-                      EdgeInsets.only(right: width * 0.04, left: width * 0.01),
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton2<String>(
-                        isExpanded: true,
-                        hint: Text(
-                          'Select Brand',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Theme.of(context).hintColor,
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.02,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            right: width * 0.04, left: width * 0.04),
+                        child: TextField(
+                          controller: _materialname,
+                          decoration: InputDecoration(
+                            hintText: 'Enter the materials Name',
+                            hintStyle: TextStyle(fontSize: 14.0),
+                            contentPadding: const EdgeInsets.only(
+                              left: 5,
+                            ),
                           ),
                         ),
-                        items: brand
-                            .map((item2) => DropdownMenuItem(
-                                  value: item2,
-                                  child: Text(
-                                    item2,
-                                    style: const TextStyle(
-                                      fontSize: 14,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.06,
+                      top: width * 0.024,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Brand name",
+                        style: TextStyle(
+                          fontSize: width * 0.045,
+                          fontWeight: FontWeight.w900,
+                          fontFamily: 'Roboto',
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.02,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            right: width * 0.04, left: width * 0.01),
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton2<String>(
+                              isExpanded: true,
+                              hint: Text(
+                                'Select Brand',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Theme.of(context).hintColor,
+                                ),
+                              ),
+                              items: brand
+                                  .map((item2) => DropdownMenuItem(
+                                        value: item2,
+                                        child: Text(
+                                          item2,
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ))
+                                  .toList(),
+                              value: brandname,
+                              onChanged: (value) {
+                                setState(() {
+                                  brandname = value;
+                                });
+                              },
+                              buttonStyleData: const ButtonStyleData(
+                                padding: EdgeInsets.symmetric(horizontal: 16),
+                                height: 40,
+                                width: 200,
+                              ),
+                              dropdownStyleData: const DropdownStyleData(
+                                maxHeight: 200,
+                              ),
+                              menuItemStyleData: const MenuItemStyleData(
+                                height: 40,
+                              ),
+                              dropdownSearchData: DropdownSearchData(
+                                searchController: search,
+                                searchInnerWidgetHeight: 50,
+                                searchInnerWidget: Container(
+                                  height: 50,
+                                  padding: const EdgeInsets.only(
+                                    top: 8,
+                                    bottom: 4,
+                                    right: 8,
+                                    left: 8,
+                                  ),
+                                  child: TextFormField(
+                                    expands: true,
+                                    maxLines: null,
+                                    controller: search,
+                                    decoration: InputDecoration(
+                                      isDense: true,
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                        vertical: 8,
+                                      ),
+                                      hintText: 'Search for an item...',
+                                      hintStyle: const TextStyle(fontSize: 12),
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
                                     ),
                                   ),
-                                ))
-                            .toList(),
-                        value: brandname,
-                        onChanged: (value) {
-                          setState(() {
-                            brandname = value;
-                          });
-                        },
-                        buttonStyleData: const ButtonStyleData(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                          height: 40,
-                          width: 200,
-                        ),
-                        dropdownStyleData: const DropdownStyleData(
-                          maxHeight: 200,
-                        ),
-                        menuItemStyleData: const MenuItemStyleData(
-                          height: 40,
-                        ),
-                        dropdownSearchData: DropdownSearchData(
-                          searchController: search,
-                          searchInnerWidgetHeight: 50,
-                          searchInnerWidget: Container(
-                            height: 50,
-                            padding: const EdgeInsets.only(
-                              top: 8,
-                              bottom: 4,
-                              right: 8,
-                              left: 8,
-                            ),
-                            child: TextFormField(
-                              expands: true,
-                              maxLines: null,
-                              controller: search,
-                              decoration: InputDecoration(
-                                isDense: true,
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 10,
-                                  vertical: 8,
                                 ),
-                                hintText: 'Search for an item...',
-                                hintStyle: const TextStyle(fontSize: 12),
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
+                                searchMatchFn: (item2, searchValue) {
+                                  return item2.value
+                                      .toString()
+                                      .toLowerCase()
+                                      .contains(searchValue.toLowerCase());
+                                },
+                              ),
+                              //This to clear the search value when you close the menu
+                              onMenuStateChange: (isOpen) {
+                                if (!isOpen) {
+                                  search.clear();
+                                }
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.06,
+                      top: width * 0.024,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Material Type",
+                        style: TextStyle(
+                          fontSize: width * 0.045,
+                          fontWeight: FontWeight.w900,
+                          fontFamily: 'Roboto',
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.03,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton2<String>(
+                          isExpanded: true,
+                          hint: Text(
+                            'Select Type',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Theme.of(context).hintColor,
+                            ),
+                          ),
+                          items: items
+                              .map((item) => DropdownMenuItem(
+                                    value: item,
+                                    child: Text(
+                                      item,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                      ),
+                                    ),
+                                  ))
+                              .toList(),
+                          value: materialtype,
+                          onChanged: (value) {
+                            setState(() {
+                              materialtype = value;
+                            });
+                          },
+                          buttonStyleData: const ButtonStyleData(
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            height: 40,
+                            width: 200,
+                          ),
+                          dropdownStyleData: const DropdownStyleData(
+                            maxHeight: 200,
+                          ),
+                          menuItemStyleData: const MenuItemStyleData(
+                            height: 40,
+                          ),
+                          dropdownSearchData: DropdownSearchData(
+                            searchController: search,
+                            searchInnerWidgetHeight: 50,
+                            searchInnerWidget: Container(
+                              height: 50,
+                              padding: const EdgeInsets.only(
+                                top: 8,
+                                bottom: 4,
+                                right: 8,
+                                left: 8,
+                              ),
+                              child: TextFormField(
+                                expands: true,
+                                maxLines: null,
+                                controller: search,
+                                decoration: InputDecoration(
+                                  isDense: true,
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 10,
+                                    vertical: 8,
+                                  ),
+                                  hintText: 'Search for an item...',
+                                  hintStyle: const TextStyle(fontSize: 12),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
                                 ),
                               ),
                             ),
+                            searchMatchFn: (item, searchValue) {
+                              return item.value
+                                  .toString()
+                                  .toLowerCase()
+                                  .contains(searchValue.toLowerCase());
+                            },
                           ),
-                          searchMatchFn: (item2, searchValue) {
-                            return item2.value
-                                .toString()
-                                .toLowerCase()
-                                .contains(searchValue.toLowerCase());
+                          //This to clear the search value when you close the menu
+                          onMenuStateChange: (isOpen) {
+                            if (!isOpen) {
+                              search.clear();
+                            }
                           },
                         ),
-                        //This to clear the search value when you close the menu
-                        onMenuStateChange: (isOpen) {
-                          if (!isOpen) {
-                            search.clear();
-                          }
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.06,
+                      top: width * 0.024,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Price Per",
+                        style: TextStyle(
+                          fontSize: width * 0.045,
+                          fontWeight: FontWeight.w900,
+                          fontFamily: 'Roboto',
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(left: width * 0.09),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: DropdownButton<String>(
+                        underline: Container(
+                          height: 1,
+                          decoration: BoxDecoration(color: Colors.black),
+                        ),
+                        value: per,
+                        items: _dropdownValues.map((value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(
+                              value,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Theme.of(context).hintColor,
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (newValue) {
+                          setState(() {
+                            per = newValue!;
+                          });
                         },
                       ),
                     ),
                   ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.06,
-                top: width * 0.024,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Material Type",
-                  style: TextStyle(
-                    fontSize: width * 0.045,
-                    fontWeight: FontWeight.w900,
-                    fontFamily: 'Roboto',
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.03,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton2<String>(
-                    isExpanded: true,
-                    hint: Text(
-                      'Select Type',
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Theme.of(context).hintColor,
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.06,
+                      top: width * 0.024,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Price Per $per",
+                        style: TextStyle(
+                          fontSize: width * 0.045,
+                          fontWeight: FontWeight.w900,
+                          fontFamily: 'Roboto',
+                        ),
                       ),
                     ),
-                    items: items
-                        .map((item) => DropdownMenuItem(
-                              value: item,
-                              child: Text(
-                                item,
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ))
-                        .toList(),
-                    value: materialtype,
-                    onChanged: (value) {
-                      setState(() {
-                        materialtype = value;
-                      });
-                    },
-                    buttonStyleData: const ButtonStyleData(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      height: 40,
-                      width: 200,
+                  ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.02,
                     ),
-                    dropdownStyleData: const DropdownStyleData(
-                      maxHeight: 200,
-                    ),
-                    menuItemStyleData: const MenuItemStyleData(
-                      height: 40,
-                    ),
-                    dropdownSearchData: DropdownSearchData(
-                      searchController: search,
-                      searchInnerWidgetHeight: 50,
-                      searchInnerWidget: Container(
-                        height: 50,
-                        padding: const EdgeInsets.only(
-                          top: 8,
-                          bottom: 4,
-                          right: 8,
-                          left: 8,
-                        ),
-                        child: TextFormField(
-                          expands: true,
-                          maxLines: null,
-                          controller: search,
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            right: width * 0.04, left: width * 0.04),
+                        child: TextField(
+                          controller: _priceper,
                           decoration: InputDecoration(
-                            isDense: true,
-                            contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 8,
-                            ),
-                            hintText: 'Search for an item...',
-                            hintStyle: const TextStyle(fontSize: 12),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8),
+                            hintText: 'Enter the Price per $per',
+                            hintStyle: TextStyle(fontSize: 14.0),
+                            contentPadding: const EdgeInsets.only(
+                              left: 5,
                             ),
                           ),
                         ),
                       ),
-                      searchMatchFn: (item, searchValue) {
-                        return item.value
-                            .toString()
-                            .toLowerCase()
-                            .contains(searchValue.toLowerCase());
-                      },
                     ),
-                    //This to clear the search value when you close the menu
-                    onMenuStateChange: (isOpen) {
-                      if (!isOpen) {
-                        search.clear();
-                      }
-                    },
                   ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.06,
-                top: width * 0.024,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Price Per",
-                  style: TextStyle(
-                    fontSize: width * 0.045,
-                    fontWeight: FontWeight.w900,
-                    fontFamily: 'Roboto',
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(left: width * 0.09),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: DropdownButton<String>(
-                  underline: Container(
-                    height: 1,
-                    decoration: BoxDecoration(color: Colors.black),
-                  ),
-                  value: per,
-                  items: _dropdownValues.map((value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.06,
+                      top: width * 0.024,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
                       child: Text(
-                        value,
+                        "Zipcode",
                         style: TextStyle(
-                          fontSize: 14,
-                          color: Theme.of(context).hintColor,
+                          fontSize: width * 0.045,
+                          fontWeight: FontWeight.w900,
+                          fontFamily: 'Roboto',
                         ),
                       ),
-                    );
-                  }).toList(),
-                  onChanged: (newValue) {
-                    setState(() {
-                      per = newValue!;
-                    });
-                  },
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.06,
-                top: width * 0.024,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Price Per $per",
-                  style: TextStyle(
-                    fontSize: width * 0.045,
-                    fontWeight: FontWeight.w900,
-                    fontFamily: 'Roboto',
+                    ),
                   ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.02,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding:
-                      EdgeInsets.only(right: width * 0.04, left: width * 0.04),
-                  child: TextField(
-                    controller: _priceper,
-                    decoration: InputDecoration(
-                      hintText: 'Enter the Price per $per',
-                      hintStyle: TextStyle(fontSize: 14.0),
-                      contentPadding: const EdgeInsets.only(
-                        left: 5,
+                  Padding(
+                    padding: EdgeInsets.only(
+                      left: width * 0.02,
+                      bottom: width * 0.03,
+                    ),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            right: width * 0.04, left: width * 0.04),
+                        child: TextField(
+                          controller: _zipCode,
+                          decoration: InputDecoration(
+                            hintText: 'Enter the Zipcode',
+                            hintStyle: TextStyle(fontSize: 14.0),
+                            contentPadding: const EdgeInsets.only(
+                              left: 5,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
+                ],
               ),
             ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.06,
-                top: width * 0.024,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Zipcode",
-                  style: TextStyle(
-                    fontSize: width * 0.045,
-                    fontWeight: FontWeight.w900,
-                    fontFamily: 'Roboto',
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: EdgeInsets.only(
-                left: width * 0.02,
-                bottom: width * 0.03,
-              ),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Padding(
-                  padding:
-                      EdgeInsets.only(right: width * 0.04, left: width * 0.04),
-                  child: TextField(
-                    controller: _zipCode,
-                    decoration: InputDecoration(
-                      hintText: 'Enter the Zipcode',
-                      hintStyle: TextStyle(fontSize: 14.0),
-                      contentPadding: const EdgeInsets.only(
-                        left: 5,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 

@@ -39,7 +39,7 @@ class _NotificationsState extends State<Notifications> {
                 return Container(
                   width: MediaQuery.of(context).size.width,
                   margin: EdgeInsets.all(10),
-                  padding: EdgeInsets.all(10),
+                  padding: EdgeInsets.only(bottom: 10),
                   decoration: BoxDecoration(
                     color: Color.fromARGB(134, 255, 187, 14),
                   ),
@@ -71,6 +71,8 @@ class _NotificationsState extends State<Notifications> {
         .collection('machinery')
         .doc(useremail)
         .collection("Notifications")
+        .orderBy('timestamp', descending: true)
+        .limit(5)
         .get();
     return querySnapshot.docs;
   }

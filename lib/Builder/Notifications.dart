@@ -38,7 +38,7 @@ class _NotificationsState extends State<Notifications> {
               itemBuilder: (BuildContext context, int index) {
                 return Container(
                   width: MediaQuery.of(context).size.width,
-                  margin: EdgeInsets.all(10),
+                  margin: EdgeInsets.only(bottom: 10),
                   padding: EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     color: Color.fromARGB(134, 255, 187, 14),

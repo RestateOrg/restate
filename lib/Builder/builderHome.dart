@@ -9,6 +9,7 @@ import 'package:restate/Builder/builderMachine.dart';
 import 'package:restate/Builder/builderMaterials.dart';
 import 'package:restate/Builder/builderProfile.dart';
 import 'package:restate/Builder/builderhomemain.dart';
+import 'package:restate/Builder/wishlist.dart';
 import 'package:restate/Utils/hexcolor.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -546,18 +547,23 @@ class CustomDrawer extends StatelessWidget {
                 ),
                 ListTile(
                   leading: FaIcon(
-                    FontAwesomeIcons.cogs,
+                    FontAwesomeIcons.solidHeart,
                     color: Colors.black,
                   ),
                   title: Text(
-                    'Settings',
+                    'Wishlist',
                     style: TextStyle(
                       fontFamily: 'Roboto',
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   onTap: () {
-                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => Wishlist(),
+                      ),
+                    );
                   },
                 ),
                 Divider(
