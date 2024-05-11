@@ -1,4 +1,4 @@
-package com.example.restate
+package `in`.restateapp.restate
 
 import io.flutter.embedding.android.FlutterActivity
 
