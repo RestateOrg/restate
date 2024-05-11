@@ -1,9 +1,5 @@
-import 'dart:convert';
-
-import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
-import 'package:http/http.dart' as http;
 
 class RazorPayment extends StatefulWidget {
   final int total;
@@ -15,7 +11,6 @@ class RazorPayment extends StatefulWidget {
 
 class _RazorPaymentState extends State<RazorPayment> {
   var _razorpay = Razorpay();
-  static String orderIdurl = "https://api.razorpay.com/v1/orders";
   var options;
 
   @override

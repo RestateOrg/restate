@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:restate/Utils/hexcolor.dart';
 import 'package:restate/screens/builderRegistration.dart';
 import 'package:restate/screens/machinaryRegistration.dart';
 import 'package:restate/screens/materialsRegistation.dart';
