@@ -3,11 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-// ignore: unused_import
 import 'package:restate/Builder/PaymentPage.dart';
 import 'package:restate/Builder/Searchresults.dart';
 import 'package:restate/Builder/deliveryaddress.dart';
-import 'package:restate/Builder/phonepesdk.dart';
 import 'package:restate/Utils/hexcolor.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
@@ -58,7 +56,7 @@ class _BuilderCartState extends State<BuilderCart> {
     calculateTotal();
   }
 
-  void calculateTotal() {
+  Future<void> calculateTotal() async {
     int total = 0;
     int discount = 0;
     int delivery = 0;
@@ -75,7 +73,7 @@ class _BuilderCartState extends State<BuilderCart> {
 
     setState(() {
       totaldiscount = discount;
-      totalamount = total;
+      totalamount = total + (total * 0.02).toInt();
       totaldelivery = delivery;
     });
   }
@@ -121,10 +119,14 @@ class _BuilderCartState extends State<BuilderCart> {
     } else {
       _price[index] = int.parse(snapshot.data![index]['Price_per']);
       _price[index] = _price[index] * _quantity[index];
-      _delivery[index] =
-          int.parse(snapshot.data![index]['delivery_inside_city']) -
-              int.parse(snapshot.data![index]['Price_per']);
-      _delivery[index] = _delivery[index] * _quantity[index];
+      Map<String, dynamic> product =
+          snapshot.data![index].data() as Map<String, dynamic>;
+      if (product.containsKey("delivery_inside_city")) {
+        _delivery[index] =
+            int.parse(snapshot.data![index]['delivery_inside_city']) -
+                int.parse(snapshot.data![index]['Price_per']);
+        _delivery[index] = _delivery[index] * _quantity[index];
+      }
       _discount[index] = _price[index] * 0.1;
       _price[index] = _price[index] + _discount[index].toInt();
     }
@@ -175,9 +177,13 @@ class _BuilderCartState extends State<BuilderCart> {
     if (snapshot.data![index]['type'] == 'material') {
       _price[index] = int.parse(snapshot.data![index]['Price_per']);
       _price[index] = _price[index] * _quantity[index];
-      _delivery[index] =
-          int.parse(snapshot.data![index]['delivery_inside_city']) -
-              int.parse(snapshot.data![index]['Price_per']);
+      Map<String, dynamic> product =
+          snapshot.data![index].data() as Map<String, dynamic>;
+      if (product.containsKey("delivery_inside_city")) {
+        _delivery[index] =
+            int.parse(snapshot.data![index]['delivery_inside_city']) -
+                int.parse(snapshot.data![index]['Price_per']);
+      }
       _discount[index] = _price[index] * 0.1;
       _price[index] = _price[index] + _discount[index].toInt();
     }
@@ -220,7 +226,24 @@ class _BuilderCartState extends State<BuilderCart> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => PhonepePayment(),
+                  builder: (context) => PaymentPage(
+                    items: items,
+                    totalamount: totalamount,
+                    totaldiscount: totaldiscount,
+                    totaldelivery: totaldelivery,
+                    location: location,
+                    city: city,
+                    state: state,
+                    name: name,
+                    projectimage: projectimage,
+                    quantity: _quantity,
+                    timeperiod: timeperiod,
+                    time: time,
+                    projecttype: projecttype,
+                    price: _price,
+                    discount: _discount,
+                    delivery: _delivery,
+                  ),
                 ),
               );
             },
@@ -358,10 +381,17 @@ class _BuilderCartState extends State<BuilderCart> {
                             if (snapshot.data![index]['type'] == 'machinery') {
                               _delivery.add(0);
                             } else {
-                              _delivery.add(int.parse(snapshot.data![index]
-                                      ['delivery_inside_city']) -
-                                  int.parse(
-                                      snapshot.data![index]['Price_per']));
+                              Map<String, dynamic> product =
+                                  snapshot.data![index].data()
+                                      as Map<String, dynamic>;
+                              if (product.containsKey("delivery_inside_city")) {
+                                _delivery.add(int.parse(snapshot.data![index]
+                                        ['delivery_inside_city']) -
+                                    int.parse(
+                                        snapshot.data![index]['Price_per']));
+                              } else {
+                                _delivery.add(0);
+                              }
                             }
                           } else if (flag == 0 &&
                               index == (snapshot.data!.length) - 1) {
@@ -379,10 +409,17 @@ class _BuilderCartState extends State<BuilderCart> {
                             if (snapshot.data![index]['type'] == 'machinery') {
                               _delivery.add(0);
                             } else {
-                              _delivery.add(int.parse(snapshot.data![index]
-                                      ['delivery_inside_city']) -
-                                  int.parse(
-                                      snapshot.data![index]['Price_per']));
+                              Map<String, dynamic> product =
+                                  snapshot.data![index].data()
+                                      as Map<String, dynamic>;
+                              if (product.containsKey("delivery_inside_city")) {
+                                _delivery.add(int.parse(snapshot.data![index]
+                                        ['delivery_inside_city']) -
+                                    int.parse(
+                                        snapshot.data![index]['Price_per']));
+                              } else {
+                                _delivery.add(0);
+                              }
                             }
                             flag = 1;
                             for (int i = 0; i < snapshot.data!.length; i++) {
@@ -428,9 +465,17 @@ class _BuilderCartState extends State<BuilderCart> {
                                 _price[i] =
                                     int.parse(snapshot.data![i]['Price_per']);
                                 _price[i] = _price[i] * _quantity[i];
-                                _delivery[i] = int.parse(snapshot.data![i]
-                                        ['delivery_inside_city']) -
-                                    int.parse(snapshot.data![i]['Price_per']);
+                                Map<String, dynamic> product =
+                                    snapshot.data![index].data()
+                                        as Map<String, dynamic>;
+                                if (product
+                                    .containsKey("delivery_inside_city")) {
+                                  _delivery[i] = int.parse(snapshot.data![i]
+                                          ['delivery_inside_city']) -
+                                      int.parse(snapshot.data![i]['Price_per']);
+                                } else {
+                                  _delivery.add(0);
+                                }
                                 _discount[i] = _price[i] * 0.1;
                                 _price[i] = _price[i] + _discount[i].toInt();
                               }
@@ -708,6 +753,7 @@ class _BuilderCartState extends State<BuilderCart> {
                                             onChanged: (String? newValue) {
                                               setState(() {
                                                 timeperiod[index] = newValue!;
+                                                time[index] = "1";
                                               });
                                               if (timeperiod[index] == 'Hour') {
                                                 _price[index] = int.parse(
@@ -1074,6 +1120,55 @@ class _BuilderCartState extends State<BuilderCart> {
                                       Text(" Free Delivery",
                                           style:
                                               TextStyle(color: Colors.green)),
+                                      Spacer(),
+                                      GestureDetector(
+                                        onTap: () async {
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  title: Text('Delete'),
+                                                  content: Text(
+                                                      'Do You Want to Delete this Item?'),
+                                                  actions: <Widget>[
+                                                    TextButton(
+                                                      child: Text('Cancel'),
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pop(); // Dismiss the dialog
+                                                      },
+                                                    ),
+                                                    TextButton(
+                                                      child: Text('Delete'),
+                                                      onPressed: () async {
+                                                        _price[index] = 0;
+                                                        _quantity[index] = 0;
+                                                        _delivery[index] = 0;
+                                                        _discount[index] = 0;
+                                                        setState(() {});
+                                                        calculateTotal();
+                                                        firestore
+                                                            .collection(
+                                                                'builders')
+                                                            .doc(useremail)
+                                                            .collection('Cart')
+                                                            .doc(snapshot
+                                                                .data![index]
+                                                                .id)
+                                                            .delete();
+                                                        Navigator.pop(context);
+                                                        setState(() {});
+                                                      },
+                                                    ),
+                                                  ],
+                                                );
+                                              });
+                                        },
+                                        child: Icon(
+                                          Icons.delete,
+                                          color: Colors.black38,
+                                        ),
+                                      )
                                     ],
                                   ),
                                 )
@@ -1251,6 +1346,56 @@ class _BuilderCartState extends State<BuilderCart> {
                                         "Delivered Within ${snapshot.data![index]['delivered_within']}",
                                         style: TextStyle(color: Colors.black54),
                                       ),
+                                      Spacer(),
+                                      GestureDetector(
+                                        onTap: () async {
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  title: Text('Delete'),
+                                                  content: Text(
+                                                      'Do You Want to Delete this Item?'),
+                                                  actions: <Widget>[
+                                                    TextButton(
+                                                      child: Text('Cancel'),
+                                                      onPressed: () {
+                                                        Navigator.of(context)
+                                                            .pop(); // Dismiss the dialog
+                                                      },
+                                                    ),
+                                                    TextButton(
+                                                      child: Text('Delete'),
+                                                      onPressed: () async {
+                                                        _price[index] = 0;
+                                                        _quantity[index] = 0;
+                                                        _delivery[index] = 0;
+                                                        _discount[index] = 0;
+
+                                                        setState(() {});
+                                                        calculateTotal();
+                                                        firestore
+                                                            .collection(
+                                                                'builders')
+                                                            .doc(useremail)
+                                                            .collection('Cart')
+                                                            .doc(snapshot
+                                                                .data![index]
+                                                                .id)
+                                                            .delete();
+                                                        Navigator.pop(context);
+                                                        setState(() {});
+                                                      },
+                                                    ),
+                                                  ],
+                                                );
+                                              });
+                                        },
+                                        child: Icon(
+                                          Icons.delete,
+                                          color: Colors.black38,
+                                        ),
+                                      )
                                     ],
                                   ),
                                 )

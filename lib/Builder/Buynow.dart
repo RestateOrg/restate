@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:restate/Builder/Razorpay.dart';
 import 'package:restate/Builder/Upload_project.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:restate/Builder/ordercomplete.dart';
@@ -50,7 +51,7 @@ class _BuyNowState extends State<BuyNow> {
   int inorout = 0;
   late bool deliveryavailable;
   late bool deliveryoutsidecity;
-  Future<void> order() async {
+  Future<void> order(String orderId) async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     DocumentReference projectRef = firestore
         .collection('builders')
@@ -79,7 +80,7 @@ class _BuyNowState extends State<BuyNow> {
         'status': 'Order Not Yet Accepted',
         'useremail': useremail,
         'order_name': name,
-        'order_id': projectRef.id,
+        'order_id': orderId,
         'order_type': 'machinery',
         'projecttype': projecttype,
         'order_date': DateTime.now(),
@@ -100,7 +101,7 @@ class _BuyNowState extends State<BuyNow> {
         'orderstatus': 'Order Not Yet Accepted',
         'useremail': useremail,
         'order_name': name,
-        'order_id': projectRef.id,
+        'order_id': orderId,
         'order_type': 'machinery',
         'projecttype': projecttype,
         'order_date': DateTime.now(),
@@ -126,7 +127,7 @@ class _BuyNowState extends State<BuyNow> {
         'status': 'Order Not Yet Accepted',
         'useremail': useremail,
         'order_name': name,
-        'order_id': projectRef.id,
+        'order_id': orderId,
         'order_type': 'material',
         'projecttype': projecttype,
         'order_date': DateTime.now(),
@@ -145,7 +146,7 @@ class _BuyNowState extends State<BuyNow> {
         'orderstatus': 'Order Not Yet Accepted',
         'useremail': useremail,
         'order_name': name,
-        'order_id': projectRef.id,
+        'order_id': orderId,
         'order_type': 'material',
         'projecttype': projecttype,
         'order_date': DateTime.now(),
@@ -321,19 +322,19 @@ class _BuyNowState extends State<BuyNow> {
       if (timeperiod == "Hour") {
         total = int.parse(time) * int.parse(widget.data['hourly']);
         total = total * int.parse(quantity);
-        total += (total * 0.05).toInt();
+        total += (total * 0.02).toInt();
       } else if (timeperiod == "Day") {
         total = int.parse(time) * int.parse(widget.data['day']);
         total = total * int.parse(quantity);
-        total += (total * 0.05).toInt();
+        total += (total * 0.02).toInt();
       } else if (timeperiod == "Week") {
         total = int.parse(time) * int.parse(widget.data['week']);
         total = total * int.parse(quantity);
-        total += (total * 0.05).toInt();
+        total += (total * 0.02).toInt();
       } else if (timeperiod == "Month") {
         total = int.parse(time) * int.parse(widget.data['month']);
         total = total * int.parse(quantity);
-        total += (total * 0.05).toInt();
+        total += (total * 0.02).toInt();
       }
       discount = (total * 0.1).toInt();
     } else {
@@ -341,7 +342,7 @@ class _BuyNowState extends State<BuyNow> {
         total = int.parse(widget.data['Price_per']);
         total = total * int.parse(quantity);
         deliveryCharges = 0;
-        total += (total * 0.05).toInt();
+        total += (total * 0.02).toInt();
         discount = (total * 0.1).toInt();
       });
     }
@@ -364,7 +365,7 @@ class _BuyNowState extends State<BuyNow> {
           deliveryCharges = deliveryCharges * int.parse(quantity);
           total = int.parse(widget.data['delivery_inside_city']);
           total = total * int.parse(quantity);
-          total += (total * 0.05).toInt();
+          total += (total * 0.02).toInt();
           discount = (total * 0.1).toInt();
         }
         if (inorout == 1) {
@@ -383,7 +384,7 @@ class _BuyNowState extends State<BuyNow> {
           deliveryCharges *= distanceInKilometers.toInt();
           total += deliveryCharges;
           total = total * int.parse(quantity);
-          total += (total * 0.05).toInt();
+          total += (total * 0.02).toInt();
           discount = (total * 0.1).toInt();
         }
         if (inorout == 0) {
@@ -392,7 +393,7 @@ class _BuyNowState extends State<BuyNow> {
               int.parse(widget.data['Price_per']);
           deliveryCharges = deliveryCharges * int.parse(quantity);
           total = total * int.parse(quantity);
-          total += (total * 0.05).toInt();
+          total += (total * 0.02).toInt();
           discount = (total * 0.1).toInt();
         }
       }
@@ -519,26 +520,42 @@ class _BuyNowState extends State<BuyNow> {
                                 color: Colors.amber[600],
                                 child: TextButton(
                                   onPressed: () async {
-                                    setState(() {
-                                      isLoading =
-                                          true; // Add a boolean variable to track loading state
-                                    });
+                                    Map<String, dynamic> result =
+                                        await Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            RazorPayment(total: total),
+                                      ),
+                                    );
 
-                                    await order();
+                                    if (result['status'] == "success") {
+                                      setState(() {
+                                        isLoading = true;
+                                      });
 
-                                    setState(() {
-                                      isLoading =
-                                          false; // Set loading state to false after order function is complete
-                                      Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => OrderComplete(),
-                                        ),
-                                      );
-                                    });
+                                      await order(result['orderId']);
+
+                                      setState(() {
+                                        isLoading = false;
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                OrderComplete(),
+                                          ),
+                                        );
+                                      });
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(SnackBar(
+                                        content: Text('Payment Failed'),
+                                        backgroundColor: Colors.red,
+                                      ));
+                                    }
                                   },
                                   child: Text(
-                                    "Finish",
+                                    "Proceed to Payment",
                                     style: TextStyle(
                                       color: Colors.white,
                                     ),
@@ -1046,22 +1063,22 @@ class _BuyNowState extends State<BuyNow> {
                                 total = int.parse(time) *
                                     int.parse(widget.data['hourly']);
                                 total = total * int.parse(quantity);
-                                total += (total * 0.05).toInt();
+                                total += (total * 0.02).toInt();
                               } else if (timeperiod == "Day") {
                                 total = int.parse(time) *
                                     int.parse(widget.data['day']);
                                 total = total * int.parse(quantity);
-                                total += (total * 0.05).toInt();
+                                total += (total * 0.02).toInt();
                               } else if (timeperiod == "Week") {
                                 total = int.parse(time) *
                                     int.parse(widget.data['week']);
                                 total = total * int.parse(quantity);
-                                total += (total * 0.05).toInt();
+                                total += (total * 0.02).toInt();
                               } else if (timeperiod == "Month") {
                                 total = int.parse(time) *
                                     int.parse(widget.data['month']);
                                 total = total * int.parse(quantity);
-                                total += (total * 0.05).toInt();
+                                total += (total * 0.02).toInt();
                               }
                             });
                             setState(() {
@@ -1102,22 +1119,22 @@ class _BuyNowState extends State<BuyNow> {
                                 total = int.parse(time) *
                                     int.parse(widget.data['hourly']);
                                 total = total * int.parse(quantity);
-                                total += (total * 0.05).toInt();
+                                total += (total * 0.02).toInt();
                               } else if (timeperiod == "Day") {
                                 total = int.parse(time) *
                                     int.parse(widget.data['day']);
                                 total = total * int.parse(quantity);
-                                total += (total * 0.05).toInt();
+                                total += (total * 0.02).toInt();
                               } else if (timeperiod == "Week") {
                                 total = int.parse(time) *
                                     int.parse(widget.data['week']);
                                 total = total * int.parse(quantity);
-                                total += (total * 0.05).toInt();
+                                total += (total * 0.02).toInt();
                               } else if (timeperiod == "Month") {
                                 total = int.parse(time) *
                                     int.parse(widget.data['month']);
                                 total = total * int.parse(quantity);
-                                total += (total * 0.05).toInt();
+                                total += (total * 0.02).toInt();
                               }
                             });
                             setState(() {
@@ -1163,22 +1180,22 @@ class _BuyNowState extends State<BuyNow> {
                                 total = int.parse(time) *
                                     int.parse(widget.data['hourly']);
                                 total = total * int.parse(quantity);
-                                total += (total * 0.05).toInt();
+                                total += (total * 0.02).toInt();
                               } else if (timeperiod == "Day") {
                                 total = int.parse(time) *
                                     int.parse(widget.data['day']);
                                 total = total * int.parse(quantity);
-                                total += (total * 0.05).toInt();
+                                total += (total * 0.02).toInt();
                               } else if (timeperiod == "Week") {
                                 total = int.parse(time) *
                                     int.parse(widget.data['week']);
                                 total = total * int.parse(quantity);
-                                total += (total * 0.05).toInt();
+                                total += (total * 0.02).toInt();
                               } else if (timeperiod == "Month") {
                                 total = int.parse(time) *
                                     int.parse(widget.data['month']);
                                 total = total * int.parse(quantity);
-                                total += (total * 0.05).toInt();
+                                total += (total * 0.02).toInt();
                               }
                               if (timeperiod == "Month") {
                                 setState(() {
@@ -1539,7 +1556,7 @@ class _BuyNowState extends State<BuyNow> {
                               quantity = newValue!;
                               total = int.parse(widget.data['Price_per']) *
                                   int.parse(quantity);
-                              total += (total * 0.05).toInt();
+                              total += (total * 0.02).toInt();
                             });
                             setState(() {
                               discount = (total * 0.1).toInt();
@@ -1548,22 +1565,24 @@ class _BuyNowState extends State<BuyNow> {
                         ),
                       ],
                     ),
-                    Row(
-                      children: [
-                        Checkbox(
-                          value: _isChecked,
-                          onChanged: (bool? newValue) {
-                            setState(() {
-                              _isChecked = newValue ?? false;
-                              _isChecked
-                                  ? CalculateDeliveryCharges()
-                                  : assignvalues();
-                            });
-                          },
-                        ),
-                        Text("Delivery Required")
-                      ],
-                    ),
+                    widget.data.containsKey("delivery_inside_city")
+                        ? Row(
+                            children: [
+                              Checkbox(
+                                value: _isChecked,
+                                onChanged: (bool? newValue) {
+                                  setState(() {
+                                    _isChecked = newValue ?? false;
+                                    _isChecked
+                                        ? CalculateDeliveryCharges()
+                                        : assignvalues();
+                                  });
+                                },
+                              ),
+                              Text("Delivery Required")
+                            ],
+                          )
+                        : Container(),
                     Divider(thickness: 1),
                     Padding(
                       padding: const EdgeInsets.only(top: 20.0),
@@ -1627,7 +1646,59 @@ class _BuyNowState extends State<BuyNow> {
           state: currentStep > 2 ? StepState.complete : StepState.indexed,
           isActive: currentStep >= 2,
           title: Text('Payment', style: TextStyle(fontSize: 14)),
-          content: Container(),
+          content: Column(children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 20.0),
+              child: Row(children: [
+                Text(
+                  "Price Details",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ]),
+            ),
+            Padding(
+              padding: EdgeInsets.only(top: 10),
+              child: Row(children: [
+                Text("Price"),
+                Spacer(),
+                Text("₹${total + discount}")
+              ]),
+            ),
+            Row(
+              children: [
+                Text("Discount"),
+                Spacer(),
+                Text("₹ $discount", style: TextStyle(color: Colors.green)),
+              ],
+            ),
+            Row(
+              children: [
+                Text("Delivery Charges"),
+                Spacer(),
+                Text(deliveryCharges == 0 ? "Free" : "₹ $deliveryCharges")
+              ],
+            ),
+            Divider(),
+            Row(
+              children: [
+                Text(
+                  "Total Amount",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Spacer(),
+                Text(
+                  "₹${total}",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                )
+              ],
+            ),
+            Divider(),
+            Text(
+              "You will save ₹ $discount on this order",
+              style:
+                  TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
+            ),
+          ]),
         ),
       ];
 }

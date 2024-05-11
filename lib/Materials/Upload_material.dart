@@ -437,6 +437,7 @@ class _UploadMaterialState extends State<UploadMaterial> {
               'delivered_within': _deliveredwithin.text,
               'rating': 0,
               'rating_count': 0,
+              'useremail': useremail,
               'timestamp': formattedDate,
             }).then(
               (value) {

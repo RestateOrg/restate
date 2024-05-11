@@ -3,8 +3,8 @@ import 'package:http/http.dart' as http;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:restate/Builder/Razorpay.dart';
 import 'package:restate/Builder/ordercomplete.dart';
-import 'package:restate/Builder/upipayment.dart';
 
 class PaymentPage extends StatefulWidget {
   final List<DocumentSnapshot> items;
@@ -58,7 +58,7 @@ class _PaymentPageState extends State<PaymentPage> {
     super.initState();
   }
 
-  Future<void> storedata() async {
+  Future<void> storedata(String orderId) async {
     final firestore = FirebaseFirestore.instance;
     for (int i = 0; i < widget.items.length; i++) {
       DocumentReference projectRef = firestore
@@ -91,7 +91,7 @@ class _PaymentPageState extends State<PaymentPage> {
           'name': widget.name,
           'rating given': false,
           'order_name': widget.name,
-          'order_id': projectRef.id,
+          'order_id': orderId,
           'order_type': 'machinery',
           'projecttype': widget.projecttype,
           'order_date': DateTime.now(),
@@ -112,7 +112,7 @@ class _PaymentPageState extends State<PaymentPage> {
           'orderstatus': 'Order Not Yet Accepted',
           'useremail': useremail,
           'order_name': widget.name,
-          'order_id': projectRef.id,
+          'order_id': orderId,
           'order_type': 'machinery',
           'projecttype': widget.projecttype,
           'order_date': DateTime.now(),
@@ -138,7 +138,7 @@ class _PaymentPageState extends State<PaymentPage> {
           'status': 'Order Not Yet Accepted',
           'useremail': useremail,
           'order_name': widget.name,
-          'order_id': projectRef.id,
+          'order_id': orderId,
           'order_type': 'material',
           'projecttype': widget.projecttype,
           'order_date': DateTime.now(),
@@ -157,15 +157,49 @@ class _PaymentPageState extends State<PaymentPage> {
           'orderstatus': 'Order Not Yet Accepted',
           'useremail': useremail,
           'order_name': widget.name,
-          'order_id': projectRef.id,
+          'order_id': orderId,
           'order_type': 'material',
           'projecttype': widget.projecttype,
           'order_date': DateTime.now(),
         });
       }
       await notifications(item);
+      await getfcm(item);
+      await sendNotificationToSeller(fcm);
     }
     await deleteCollection();
+  }
+
+  String fcm = '';
+  Future<void> getfcm(Map<String, dynamic> item) async {
+    final firestore = FirebaseFirestore.instance;
+    final snapshot1 =
+        await firestore.collection('fcmTokens').doc(item['useremail']).get();
+    fcm = snapshot1['token'];
+  }
+
+  Future<void> sendNotificationToSeller(String sellerToken) async {
+    final url = Uri.parse('https://fcm.googleapis.com/fcm/send');
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization':
+          'key=AAAAAXgFwBw:APA91bGwgMQf4NheYj-SfYBLTWxiUA00k7RgPzC4sRzjMTpH-Yhyvx1ni_v1RHYnyy4XxB3iX1IpB2DUV18DU_tfDypKtF6Prw3RnKUzha4IHGsI6dyuNdCpUv9r8GfbsKgp58KDD-yN', // Replace with your Firebase server key
+    };
+    final payload = {
+      'notification': {
+        'title': 'New Order Received',
+        'body': 'A new order has been placed by a user.',
+      },
+      'to': sellerToken,
+    };
+
+    final response =
+        await http.post(url, headers: headers, body: jsonEncode(payload));
+    if (response.statusCode == 200) {
+      print('Notification sent successfully');
+    } else {
+      print('Failed to send notification. Status code: ${response.statusCode}');
+    }
   }
 
   Future<void> notifications(Map<String, dynamic> item) async {
@@ -194,30 +228,6 @@ class _PaymentPageState extends State<PaymentPage> {
         'body': 'A new order has been placed by a user.',
         'date': DateTime.now(),
       });
-    }
-  }
-
-  Future<void> sendNotificationToSeller(String sellerToken) async {
-    final url = Uri.parse('https://fcm.googleapis.com/fcm/send');
-    final headers = {
-      'Content-Type': 'application/json',
-      'Authorization':
-          'key=AAAAAXgFwBw:APA91bGwgMQf4NheYj-SfYBLTWxiUA00k7RgPzC4sRzjMTpH-Yhyvx1ni_v1RHYnyy4XxB3iX1IpB2DUV18DU_tfDypKtF6Prw3RnKUzha4IHGsI6dyuNdCpUv9r8GfbsKgp58KDD-yN', // Replace with your Firebase server key
-    };
-    final payload = {
-      'notification': {
-        'title': 'New Order Received',
-        'body': 'A new order has been placed by a user.',
-      },
-      'to': sellerToken,
-    };
-
-    final response =
-        await http.post(url, headers: headers, body: jsonEncode(payload));
-    if (response.statusCode == 200) {
-      print('Notification sent successfully');
-    } else {
-      print('Failed to send notification. Status code: ${response.statusCode}');
     }
   }
 
@@ -256,80 +266,8 @@ class _PaymentPageState extends State<PaymentPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              width: width,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(children: [
-                                  Radio(
-                                    value: 'upi',
-                                    groupValue: paymentMethod,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        paymentMethod = value!;
-                                      });
-                                    },
-                                  ),
-                                  Padding(
-                                      padding: EdgeInsets.only(left: 8),
-                                      child: Text(
-                                        "Pay With UPI",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      )),
-                                  Spacer(),
-                                  Image.asset(
-                                    'assets/images/upi.png',
-                                    height: 50,
-                                    width: 50,
-                                  ),
-                                ]),
-                              ),
-                            )),
-                        Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              width: width,
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(children: [
-                                  Radio(
-                                    value: 'card',
-                                    groupValue: paymentMethod,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        paymentMethod = value!;
-                                      });
-                                    },
-                                  ),
-                                  Padding(
-                                      padding: EdgeInsets.only(left: 8),
-                                      child: Text(
-                                        "Card Payment",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      )),
-                                  Spacer(),
-                                  Icon(Icons.payment, size: 40),
-                                ]),
-                              ),
-                            )),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              top: 300, left: 8, right: 8),
+                          padding:
+                              const EdgeInsets.only(top: 10, left: 8, right: 8),
                           child: Text("Price Summary",
                               style: TextStyle(
                                 fontSize: 16,
@@ -423,51 +361,49 @@ class _PaymentPageState extends State<PaymentPage> {
                 )
               ]),
             ),
-      bottomNavigationBar: GestureDetector(
-        onTap: () async {
-          String result = 'failed';
-          if (paymentMethod == 'upi') {
-            result = await upi();
-          }
-          if (result == 'success') {
-            setState(() {
-              isLoading = true; // Add a boolean variable to track loading state
-            });
+      bottomNavigationBar: isLoading
+          ? Container(height: 10)
+          : GestureDetector(
+              onTap: () async {
+                Map<String, dynamic> result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          RazorPayment(total: widget.totalamount),
+                    ));
+                if (result['status'] == 'success') {
+                  setState(() {
+                    isLoading =
+                        true; // Add a boolean variable to track loading state
+                  });
 
-            await storedata();
+                  await storedata(result['orderId']);
 
-            setState(() {
-              isLoading = false;
-              Navigator.pop(
-                  context); // Set loading state to false after order function is complete
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => OrderComplete(),
+                  setState(() {
+                    isLoading = false;
+                    Navigator.pop(
+                        context); // Set loading state to false after order function is complete
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => OrderComplete(),
+                      ),
+                    );
+                  });
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text('Payment Failed'),
+                  ));
+                }
+              },
+              child: Container(
+                height: 70,
+                color: Colors.amber,
+                child: Center(
+                  child: Text("Pay Now"),
                 ),
-              );
-            });
-          }
-        },
-        child: Container(
-          height: 70,
-          color: Colors.amber,
-          child: Center(
-            child: Text("Pay Now"),
-          ),
-        ),
-      ),
+              ),
+            ),
     );
-  }
-
-  Future<String> upi() async {
-    String result = await Navigator.push(context, MaterialPageRoute(
-      builder: (context) {
-        return UpiPayment(
-          amount: widget.totalamount.toInt(),
-        );
-      },
-    ));
-    return result;
   }
 }

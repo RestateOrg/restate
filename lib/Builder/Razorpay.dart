@@ -1,9 +1,13 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:convert';
+
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:razorpay_flutter/razorpay_flutter.dart';
+import 'package:http/http.dart' as http;
 
 class RazorPayment extends StatefulWidget {
-  const RazorPayment({super.key});
+  final int total;
+  RazorPayment({required this.total});
 
   @override
   State<RazorPayment> createState() => _RazorPaymentState();
@@ -11,7 +15,9 @@ class RazorPayment extends StatefulWidget {
 
 class _RazorPaymentState extends State<RazorPayment> {
   var _razorpay = Razorpay();
+  static String orderIdurl = "https://api.razorpay.com/v1/orders";
   var options;
+
   @override
   void initState() {
     super.initState();
@@ -19,12 +25,13 @@ class _RazorPaymentState extends State<RazorPayment> {
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
     options = {
-      'key': '<YOUR_KEY_HERE>',
-      'amount': 100 * 100,
+      'key': 'rzp_live_VOTTkIs25sHqXh',
+      'amount': widget.total * 100,
       'name': 'Restate',
-      'description': 'Fine T-Shirt',
+      'description': 'This is payment for your order.',
       'prefill': {'contact': '9494741081', 'email': 'restateinfo23@gmail.com'}
     };
+    _razorpay.open(options);
   }
 
   @override
@@ -34,12 +41,18 @@ class _RazorPaymentState extends State<RazorPayment> {
   }
 
   void _handlePaymentSuccess(PaymentSuccessResponse response) {
+    Navigator.pop(context, {
+      "status": "success",
+      "orderId": response.paymentId,
+    });
     print("Payment has been successfull");
-    print(response.paymentId);
     print(response.orderId);
   }
 
   void _handlePaymentError(PaymentFailureResponse response) {
+    Navigator.pop(context, {
+      "status": "failed",
+    });
     print("Payment has been failed");
     print(response.code);
     print(response.message);
@@ -54,16 +67,7 @@ class _RazorPaymentState extends State<RazorPayment> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Center(
-      child: ElevatedButton(
-        onPressed: () {
-          try {
-            _razorpay.open(options);
-          } catch (e) {
-            print(e);
-          }
-        },
-        child: Text('Pay Now'),
-      ),
+      child: Container(),
     ));
   }
 }
