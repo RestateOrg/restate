@@ -14,7 +14,7 @@ class _GetStartedState extends State<GetStarted> {
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor: Colors.amber,
+      backgroundColor: Color.fromARGB(255, 255, 225, 135),
       body: Stack(
         // Use Stack for layering widgets
         children: [
@@ -28,7 +28,7 @@ class _GetStartedState extends State<GetStarted> {
               height: height * 0.5,
               child: ColorFiltered(
                 colorFilter: ColorFilter.mode(
-                  Colors.amber.withOpacity(0.5),
+                  Color.fromARGB(255, 255, 225, 135).withOpacity(0.4),
                   BlendMode.dstATop,
                 ),
                 child: Image.asset(
