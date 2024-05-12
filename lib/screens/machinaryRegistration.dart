@@ -170,7 +170,7 @@ class _MachinaryRegistrationState extends State<MachinaryRegistration> {
       appBar: AppBar(
         backgroundColor: Colors.amber,
       ),
-      backgroundColor: Colors.amber,
+      backgroundColor: Color.fromARGB(255, 255, 249, 230),
       body: SingleChildScrollView(
         child: Column(
           children: [

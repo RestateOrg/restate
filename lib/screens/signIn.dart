@@ -60,8 +60,8 @@ class _LoginViewState extends State<LoginView> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      backgroundColor:
-          Colors.amber, // Set the background color of the app to amber
+      backgroundColor: Color.fromARGB(
+          255, 255, 233, 168), // Set the background color of the app to amber
       body: FutureBuilder(
         future: Firebase.initializeApp(
           options: DefaultFirebaseOptions.currentPlatform,
@@ -77,7 +77,7 @@ class _LoginViewState extends State<LoginView> {
                     gradient: const LinearGradient(
                       colors: [
                         Colors.black,
-                        Colors.black87
+                        Colors.black54
                       ], // Set your gradient colors
                       begin: Alignment.bottomLeft,
                       end: Alignment.topRight,
@@ -214,6 +214,11 @@ class _LoginViewState extends State<LoginView> {
                               _showDocumentIdPopup2(
                                   "The Password You have Entered Is Incorrect",
                                   "Incorrect Password");
+                            }
+                            if (e.code == "network-request-failed") {
+                              _showDocumentIdPopup2(
+                                  "Please check your internet connection",
+                                  "No Internet Connection");
                             }
                             print(e.code);
                           } finally {
