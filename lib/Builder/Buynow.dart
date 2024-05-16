@@ -439,9 +439,17 @@ class _BuyNowState extends State<BuyNow> {
                         color: Colors.amber[600],
                         child: TextButton(
                           onPressed: () {
-                            setState(() {
-                              currentStep += 1;
-                            });
+                            if (city != "") {
+                              setState(() {
+                                currentStep += 1;
+                              });
+                            } else {
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                content: Text('Please Add A New Project'),
+                                backgroundColor: Colors.red,
+                              ));
+                            }
                           },
                           child: Text(
                             "Next",

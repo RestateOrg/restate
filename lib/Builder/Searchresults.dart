@@ -325,7 +325,7 @@ class _SearchresultsState extends State<Searchresults> {
                                                                           FontWeight
                                                                               .bold)),
                                                               Text(
-                                                                  "₹${data['hourly']}",
+                                                                  '₹ ${(int.parse(data['hourly']) + int.parse(data['hourly']) * 0.1).toInt()}',
                                                                   style: TextStyle(
                                                                       color: const Color
                                                                           .fromARGB(
@@ -357,7 +357,7 @@ class _SearchresultsState extends State<Searchresults> {
                                                                           FontWeight
                                                                               .bold)),
                                                               Text(
-                                                                "₹${data['day']}",
+                                                                '₹ ${(int.parse(data['day']) + int.parse(data['day']) * 0.1).toInt()}',
                                                                 style: TextStyle(
                                                                     color: const Color
                                                                         .fromARGB(
@@ -390,7 +390,7 @@ class _SearchresultsState extends State<Searchresults> {
                                                                           FontWeight
                                                                               .bold)),
                                                               Text(
-                                                                  "₹${data['week']}",
+                                                                  '₹ ${(int.parse(data['week']) + int.parse(data['week']) * 0.1).toInt()}',
                                                                   style: TextStyle(
                                                                       color: const Color
                                                                           .fromARGB(
@@ -642,7 +642,7 @@ class _SearchresultsState extends State<Searchresults> {
                                                             children: [
                                                               TextSpan(
                                                                 text:
-                                                                    '₹ ${data['Price_per']}',
+                                                                    '₹ ${(int.parse(data['Price_per']) + int.parse(data['Price_per']) * 0.1).toInt()}',
                                                                 style:
                                                                     TextStyle(
                                                                   fontSize: 15,

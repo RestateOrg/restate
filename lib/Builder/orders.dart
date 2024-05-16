@@ -38,6 +38,10 @@ class _OrdersState extends State<Orders> {
                 return Center(
                   child: CircularProgressIndicator(),
                 );
+              } else if (snapshot.data!.isEmpty) {
+                return Center(
+                  child: Text('No Orders'),
+                );
               } else if (snapshot.hasError) {
                 return Center(
                   child: Text('Error: ${snapshot.error}'),
@@ -50,12 +54,13 @@ class _OrdersState extends State<Orders> {
                     return Column(
                       children: [
                         GestureDetector(
-                          onTap: () {
-                            Navigator.push(
+                          onTap: () async {
+                            await Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
                                         OrderDetails(order: item)));
+                            setState(() {});
                           },
                           child: ListTile(
                             title: item?["order_type"] == "machinery"

@@ -195,7 +195,7 @@ class _EditDetailsState extends State<EditDetails> {
         ],
         backgroundColor: Colors.amber,
       ),
-      backgroundColor: Colors.amber,
+      backgroundColor: Colors.white,
       body: _isUploading
           ? Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
@@ -210,7 +210,7 @@ class _EditDetailsState extends State<EditDetails> {
                           ),
                           child: Container(
                               decoration: BoxDecoration(
-                                color: HexColor('#F2F2F2'),
+                                color: Color.fromARGB(255, 255, 249, 222),
                                 borderRadius: BorderRadius.circular(10.0),
                               ),
                               height: width * 0.78,

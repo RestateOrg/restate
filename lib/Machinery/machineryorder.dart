@@ -266,7 +266,15 @@ class _MachineryOrdersState extends State<MachineryOrders> {
                                                 right: width * 0.015,
                                               ),
                                               child: InkWell(
-                                                  onTap: () {},
+                                                  onTap: () {
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                YourOrdersDetails(
+                                                                    order: filteredSnapshots[
+                                                                        index])));
+                                                  },
                                                   child: Icon(Icons.info,
                                                       size: 20)),
                                             ),

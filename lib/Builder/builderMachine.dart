@@ -182,20 +182,20 @@ class _BuilderMachineState extends State<BuilderMachine> {
   ];
 
   List<String> forYouMachNames = [
-    'Direct Rotary Rigs',
+    'Backhoe Loader',
     'Wick Drain Machine',
     'Rough Terrain Forklift',
-    'Nail guns',
+    'Excavator',
     'Rough terrain Crane',
     'Single Drum Roller',
     'Tractor',
   ];
 
   List<String> foryouMachImages = [
-    'assets/images/foryouMach/direct rotary rigs.jpg',
+    'assets/images/machinery/Earth_moving_equipment/Backhoe Loader.jpg',
     'assets/images/foryouMach/drain.jpg',
     'assets/images/foryouMach/forklift.png',
-    'assets/images/foryouMach/nailDrill.jpg',
+    'assets/images/machinery/Earth_moving_equipment/Excavator.jpg',
     'assets/images/foryouMach/roughTCraine.jpg',
     'assets/images/foryouMach/singleDrumRoller.jpg',
     'assets/images/foryouMach/tractor.jpg',

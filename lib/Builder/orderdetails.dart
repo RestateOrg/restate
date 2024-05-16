@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -142,6 +143,8 @@ class TimelineItem extends StatelessWidget {
 class _OrderDetailsState extends State<OrderDetails> {
   int flag = 0;
   double stars = 0.0;
+  bool isLoading = false;
+  String? useremail = FirebaseAuth.instance.currentUser?.email;
   @override
   void dispose() {
     DefaultCacheManager().emptyCache();
@@ -190,7 +193,53 @@ class _OrderDetailsState extends State<OrderDetails> {
             .doc(documentSnapshot.id)
             .update({"rating_count": oldcount + 1});
       }
-    } else {}
+    } else {
+      DocumentReference already = FirebaseFirestore.instance
+          .collection("material")
+          .doc(widget.order?["product"]["useremail"])
+          .collection("inventory")
+          .doc(widget.order?["product"]["Material_name"]);
+
+      DocumentSnapshot snapshot = await already.get();
+      double oldrating = snapshot["rating"].toDouble();
+      int oldcount = snapshot["rating_count"];
+      await FirebaseFirestore.instance
+          .collection('material')
+          .doc(widget.order?["product"]["useremail"])
+          .collection('inventory')
+          .doc(widget.order?['product']['Material_name'])
+          .update({"rating": oldrating + stars});
+      await FirebaseFirestore.instance
+          .collection('material')
+          .doc(widget.order?["product"]["useremail"])
+          .collection('inventory')
+          .doc(widget.order?['product']['Material_name'])
+          .update({"rating_count": oldcount + 1});
+      QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+          .collection('material inventory')
+          .where('Images', arrayContains: widget.order?["product"]["Images"][0])
+          .get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        DocumentSnapshot documentSnapshot = querySnapshot.docs[0];
+        double oldrating = documentSnapshot["rating"].toDouble();
+        int oldcount = documentSnapshot["rating_count"];
+        await FirebaseFirestore.instance
+            .collection('material inventory')
+            .doc(documentSnapshot.id)
+            .update({"rating": oldrating + stars});
+        await FirebaseFirestore.instance
+            .collection('material inventory')
+            .doc(documentSnapshot.id)
+            .update({"rating_count": oldcount + 1});
+      }
+    }
+    await FirebaseFirestore.instance
+        .collection("builders")
+        .doc(useremail)
+        .collection("orders")
+        .doc(widget.order?.id)
+        .update({"rating given": true});
   }
 
   @override
@@ -201,260 +250,276 @@ class _OrderDetailsState extends State<OrderDetails> {
           backgroundColor: Colors.amber,
           title: Text('Order Details'),
         ),
-        body: SingleChildScrollView(
-          child: Column(children: [
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8.0, top: 8.0),
-                child: Text(
-                  "Order ID: ${widget.order?["order_id"]}",
-                  style: TextStyle(
-                    color: Colors.black45,
-                  ),
-                ),
-              ),
-            ),
-            Divider(),
-            widget.order?["order_type"] == "machinery"
-                ? Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                    ),
-                    child: Column(
-                      children: [
-                        Container(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                top: 8.0, bottom: 8.0, left: 8),
-                            child: Row(
-                              children: [
-                                Container(
-                                  color: Colors.black12,
-                                  width: 100,
-                                  height: 100,
-                                  child: CachedNetworkImage(
-                                      key: UniqueKey(),
-                                      imageUrl: widget.order?["product"]
-                                          ["image_urls"][0]),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 8.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        widget.order?["status"],
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                      Text(
-                                        widget.order?["product"]
-                                            ["machinery_name"],
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 8),
-                            child: Text(
-                              widget.order?["product"]["machinery_type"],
-                              style: TextStyle(
-                                color: Colors.black45,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.only(left: 8, bottom: 8.0),
-                            child: Text(
-                              "₹ ${widget.order?["total"]}",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 17,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                : Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                    ),
-                    child: Column(
-                      children: [
-                        Container(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                                top: 8.0, bottom: 8.0, left: 8),
-                            child: Row(
-                              children: [
-                                Container(
-                                  color: Colors.black12,
-                                  width: 100,
-                                  height: 100,
-                                  child: CachedNetworkImage(
-                                      key: UniqueKey(),
-                                      imageUrl: widget.order?["product"]
-                                          ["Images"][0]),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 8.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        widget.order?["status"],
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                      Text(
-                                        widget.order?["product"]
-                                            ["Material_name"],
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.only(left: 8, bottom: 8.0),
-                            child: Text(
-                              widget.order?["product"]["Material_type"],
-                              style: TextStyle(
-                                color: Colors.black45,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.only(left: 8, bottom: 8.0),
-                            child: Text(
-                              "₹ ${widget.order?["total"]}",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 17,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-            Divider(),
-            Timeline(
-              order: widget.order,
-            ),
-            Padding(
-                padding: EdgeInsets.only(top: 20.0, left: 20),
-                child: Row(
-                  children: [
-                    Text(
-                      "See Full Details",
-                      style: TextStyle(
-                        color: Colors.amber,
-                        fontSize: 16,
-                      ),
-                    ),
-                    Icon(Icons.arrow_forward_ios, color: Colors.amber),
-                  ],
-                )),
-            Padding(
-                padding: EdgeInsets.only(top: 20.0, left: 20),
-                child: Row(
-                  children: [
-                    Text(
-                      "This Product is Not Eligible for Return",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
+        body: isLoading == true
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : SingleChildScrollView(
+                child: Column(children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 8.0, top: 8.0),
                       child: Text(
-                        "Why?",
+                        "Order ID: ${widget.order?["order_id"]}",
                         style: TextStyle(
-                          color: Colors.amber,
-                          fontSize: 16,
+                          color: Colors.black45,
                         ),
                       ),
-                    )
-                  ],
-                )),
-            Center(
-              child: RatingBar.builder(
-                initialRating: widget.order?["product"]["rating"].toDouble(),
-                minRating: 1,
-                direction: Axis.horizontal,
-                allowHalfRating: true,
-                itemCount: 5,
-                itemSize: 50,
-                itemBuilder: (context, _) => Icon(
-                  Icons.star_rate_rounded,
-                  color: Colors.amber,
-                ),
-                onRatingUpdate: (rating) {
-                  setState(() {
-                    stars = rating;
-                    flag = 1;
-                  });
-                },
-              ),
-            ),
-            flag == 1
-                ? Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.amber,
-                        foregroundColor: Colors.white,
-                      ),
-                      onPressed: () async {
-                        await _submitRating();
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text('Rating Submitted'),
-                        ));
-                        flag = 2;
-                      },
-                      child: Text('Submit Rating'),
                     ),
-                  )
-                : Container(),
-          ]),
-        ));
+                  ),
+                  Divider(),
+                  widget.order?["order_type"] == "machinery"
+                      ? Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                          ),
+                          child: Column(
+                            children: [
+                              Container(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 8.0, bottom: 8.0, left: 8),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        color: Colors.black12,
+                                        width: 100,
+                                        height: 100,
+                                        child: CachedNetworkImage(
+                                            key: UniqueKey(),
+                                            imageUrl: widget.order?["product"]
+                                                ["image_urls"][0]),
+                                      ),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 8.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              widget.order?["status"],
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                            Text(
+                                              widget.order?["product"]
+                                                  ["machinery_name"],
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 8),
+                                  child: Text(
+                                    widget.order?["product"]["machinery_type"],
+                                    style: TextStyle(
+                                      color: Colors.black45,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 8, bottom: 8.0),
+                                  child: Text(
+                                    "₹ ${widget.order?["total"]}",
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 17,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                          ),
+                          child: Column(
+                            children: [
+                              Container(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 8.0, bottom: 8.0, left: 8),
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        color: Colors.black12,
+                                        width: 100,
+                                        height: 100,
+                                        child: CachedNetworkImage(
+                                            key: UniqueKey(),
+                                            imageUrl: widget.order?["product"]
+                                                ["Images"][0]),
+                                      ),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 8.0),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              widget.order?["status"],
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                            Text(
+                                              widget.order?["product"]
+                                                  ["Material_name"],
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 8, bottom: 8.0),
+                                  child: Text(
+                                    widget.order?["product"]["Material_type"],
+                                    style: TextStyle(
+                                      color: Colors.black45,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 8, bottom: 8.0),
+                                  child: Text(
+                                    "₹ ${widget.order?["total"]}",
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 17,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                  Divider(),
+                  Timeline(
+                    order: widget.order,
+                  ),
+                  Padding(
+                      padding: EdgeInsets.only(top: 20.0, left: 20),
+                      child: Row(
+                        children: [
+                          Text(
+                            "See Full Details",
+                            style: TextStyle(
+                              color: Colors.amber,
+                              fontSize: 16,
+                            ),
+                          ),
+                          Icon(Icons.arrow_forward_ios, color: Colors.amber),
+                        ],
+                      )),
+                  Padding(
+                      padding: EdgeInsets.only(top: 20.0, left: 20),
+                      child: Row(
+                        children: [
+                          Text(
+                            "This Product is Not Eligible for Return",
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Text(
+                              "Why?",
+                              style: TextStyle(
+                                color: Colors.amber,
+                                fontSize: 16,
+                              ),
+                            ),
+                          )
+                        ],
+                      )),
+                  Center(
+                      child: widget.order?['rating given'] == false
+                          ? RatingBar.builder(
+                              initialRating:
+                                  widget.order?["product"]["rating"].toDouble(),
+                              minRating: 1,
+                              direction: Axis.horizontal,
+                              allowHalfRating: true,
+                              itemCount: 5,
+                              itemSize: 50,
+                              itemBuilder: (context, _) => Icon(
+                                Icons.star_rate_rounded,
+                                color: Colors.amber,
+                              ),
+                              onRatingUpdate: (rating) {
+                                setState(() {
+                                  stars = rating;
+                                  flag = 1;
+                                });
+                              },
+                            )
+                          : Container()),
+                  flag == 1
+                      ? Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.amber,
+                              foregroundColor: Colors.white,
+                            ),
+                            onPressed: () async {
+                              setState(() {
+                                isLoading = true;
+                              });
+                              await _submitRating();
+                              setState(() {
+                                isLoading = false;
+                              });
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(SnackBar(
+                                content: Text('Rating Submitted'),
+                              ));
+                              await Future.delayed(Duration(seconds: 1));
+                              Navigator.pop(context);
+                            },
+                            child: Text('Submit Rating'),
+                          ),
+                        )
+                      : Container(),
+                ]),
+              ));
   }
 }

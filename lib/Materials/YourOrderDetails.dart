@@ -164,7 +164,11 @@ class _YourOrdersDetailsState extends State<YourOrdersDetails> {
                                   child: CachedNetworkImage(
                                       key: UniqueKey(),
                                       imageUrl: widget.order?["product"]
-                                          ["Images"][0]),
+                                          ["Images"][0],
+                                      placeholder: (context, url) => Center(
+                                          child: CircularProgressIndicator()),
+                                      errorWidget: (context, url, error) =>
+                                          Icon(Icons.error)),
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 8.0),
@@ -323,6 +327,112 @@ class _YourOrdersDetailsState extends State<YourOrdersDetails> {
                     },
                     child: Text('Update Status'),
                   ),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  "Order Details",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+            Divider(),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Text(
+                    "Order Price",
+                    style: TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.bold),
+                  ),
+                  Spacer(),
+                  Text(
+                    "₹ ${widget.order?["total"]}",
+                    style: TextStyle(
+                      color: Colors.black45,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Text(
+                    "Quantity",
+                    style: TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.bold),
+                  ),
+                  Spacer(),
+                  Text(
+                    widget.order?["quantity"],
+                    style: TextStyle(
+                      color: Colors.black45,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Text(
+                    "Order Location",
+                    style: TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.bold),
+                  ),
+                  Spacer(),
+                  Text(
+                    widget.order?["location"],
+                    style: TextStyle(
+                      color: Colors.black45,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Text(
+                    "City",
+                    style: TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.bold),
+                  ),
+                  Spacer(),
+                  Text(
+                    widget.order?["city"],
+                    style: TextStyle(
+                      color: Colors.black45,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Text(
+                    "State",
+                    style: TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.bold),
+                  ),
+                  Spacer(),
+                  Text(
+                    widget.order?["state"],
+                    style: TextStyle(
+                      color: Colors.black45,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ]),
         ));
   }

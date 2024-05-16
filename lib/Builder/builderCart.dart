@@ -223,29 +223,43 @@ class _BuilderCartState extends State<BuilderCart> {
           Spacer(),
           GestureDetector(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => PaymentPage(
-                    items: items,
-                    totalamount: totalamount,
-                    totaldiscount: totaldiscount,
-                    totaldelivery: totaldelivery,
-                    location: location,
-                    city: city,
-                    state: state,
-                    name: name,
-                    projectimage: projectimage,
-                    quantity: _quantity,
-                    timeperiod: timeperiod,
-                    time: time,
-                    projecttype: projecttype,
-                    price: _price,
-                    discount: _discount,
-                    delivery: _delivery,
+              if (totalamount != 0 && city != "") {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PaymentPage(
+                      items: items,
+                      totalamount: totalamount,
+                      totaldiscount: totaldiscount,
+                      totaldelivery: totaldelivery,
+                      location: location,
+                      city: city,
+                      state: state,
+                      name: name,
+                      projectimage: projectimage,
+                      quantity: _quantity,
+                      timeperiod: timeperiod,
+                      time: time,
+                      projecttype: projecttype,
+                      price: _price,
+                      discount: _discount,
+                      delivery: _delivery,
+                    ),
                   ),
-                ),
-              );
+                );
+              } else {
+                if (city == "") {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text('Please Select Delivery Address'),
+                    duration: Duration(seconds: 2),
+                  ));
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text('Please Add Items to Cart'),
+                    duration: Duration(seconds: 2),
+                  ));
+                }
+              }
             },
             child: Container(
               margin: EdgeInsets.all(10),
@@ -619,103 +633,112 @@ class _BuilderCartState extends State<BuilderCart> {
                                         ),
                                       ),
                                     ),
-                                    Column(children: [
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 8.0),
-                                        child: RichText(
-                                          text: TextSpan(
-                                            children: <TextSpan>[
-                                              TextSpan(
-                                                text:
-                                                    "₹ ${snapshot.data![index]['hourly']}",
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                              TextSpan(
-                                                text: " / Hour",
-                                                style: TextStyle(
-                                                  color: Colors.grey,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 8.0),
-                                        child: RichText(
-                                          text: TextSpan(
-                                            children: <TextSpan>[
-                                              TextSpan(
-                                                text:
-                                                    "₹ ${snapshot.data![index]['week']}",
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                              TextSpan(
-                                                text: " / Week",
-                                                style: TextStyle(
-                                                  color: Colors.grey,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ]),
-                                    Column(children: [
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 8.0),
-                                        child: RichText(
-                                          text: TextSpan(
-                                            children: <TextSpan>[
-                                              TextSpan(
-                                                text:
-                                                    "₹ ${snapshot.data![index]['day']}",
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                              TextSpan(
-                                                text: " / Day",
-                                                style: TextStyle(
-                                                  color: Colors.grey,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 8.0),
-                                        child: RichText(
-                                          text: TextSpan(
-                                            children: <TextSpan>[
-                                              TextSpan(
-                                                text:
-                                                    "₹ ${snapshot.data![index]['month']}",
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                              TextSpan(
-                                                text: " / Month",
-                                                style: TextStyle(
-                                                  color: Colors.grey,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ])
                                   ],
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(children: [
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 8.0),
+                                          child: RichText(
+                                            text: TextSpan(
+                                              children: <TextSpan>[
+                                                TextSpan(
+                                                  text:
+                                                      "₹ ${int.parse(snapshot.data![index]['hourly']) + (int.parse(snapshot.data![index]['hourly']) * 0.1).toInt()}",
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                TextSpan(
+                                                  text: " / Hour",
+                                                  style: TextStyle(
+                                                    color: Colors.grey,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 8.0),
+                                          child: RichText(
+                                            text: TextSpan(
+                                              children: <TextSpan>[
+                                                TextSpan(
+                                                  text:
+                                                      "₹${int.parse(snapshot.data![index]['week']) + (int.parse(snapshot.data![index]['week']) * 0.1).toInt()}",
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                TextSpan(
+                                                  text: " / Week",
+                                                  style: TextStyle(
+                                                    color: Colors.grey,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ]),
+                                      Column(children: [
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 8.0),
+                                          child: RichText(
+                                            text: TextSpan(
+                                              children: <TextSpan>[
+                                                TextSpan(
+                                                  text:
+                                                      "₹${int.parse(snapshot.data![index]['day']) + (int.parse(snapshot.data![index]['day']) * 0.1).toInt()}",
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                TextSpan(
+                                                  text: " / Day",
+                                                  style: TextStyle(
+                                                    color: Colors.grey,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 8.0),
+                                          child: RichText(
+                                            text: TextSpan(
+                                              children: <TextSpan>[
+                                                TextSpan(
+                                                  text:
+                                                      "₹${int.parse(snapshot.data![index]['month']) + (int.parse(snapshot.data![index]['month']) * 0.1).toInt()}",
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                                TextSpan(
+                                                  text: " / Month",
+                                                  style: TextStyle(
+                                                    color: Colors.grey,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ])
+                                    ],
+                                  ),
                                 ),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,

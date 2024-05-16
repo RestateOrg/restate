@@ -526,7 +526,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                           children: [
                                             TextSpan(
                                               text:
-                                                  '₹ ${widget.data['hourly']} / ',
+                                                  '₹ ${(int.parse(widget.data['hourly']) + int.parse(widget.data['hourly']) * 0.1).toInt()} / ',
                                               style: TextStyle(
                                                 fontSize: 16,
                                                 color: Colors.black,
@@ -554,7 +554,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                             children: [
                                               TextSpan(
                                                 text:
-                                                    '₹ ${widget.data['week']} / ',
+                                                    '₹ ${(int.parse(widget.data['week']) + int.parse(widget.data['week']) * 0.1).toInt()} / ',
                                                 style: TextStyle(
                                                   fontSize: 16,
                                                   color: Colors.black,
@@ -590,7 +590,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                           children: [
                                             TextSpan(
                                               text:
-                                                  '₹ ${widget.data['day']} / ',
+                                                  '₹ ${(int.parse(widget.data['day']) + int.parse(widget.data['day']) * 0.1).toInt()} / ',
                                               style: TextStyle(
                                                 fontSize: 16,
                                                 color: Colors.black,
@@ -617,7 +617,8 @@ class _ProductDetailsState extends State<ProductDetails> {
                                     text: TextSpan(
                                       children: [
                                         TextSpan(
-                                          text: '₹ ${widget.data['month']} / ',
+                                          text:
+                                              '₹ ${(int.parse(widget.data['month']) + int.parse(widget.data['month']) * 0.1).toInt()} / ',
                                           style: TextStyle(
                                             fontSize: 16,
                                             color: Colors.black,
@@ -1458,7 +1459,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                                       children: [
                                         TextSpan(
                                           text:
-                                              '₹ ${widget.data['Price_per']} / ',
+                                              '₹ ${(int.parse(widget.data['Price_per']) + int.parse(widget.data['Price_per']) * 0.1).toInt()} / ',
                                           style: TextStyle(
                                             fontSize: 16,
                                             color: Colors.black,

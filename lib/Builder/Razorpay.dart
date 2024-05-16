@@ -20,7 +20,7 @@ class _RazorPaymentState extends State<RazorPayment> {
     _razorpay.on(Razorpay.EVENT_PAYMENT_ERROR, _handlePaymentError);
     _razorpay.on(Razorpay.EVENT_EXTERNAL_WALLET, _handleExternalWallet);
     options = {
-      'key': 'rzp_live_VOTTkIs25sHqXh',
+      'key': 'rzp_test_Iud4iR5jEd9yFt',
       'amount': widget.total * 100,
       'name': 'Restate',
       'description': 'This is payment for your order.',
