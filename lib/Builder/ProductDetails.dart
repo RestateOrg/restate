@@ -322,67 +322,52 @@ class _ProductDetailsState extends State<ProductDetails> {
                                     alignment: AlignmentDirectional(0.9, 0),
                                     child: GestureDetector(
                                       onTap: () async {
-                                        Share.share("Hi");
-                                      },
-                                      child: Icon(
-                                        FontAwesomeIcons.share,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(top: 8.0, right: 8.0),
-                                child: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: GestureDetector(
-                                    onTap: () async {
-                                      setState(() {
-                                        isLiked = !isLiked;
-                                      });
-                                      Fluttertoast.showToast(
-                                        msg: isLiked
-                                            ? 'Added to wishlist'
-                                            : 'Removed from wishlist',
-                                        toastLength: Toast.LENGTH_SHORT,
-                                        gravity: ToastGravity.CENTER,
-                                        fontSize: 16.0,
-                                      );
-                                      isLiked
-                                          ? await firestore
-                                              .collection('builders')
-                                              .doc(useremail)
-                                              .collection('wishlist')
-                                              .add(widget.data)
-                                          : await firestore
-                                              .collection('builders')
-                                              .doc(useremail)
-                                              .collection('wishlist')
-                                              .where('image_urls',
-                                                  isEqualTo:
-                                                      widget.data['image_urls'])
-                                              .get()
-                                              .then((value) {
-                                              value.docs.forEach((element) {
-                                                element.reference.delete();
-                                              });
-                                            });
-                                    },
-                                    child: AnimatedSwitcher(
-                                      duration: Duration(
-                                          milliseconds:
-                                              200), // Animation duration
-                                      child: Icon(
+                                        setState(() {
+                                          isLiked = !isLiked;
+                                        });
+                                        Fluttertoast.showToast(
+                                          msg: isLiked
+                                              ? 'Added to wishlist'
+                                              : 'Removed from wishlist',
+                                          toastLength: Toast.LENGTH_SHORT,
+                                          gravity: ToastGravity.CENTER,
+                                          fontSize: 16.0,
+                                        );
                                         isLiked
-                                            ? FontAwesomeIcons.solidHeart
-                                            : FontAwesomeIcons.solidHeart,
-                                        key: ValueKey<bool>(
-                                            isLiked), // Key to distinguish between states
-                                        color:
-                                            isLiked ? Colors.red : Colors.grey,
-                                        size: 25,
+                                            ? await firestore
+                                                .collection('builders')
+                                                .doc(useremail)
+                                                .collection('wishlist')
+                                                .add(widget.data)
+                                            : await firestore
+                                                .collection('builders')
+                                                .doc(useremail)
+                                                .collection('wishlist')
+                                                .where('image_urls',
+                                                    isEqualTo: widget
+                                                        .data['image_urls'])
+                                                .get()
+                                                .then((value) {
+                                                value.docs.forEach((element) {
+                                                  element.reference.delete();
+                                                });
+                                              });
+                                      },
+                                      child: AnimatedSwitcher(
+                                        duration: Duration(
+                                            milliseconds:
+                                                200), // Animation duration
+                                        child: Icon(
+                                          isLiked
+                                              ? FontAwesomeIcons.solidHeart
+                                              : FontAwesomeIcons.solidHeart,
+                                          key: ValueKey<bool>(
+                                              isLiked), // Key to distinguish between states
+                                          color: isLiked
+                                              ? Colors.red
+                                              : Colors.grey,
+                                          size: 25,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -1267,63 +1252,56 @@ class _ProductDetailsState extends State<ProductDetails> {
                                 child: Align(
                                   alignment: AlignmentDirectional(0.9, 0),
                                   child: Padding(
-                                    padding: EdgeInsets.only(left: 8.0, top: 8),
-                                    child: Icon(
-                                      FontAwesomeIcons.share,
-                                      size: 25,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(top: 8.0, right: 8.0),
-                                child: GestureDetector(
-                                  onTap: () async {
-                                    setState(() {
-                                      isLiked = !isLiked;
-                                    });
-                                    Fluttertoast.showToast(
-                                      msg: isLiked
-                                          ? 'Added to wishlist'
-                                          : 'Removed from wishlist',
-                                      toastLength: Toast.LENGTH_SHORT,
-                                      gravity: ToastGravity.CENTER,
-                                      fontSize: 16.0,
-                                    );
-                                    isLiked
-                                        ? await firestore
-                                            .collection('builders')
-                                            .doc(useremail)
-                                            .collection('wishlist')
-                                            .add(widget.data)
-                                        : await firestore
-                                            .collection('builders')
-                                            .doc(useremail)
-                                            .collection('wishlist')
-                                            .where('Images',
-                                                isEqualTo:
-                                                    widget.data['Images'])
-                                            .get()
-                                            .then((value) {
-                                            value.docs.forEach((element) {
-                                              element.reference.delete();
-                                            });
-                                          });
-                                  },
-                                  child: AnimatedSwitcher(
-                                    duration: Duration(
-                                        milliseconds:
-                                            200), // Animation duration
-                                    child: Icon(
-                                      isLiked
-                                          ? FontAwesomeIcons.solidHeart
-                                          : FontAwesomeIcons.solidHeart,
-                                      key: ValueKey<bool>(
-                                          isLiked), // Key to distinguish between states
-                                      color: isLiked ? Colors.red : Colors.grey,
-                                      size: 25,
+                                    padding: const EdgeInsets.only(top: 8.0),
+                                    child: GestureDetector(
+                                      onTap: () async {
+                                        setState(() {
+                                          isLiked = !isLiked;
+                                        });
+                                        Fluttertoast.showToast(
+                                          msg: isLiked
+                                              ? 'Added to wishlist'
+                                              : 'Removed from wishlist',
+                                          toastLength: Toast.LENGTH_SHORT,
+                                          gravity: ToastGravity.CENTER,
+                                          fontSize: 16.0,
+                                        );
+                                        isLiked
+                                            ? await firestore
+                                                .collection('builders')
+                                                .doc(useremail)
+                                                .collection('wishlist')
+                                                .add(widget.data)
+                                            : await firestore
+                                                .collection('builders')
+                                                .doc(useremail)
+                                                .collection('wishlist')
+                                                .where('Images',
+                                                    isEqualTo:
+                                                        widget.data['Images'])
+                                                .get()
+                                                .then((value) {
+                                                value.docs.forEach((element) {
+                                                  element.reference.delete();
+                                                });
+                                              });
+                                      },
+                                      child: AnimatedSwitcher(
+                                        duration: Duration(
+                                            milliseconds:
+                                                200), // Animation duration
+                                        child: Icon(
+                                          isLiked
+                                              ? FontAwesomeIcons.solidHeart
+                                              : FontAwesomeIcons.solidHeart,
+                                          key: ValueKey<bool>(
+                                              isLiked), // Key to distinguish between states
+                                          color: isLiked
+                                              ? Colors.red
+                                              : Colors.grey,
+                                          size: 25,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
